@@ -6,7 +6,6 @@ package org.biofab.webservices.dataaccess;
  */
 
 import java.io.IOException;
-import java.lang.StringBuilder;
 import java.sql.SQLException;
 import java.sql.Connection;
 import java.sql.Statement;
@@ -122,8 +121,7 @@ public class ConstructsServlet extends DataAccessServlet
     }
 
     @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         textError(response, "Put requests are not serviced by the Constructs web service");
     }
