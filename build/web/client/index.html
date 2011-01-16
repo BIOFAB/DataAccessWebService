@@ -1,0 +1,37 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>BIOFAB Data Access Client</title>
+    <link rel="stylesheet" type="text/css" href="ext-3.3.0/resources/css/ext-all.css"/>
+    <link rel="stylesheet" type="text/css" href="ext-3.3.0/resources/css/xtheme-gray.css"/>
+    <script type="text/javascript" src="ext-3.3.0/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="ext-3.3.0/ext-all-debug.js"></script>
+    <script type="text/javascript" src="lib/canvasXpress.min.js"></script>
+    <script type="text/javascript" src="lib/ext-canvasXpress.js"></script>
+    <script type="text/javascript" src="DataAccessClientViewport.ui.js"></script>
+    <script type="text/javascript" src="DataAccessClientViewport.js"></script>
+    <script type="text/javascript" src="DatasheetPanel.ui.js"></script>
+    <script type="text/javascript" src="DatasheetPanel.js"></script>
+    <script type="text/javascript" src="stores/PartStore.js"></script>
+    <script type="text/javascript" src="stores/ConstructStore.js"></script>
+    <script type="text/javascript" src="stores/ConstructDisplayStore.js"></script>
+    <script type="text/javascript" src="stores/ConstructHasPartStore.js"></script>
+	<script type="text/javascript" src="stores/PerformanceStore.js"></script>
+    <script type="text/javascript">
+		//var BASE_URL = 'http://biofab.jbei.org/services/DataAccess/'
+                var BASE_URL = 'http://biofab.jbei.org/services/dev/DataAccess/'
+                //var BASE_URL = 'http://localhost:8080/DataAccess/';
+		var DESIGN_SERVICE_PATH = BASE_URL + 'design';
+                var DESIGN_VIEWER_URL = 'designviewer/DesignViewer.swf';
+		
+	    Ext.onReady(function() {
+	        Ext.QuickTips.init();
+	        var cmp1 = new DataAccessClientViewport({
+	            renderTo: Ext.getBody()
+	        });
+	        cmp1.show();
+	    });
+    </script>
+</head>
+<body></body>
+</html>

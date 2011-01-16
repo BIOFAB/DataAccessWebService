@@ -1,0 +1,32 @@
+/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+{'annotatedparts':[
+{'id':'apFAB1', 'type':"promoter", 'description':'J23101', 'sequence':'TTTACAGCTAGCTCAGTCCTAGGTATTATGCTAGC'},
+{'id':'apFAB2', 'type':"promoter", 'description':'J23109', 'sequence':'TTTACAGCTAGCTCAGTCCTAGGGACTGTGCTAGC'},
+{'id':'apFAB3', 'type':"promoter", 'description':'PLTETo1', 'sequence':'TCCCTATCAGTGATAGAGATTGACATCCCTATCAGTGATAGAGATACTGAGCACATCAGCAGGACGCACTGACC'},
+{'id':'apFAB4', 'type':"promoter", 'description':'galP1', 'sequence':'ATTCCACTAATTTATTCCATGTCACACTTTTCGCATCTTTGTTATGCTATGGTTATTTCATACCATAA'},
+{'id':'apFAB5', 'type':"promoter", 'description':'lacUV5', 'sequence':'CCCCAGGCTTTACACTTTATGCTTCCGGCTCGTATAATGTGTGGAATTGTGAG'},
+{'id':'apFAB7', 'type':"promoter", 'description':'pLlacO1', 'sequence':'ATAAATGTGAGCGGATAACAATTGACATTGTGAGCGGATAACAAGATACTGAGCACATCAGCAGGACGCACTGACC'},
+{'id':'apFAB8', 'type':"promoter", 'description':'pLux', 'sequence':'ACCTGTAGGATCGTACAGGTTTACGCAAGAAAATGGTTTGTTATAGTCGAATAAA'},
+{'id':'apFAB9', 'type':"promoter", 'description':'pT7A1', 'sequence':'ATTTAAAATTTATCAAAAAGAGTATTGACTTAAAGTCTAACCTATAGGATACTTACAGCCATCGAGAG'},
+{'id':'apFAB10', 'type':"promoter", 'description':'pTac', 'sequence':'TTGACAATTAATCATCCGGCTCGTATAATGTGTGGAATTGTGAG'},
+{'id':'apFAB11', 'type':"promoter", 'description':'pTet', 'sequence':'TAATTCCTAATTTTTGTTGACACTCTATCGTTGATAGAGTTATTTTACCACTCCCTATCAGTGATAGAGAAAA'},
+{'id':'apFAB12', 'type':"promoter", 'description':'pminor', 'sequence':'GTGACCCAATAATGTGGGATAACATTGAAAAGATTAAAGAAATATGGGAAAACTCTGGAAAATCCGGG'},
+{'id':'apFAB13', 'type':"promoter", 'description':'pTrp', 'sequence':'AATGAGCTGTTGACAATTAATCATCGAACTAGTTAACTAGTACGCA'},
+{'id':'apFAB14', 'type':"null promoter", 'description':'Nopromoter (tac spacer)', 'sequence':'ATTAATCATCCG'},
+{'id':'apFAB28', 'type':"null RBS", 'description':'DeadRBS', 'sequence':'CACCATACACTG'},
+{'id':'apFAB15', 'type':"5' UTR", 'description':'Anderson_RBS', 'sequence':'TCTAGAGAAAGAGGGGACAAACTAGT'},
+{'id':'apFAB16', 'type':"5' UTR", 'description':'Bujard_RBS', 'sequence':'GAATTCATTAAAGAGGAGAAAGGTACC'},
+{'id':'apFAB17', 'type':"5' UTR", 'description':'B0030_RBS', 'sequence':'ATTAAAGAGGAGAAA'},
+{'id':'apFAB19', 'type':"5' UTR", 'description':'B0032_RBS', 'sequence':'TCACACAGGAAAG'},
+{'id':'apFAB21', 'type':"5' UTR", 'description':'B0034_RBS', 'sequence':'AAAGAGGAGAAA'},
+{'id':'apFAB22', 'type':"5' UTR", 'description':'GSG_RBS', 'sequence':'TAAGGAGGTGACAAT'},
+{'id':'apFAB23', 'type':"5' UTR", 'description':'GSGV_RBS', 'sequence':'GCTCTTTAACAATTTATCATAAGGAGGTGACAAT'},
+{'id':'apFAB24', 'type':"5' UTR", 'description':'Invitrogen_RBS', 'sequence':'AAAATTAAGAGGTATATATTA'},
+{'id':'apFAB25', 'type':"5' UTR", 'description':'JBEI_RBS', 'sequence':'GAATTCAAAAGATCTTTTAAGAAGGAGATATACAT'},
+{'id':'apFAB26', 'type':"5' UTR", 'description':'Plotkin_RBS', 'sequence':'TGGATCCAAGAAGGAGATATAACC'},
+{'id':'apFAB27', 'type':"5' UTR", 'description':'Alon_RBS', 'sequence':'GGATCCTCTAGATTTAAGAAGGAGATATACAT'}
+]}
