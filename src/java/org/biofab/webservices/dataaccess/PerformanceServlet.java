@@ -22,8 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name="PerformanceServlet", urlPatterns={"/performance/*"})
 public class PerformanceServlet extends DataAccessServlet
 {
-
-    //private String model_package_name = "org.biofab.model";
     Connection connection = null;
 
     @Override
@@ -66,8 +64,6 @@ public class PerformanceServlet extends DataAccessServlet
                    this.textSuccess(response, responseString);
                 }
 
-                connection.close();
-
             }
             catch (SQLException ex)
             {
@@ -77,6 +73,31 @@ public class PerformanceServlet extends DataAccessServlet
                     {
                         jsonError(response, "Error while fetching data: " + ex.getMessage());
 
+                    }
+                    else
+                    {
+                        textError(response, "Error while fetching data: " + ex.getMessage());
+                    }
+                }
+            }
+            finally
+            {
+                try
+                {
+                    connection.close();
+                }
+                catch (SQLException ex)
+                {
+                    if(format != null && format.length() > 0)
+                    {
+                        if(format.equalsIgnoreCase("json"))
+                        {
+                            jsonError(response, "Error while fetching data: " + ex.getMessage());
+                        }
+                        else
+                        {
+                            textError(response, "Error while fetching data: " + ex.getMessage());
+                        }
                     }
                     else
                     {

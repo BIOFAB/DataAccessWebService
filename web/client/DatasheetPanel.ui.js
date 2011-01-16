@@ -44,34 +44,34 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                                 }
                             ]
                         }
-                    },
-                    {
-                        xtype: 'panel',
-                        title: 'Performance',
-                        layout: 'vbox',
-                        ref: '../performancePanel',
-                        tbar: {
-                            xtype: 'toolbar',
-                            ref: '../../performPanelToolbar',
-                            items: [
-                                {
-                                    xtype: 'button',
-                                    text: 'CSV',
-                                    ref: '../../../performPanelCSVButton',
-                                    id: 'performancePanelCSVButton'
-                                },
-                                {
-                                    xtype: 'tbfill'
-                                },
-                                {
-                                    xtype: 'tbtext',
-                                    text: 'Fetching Data...',
-                                    hidden: true,
-                                    ref: '../../../performPanelText'
-                                }
-                            ]
-                        }
                     }
+//                    {
+//                        xtype: 'panel',
+//                        title: 'Performance',
+//                        layout: 'vbox',
+//                        ref: '../performancePanel',
+//                        tbar: {
+//                            xtype: 'toolbar',
+//                            ref: '../../performPanelToolbar',
+//                            items: [
+//                                {
+//                                    xtype: 'button',
+//                                    text: 'CSV',
+//                                    ref: '../../../performPanelCSVButton',
+//                                    id: 'performancePanelCSVButton'
+//                                },
+//                                {
+//                                    xtype: 'tbfill'
+//                                },
+//                                {
+//                                    xtype: 'tbtext',
+//                                    text: 'Fetching Data...',
+//                                    hidden: true,
+//                                    ref: '../../../performPanelText'
+//                                }
+//                            ]
+//                        }
+//                    }
                 ]
             }
         ];

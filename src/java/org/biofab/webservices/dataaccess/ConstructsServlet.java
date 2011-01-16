@@ -64,8 +64,6 @@ public class ConstructsServlet extends DataAccessServlet
                    this.textSuccess(response, responseString);
                 }
 
-                connection.close();
-
             }
             catch (SQLException ex)
             {
@@ -75,6 +73,31 @@ public class ConstructsServlet extends DataAccessServlet
                     {
                         jsonError(response, "Error while fetching data: " + ex.getMessage());
 
+                    }
+                    else
+                    {
+                        textError(response, "Error while fetching data: " + ex.getMessage());
+                    }
+                }
+            }
+            finally
+            {
+                try
+                {
+                    connection.close();
+                }
+                catch (SQLException ex)
+                {
+                    if(format != null && format.length() > 0)
+                    {
+                        if(format.equalsIgnoreCase("json"))
+                        {
+                            jsonError(response, "Error while fetching data: " + ex.getMessage());
+                        }
+                        else
+                        {
+                            textError(response, "Error while fetching data: " + ex.getMessage());
+                        }
                     }
                     else
                     {

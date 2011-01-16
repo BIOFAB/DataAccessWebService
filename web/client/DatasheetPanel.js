@@ -10,7 +10,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         DatasheetPanel.superclass.initComponent.call(this);
 
         this.designPanelGenbankButton.setHandler(this.designPanelGenbankButtonClickHandler, this);
-        this.performPanelCSVButton.setHandler(this.performPanelCSVButtonClickHandler, this);
+        //this.performPanelCSVButton.setHandler(this.performPanelCSVButtonClickHandler, this);
     },
 
     setComponentID: function(componentID)
@@ -18,7 +18,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
             this.componentID = componentID;
             this.setTitle(componentID);
             this.fetchDesign(componentID);
-            this.fetchPerformance(componentID);
+            //this.fetchPerformance(componentID);
     },
 
     fetchDesign:function(componentID)
@@ -78,7 +78,12 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
 
                    }
         });
-        
+
+//        var displayField = new Ext.form.DisplayField();
+//        displayField.setValue('Under development...')
+//
+//        this.performancePanel.add(displayField);
+
         this.performancePanel.add(panel);
         this.performancePanel.doLayout();
     },
