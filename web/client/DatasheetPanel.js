@@ -1,5 +1,7 @@
 /*
+ *
  * File: DatasheetPanel.js
+ * 
  */
 
 DatasheetPanel = Ext.extend(DatasheetPanelUi,{
@@ -10,7 +12,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         DatasheetPanel.superclass.initComponent.call(this);
 
         this.designPanelGenbankButton.setHandler(this.designPanelGenbankButtonClickHandler, this);
-        //this.performPanelCSVButton.setHandler(this.performPanelCSVButtonClickHandler, this);
+        this.performPanelCSVButton.setHandler(this.performPanelCSVButtonClickHandler, this);
     },
 
     setComponentID: function(componentID)
@@ -18,7 +20,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
             this.componentID = componentID;
             this.setTitle(componentID);
             this.fetchDesign(componentID);
-            //this.fetchPerformance(componentID);
+            this.fetchPerformance(componentID);
     },
 
     fetchDesign:function(componentID)

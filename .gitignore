@@ -1,9 +1,11 @@
 # Emacs backup files #
 ######################
+
 *~
 
 # Compiled source #
 ###################
+
 *.com
 *.class
 *.dll
@@ -13,6 +15,7 @@
 
 # Packages #
 ############
+
 # it's better to unpack these files and commit the raw source
 # git has its own built in compression methods
 *.7z
@@ -25,7 +28,7 @@
 # in order to make hacking on our projects a less painful process
 # otherwise people will have to go to several different locations
 # and download/compile the needed jar files and then go resolve
-# the "mising library reference" issues in netbeans
+# the "missing library reference" issues in netbeans
 # If we don't want to include these libraries, then we should
 # at least list the exact libraries and download locations
 # in the README file.
@@ -39,12 +42,14 @@
 
 # Logs and databases #
 ######################
+
 *.log
 *.sql
 *.sqlite
 
 # OS generated files #
 ######################
+
 .DS_Store
 ehthumbs.db
 Icon?
@@ -52,6 +57,7 @@ Thumbs.db
 
 # Other #
 #########
+
 *.war
 *.pyc
 
