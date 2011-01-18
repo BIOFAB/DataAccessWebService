@@ -7,9 +7,7 @@ package org.biofab.webservices.dataaccess;
 
 
 import java.io.IOException;
-import java.lang.StringBuilder;
 import java.sql.SQLException;
-import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -22,8 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name="PerformanceServlet", urlPatterns={"/performance/*"})
 public class PerformanceServlet extends DataAccessServlet
 {
-    Connection connection = null;
-
     @Override
     public void init()
     {
@@ -49,8 +45,8 @@ public class PerformanceServlet extends DataAccessServlet
         {
             try
             {
-                connection = DriverManager.getConnection(_jdbcDriver, _user, _password);
-                statement = connection.createStatement();
+                _connection = DriverManager.getConnection(_jdbcDriver, _user, _password);
+                statement = _connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT  plate_raw_measurement.\"time\", plate_raw_measurement.a1 FROM plate_raw_measurement WHERE plate_raw_measurement.plate_read_id = 1;");
 
                 if(format.equalsIgnoreCase("json"))
@@ -84,7 +80,7 @@ public class PerformanceServlet extends DataAccessServlet
             {
                 try
                 {
-                    connection.close();
+                    _connection.close();
                 }
                 catch (SQLException ex)
                 {

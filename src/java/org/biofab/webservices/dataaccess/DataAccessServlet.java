@@ -9,6 +9,8 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,10 +21,11 @@ import org.biofab.webservices.protocol.JSONResponse;
 
 public class DataAccessServlet extends HttpServlet
 {
-    //String _jdbcDriver = "jdbc:postgresql://localhost:5432/BIOFAB";
-    String _jdbcDriver = "jdbc:postgresql://localhost:5432/biofab";
-    String _user = "biofab";
-    String _password = "fiobab";
+     String      _jdbcDriver = "jdbc:postgresql://localhost:5432/BIOFAB";
+  //  String      _jdbcDriver = "jdbc:postgresql://localhost:5432/biofab";
+    String      _user = "biofab";
+    String      _password = "fiobab";
+    Connection  _connection = null;
 
 
     @Override

@@ -20,9 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name="ConstructsServlet", urlPatterns={"/constructs/*"})
 public class ConstructsServlet extends DataAccessServlet
 {
-    //private String model_package_name = "org.biofab.model";
-    Connection connection = null;
-
     @Override
     public void init()
     {
@@ -48,8 +45,8 @@ public class ConstructsServlet extends DataAccessServlet
         {
             try
             {
-                connection = DriverManager.getConnection(_jdbcDriver, _user, _password);
-                statement = connection.createStatement();
+                _connection = DriverManager.getConnection(_jdbcDriver, _user, _password);
+                statement = _connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT pilot_project_construct.id,pilot_project_construct.description,pilot_project_construct.mid_log_phase_fluorescence,pilot_project_construct.chassis,pilot_project_construct.media FROM pilot_project_construct ORDER BY pilot_project_construct.mid_log_phase_fluorescence DESC");
 
                 if(format.equalsIgnoreCase("json"))
@@ -83,7 +80,7 @@ public class ConstructsServlet extends DataAccessServlet
             {
                 try
                 {
-                    connection.close();
+                    _connection.close();
                 }
                 catch (SQLException ex)
                 {

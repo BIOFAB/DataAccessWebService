@@ -7,7 +7,6 @@ package org.biofab.webservices.dataaccess;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -21,8 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name="AnnotatedPartsServlet", urlPatterns={"/annotatedparts/*"})
 public class AnnotatedPartsServlet extends DataAccessServlet
 {
-    Connection connection = null;
-
     @Override
     public void init()
     {
@@ -48,8 +45,8 @@ public class AnnotatedPartsServlet extends DataAccessServlet
         {
             try
             {
-                connection = DriverManager.getConnection(_jdbcDriver, _user, _password);
-                statement = connection.createStatement();
+                _connection = DriverManager.getConnection(_jdbcDriver, _user, _password);
+                statement = _connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT annotated_part.biofab_id, feature.biofab_type, feature.description, feature.seq FROM annotated_part, feature WHERE annotated_part.feature_id=feature.id ORDER BY feature.biofab_type DESC, annotated_part.id ASC;");
 
                 if(format.equalsIgnoreCase("json"))
@@ -83,7 +80,7 @@ public class AnnotatedPartsServlet extends DataAccessServlet
             {
                 try
                 {
-                    connection.close();
+                    _connection.close();
                 } 
                 catch (SQLException ex)
                 {
