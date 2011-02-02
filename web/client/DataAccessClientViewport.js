@@ -27,8 +27,8 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 	this.constructStore = new ConstructStore();
 	//this.performanceStore = new PerformanceStore();
 
-        this.partsGridCSVButton.setHandler(this.partsGridCSVButtonClickHandler, this);
-        this.constructsGridCSVButton.setHandler(this.constructsGridCSVButtonClickHandler, this);
+        this.partsGridExportButton.setHandler(this.partsGridExportButtonClickHandler, this);
+        this.constructsGridExportButton.setHandler(this.constructsGridExportButtonClickHandler, this);
     },
     
     partsGridRowSelectHandler: function(selectModel, rowIndex, record)
@@ -76,14 +76,14 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 		//TODO Deal with case where the constructs could not be loaded
 	},
 
-        partsGridCSVButtonClickHandler: function(button, event)
+        partsGridExportButtonClickHandler: function(button, event)
         {
             var csvWindow = window.open(WEB_SERVICE_BASE_URL + 'annotatedparts' + "?projectid=1" + "&format=csv","Annotated Parts","width=640,height=480");
             csvWindow.scrollbars.visible = true;
             csvWindow.alert("Use File/Save As in the menu bar to save this document.");
         },
 
-        constructsGridCSVButtonClickHandler: function(button, event)
+        constructsGridExportButtonClickHandler: function(button, event)
         {
             var csvWindow = window.open(WEB_SERVICE_BASE_URL + 'constructs' + "?projectid=1" + "&format=csv","Constructs","width=640,height=480");
             csvWindow.scrollbars.visible = true;
@@ -102,5 +102,6 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
                 datasheetPanel.setComponentID(componentID);
 		var tab = this.infoTabPanel.add(datasheetPanel);
 		this.infoTabPanel.setActiveTab(tab);
+                //tab.renderData();
 	}
 });

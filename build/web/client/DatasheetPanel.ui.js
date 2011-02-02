@@ -26,8 +26,8 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                             items: [
                                 {
                                     xtype: 'button',
-                                    text: 'Genbank',
-                                    ref: '../../../designPanelGenbankButton'
+                                    text: 'Export',
+                                    ref: '../../../designPanelExportButton'
                                 },
                                 {
                                     xtype: 'tbfill'
@@ -44,7 +44,8 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                     {
                         xtype: 'panel',
                         title: 'Performance',
-                        layout: 'vbox',
+                        layout: 'table',
+                        autoscroll: true,
                         ref: '../performancePanel',
                         tbar: {
                             xtype: 'toolbar',
@@ -52,9 +53,8 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                             items: [
                                 {
                                     xtype: 'button',
-                                    text: 'CSV',
-                                    ref: '../../../performPanelCSVButton',
-                                    id: 'performancePanelCSVButton'
+                                    text: 'Export',
+                                    ref: '../../../performPanelExportButton'
                                 },
                                 {
                                     xtype: 'tbfill'
@@ -66,7 +66,52 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                                     ref: '../../../performPanelText'
                                 }
                             ]
-                        }
+                        },
+                        layoutConfig:{columns: 2},
+                        items:[
+                                {
+                                    xtype:'panel',
+                                    title: 'Temporal Gene Expression  (Under Development)',
+                                    layout: 'auto',
+                                    width: 500,
+                                    height: 300,
+                                    items:[
+                                            {
+                                              xtype:'container',
+                                              ref: '../../../temporalPlotContainer',
+                                              autoEl: 'div',
+                                              layout: 'auto'
+                                            }
+                                    ]
+                                },
+                                {
+                                    xtype:'panel',
+                                    title: 'Data Acquisition Information',
+                                    width: 300,
+                                    height: 300
+                                },
+                                {
+                                    xtype:'panel',
+                                    title: 'Gene Expression per Cell  (Under Development)',
+                                    width: 500,
+                                    height: 300,
+                                    items:[
+                                            {
+                                              xtype:'container',
+                                              ref: '../../../histogramContainer',
+                                              autoEl: 'div',
+                                              layout: 'auto'
+                                              
+                                            }
+                                    ]
+                                },
+                                {
+                                    xtype:'panel',
+                                    title: 'Data Acquisition Information',
+                                    width: 300,
+                                    height: 300
+                                }
+                        ]
                     }
                 ]
             }

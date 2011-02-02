@@ -6,13 +6,17 @@
 
 DatasheetPanel = Ext.extend(DatasheetPanelUi,{
     componentID: null,
+    timeplot: null,
+    resizeTimerID: null,
 
     initComponent: function()
     {
         DatasheetPanel.superclass.initComponent.call(this);
 
-        this.designPanelGenbankButton.setHandler(this.designPanelGenbankButtonClickHandler, this);
-        this.performPanelCSVButton.setHandler(this.performPanelCSVButtonClickHandler, this);
+        this.designPanelExportButton.setHandler(this.designPanelExportButtonClickHandler, this);
+        this.performPanelExportButton.setHandler(this.performPanelExportButtonClickHandler, this);
+        this.temporalPlotContainer.on('afterrender', this.temporalPlotContainerAfterRenderHandler, this);
+        this.histogramContainer.on('afterrender', this.histogramContainerAfterRenderHandler, this);
     },
 
     setComponentID: function(componentID)
@@ -20,7 +24,6 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
             this.componentID = componentID;
             this.setTitle(componentID);
             this.fetchDesign(componentID);
-            this.fetchPerformance(componentID);
     },
 
     fetchDesign:function(componentID)
@@ -39,50 +42,81 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
             });
     },
 
-    fetchPerformance:function(componentID)
+    temporalPlotContainerAfterRenderHandler:function(component)
     {
-        var panel = new Ext.canvasXpress({
-            renderTo: this.performancePanel.body,
-            showExampleData: false,
-            imgDir: 'lib/icons/',
-            border: false,
-            floating: false,
-            shadow: false,
-            data: { 
-                    y: {
-                        vars: ['GFP'],
-                        desc: ['Plate Reader Value'],
-                        smps: ['0:08:42','0:18:42','0:28:42','0:38:42','0:48:42','0:58:42','1:08:42','1:18:42','1:28:42','1:38:42','1:48:42','1:58:42','2:08:42','2:18:42','2:28:42','2:38:42','2:48:42','2:58:42','3:08:42','3:18:42','3:28:42','3:38:42','3:48:42','3:58:42','4:08:42','4:18:42','4:28:42','4:38:42','4:48:42','4:58:42','5:08:42'],
-                        data: [[3,1,6,8,11,1,9,9,14,12,17,18,20,30,37,45,63,79,85,102,121,149,183,212,237,247,257,258,251,259,256]]
-                      }
-                   },
-           options:{graphType: 'Line',
-                    animationType: 'grow',
-                    showAnimation: true,
-                    isGraphTime: true,
-                    timeFormat: 'isoTime',
-                    xAxisTitle: 'Time',
-                    xAxisShow: true,
-                    graphOrientation: 'vertical',
-                    foreground: 'rgb(0,0,0)',
-                    background: 'rgb(255,255,255)',
-                    varLabelColor: 'rgb(0,0,0)',
-                    axisTickColor: 'rgb(0,0,0)',
-                    autoExtend: true,
-                    showSampleNames: true,
-                    showVariableNames: true,
-                    debug: true,
-                    margin: 5,
-                    legendPosition: 'right',
-                    showErrorBars: false,
-                    timeTicks: 31,
-                    xAxisValues: ['0:08:42','0:18:42','0:28:42','0:38:42','0:48:42','0:58:42','1:08:42','1:18:42','1:28:42','1:38:42','1:48:42','1:58:42','2:08:42','2:18:42','2:28:42','2:38:42','2:48:42','2:58:42','3:08:42','3:18:42','3:28:42','3:38:42','3:48:42','3:58:42','4:08:42','4:18:42','4:28:42','4:38:42','4:48:42','4:58:42','5:08:42']
+        var eventSource = new Timeplot.DefaultEventSource();
+        var red = new Timeplot.Color('#B9121B');
 
-                   }
-        });
+        var plotInfo = [Timeplot.createPlotInfo({
+                id: "plot1",
+                dataSource: new Timeplot.ColumnSource(eventSource,1),
+                valueGeometry: new Timeplot.DefaultValueGeometry({
+                    gridColor: "#000000",
+                    axisLabelsPlacement: "left",
+                    min: 0
+                }),
+                timeGeometry: new Timeplot.DefaultTimeGeometry({
+                    gridColor: "#000000",
+                    axisLabelsPlacement: "top"
+                }),
+                lineColor: "#ff0000",
+                fillColor: "#cc8080",
+                showValues: true,
+                dotColor: red
+            })];
 
-        this.performancePanel.add(panel);
-        this.performancePanel.doLayout();
+        var element = component.getEl();
+
+        this.timeplot = Timeplot.create(element.dom, plotInfo);
+        this.timeplot.loadText("data/timeseries.csv", ",", eventSource);
+    },
+
+    histogramContainerAfterRenderHandler: function(component)
+    {
+      elementID = component.getId();
+
+      var store = new Ext.data.JsonStore({
+          xtype: 'jsonstore',
+          root: 'histogram',
+          autoload: true,
+          url: 'data/histogram.json',
+          fields:[
+              {name: 'bin', mapping: 'bin'},
+              {name: 'freq', mapping: 'freq'}
+          ]
+      });
+
+        store.load();
+
+      var series = [
+          {
+              yField:'freq',
+              displayName: 'Number of Cells',
+              style:{
+                  fillColor: 0xFFAAAA,
+                  borderColor: 0xAA3333,
+                  lineColor: 0xAA3333,
+                  size: 35
+              }
+          }
+      ]
+
+      var extraStyle ={
+          yAxis: {titleRotation: -90}
+      }
+
+      var chart = {
+          xtype: 'columnchart',
+          store: store,
+          xField: 'bin',
+          extraStyle: extraStyle,
+          series: series,
+          xAxis: new Ext.chart.CategoryAxis({title: 'Fluorescence'}),
+          yAxis: new Ext.chart.NumericAxis({title: 'Number of Cells'})
+      };
+
+      component.add(chart);
+      component.doLayout();
     },
 
     fetchDesignResultHandler: function(response, opts)
@@ -105,17 +139,17 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
             Ext.Msg.alert('Fetch Design', 'There was an error while attempting to fetch the design.\n' + 'Error: ' + response.responseText);
     },
 
-    designPanelGenbankButtonClickHandler: function(button, event)
+    designPanelExportButtonClickHandler: function(button, event)
     {
         var genbankWindow = window.open(WEB_SERVICE_BASE_URL + 'design' + "?id=" + this.componentID + "&format=genbank","Genbank File for " + this.componentID,"width=640,height=480");
         genbankWindow.alert("Use File/Save As in the menu bar to save this document.");
         genbankWindow.scrollbars.visible = true;
     },
 
-    performPanelCSVButtonClickHandler: function(button, event)
+    performPanelExportButtonClickHandler: function(button, event)
     {
-        var csvWindow = window.open(WEB_SERVICE_BASE_URL + 'performance' + "?constructid=" + this.componentID + "&format=csv","CSV File for " + this.componentID,"width=640,height=480");
-        csvWindow.scrollbars.visible = true;
-        csvWindow.alert("Use File/Save As in the menu bar to save this document.");
+        var expWindow = window.open(WEB_SERVICE_BASE_URL + 'performance' + "?constructid=" + this.componentID + "&format=csv","CSV File for " + this.componentID,"width=640,height=480");
+        expWindow.scrollbars.visible = true;
+        expWindow.alert("Use File/Save As in the menu bar to save this document.");
     }
 });

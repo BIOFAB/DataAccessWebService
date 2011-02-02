@@ -4,13 +4,14 @@
     <title>BIOFAB Data Access Client</title>
     <link rel="stylesheet" type="text/css" href="ext-3.3.0/resources/css/ext-all.css"/>
     <link rel="stylesheet" type="text/css" href="ext-3.3.0/resources/css/xtheme-gray.css"/>
-    <script type="text/javascript">
-        var WEB_SERVICE_BASE_URL = '../'
-    </script>
     <script type="text/javascript" src="ext-3.3.0/adapter/ext/ext-base.js"></script>
     <script type="text/javascript" src="ext-3.3.0/ext-all-debug.js"></script>
-    <script type="text/javascript" src="lib/canvasXpress.min.js"></script>
-    <script type="text/javascript" src="lib/ext-canvasXpress.js"></script>
+    <script type="text/javascript">
+        var WEB_SERVICE_BASE_URL = '../';
+        Ext.BLANK_IMAGE_URL = 'ext-3.3.0/resources/images/default/s.gif';
+        Ext.chart.Chart.CHART_URL = 'ext-3.3.0/resources/charts.swf';
+    </script>
+    <script type="text/javascript" src="http://api.simile-widgets.org/timeplot/1.1/timeplot-api.js"></script>
     <script type="text/javascript" src="DataAccessClientViewport.ui.js"></script>
     <script type="text/javascript" src="DataAccessClientViewport.js"></script>
     <script type="text/javascript" src="DatasheetPanel.ui.js"></script>
@@ -29,5 +30,6 @@
 	    });
     </script>
 </head>
-<body></body>
+<body>
+</body>
 </html>
