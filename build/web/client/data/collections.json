@@ -1,0 +1,27 @@
+/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+{
+    "collections": [
+        {
+            'id': 'cFAB1',
+            'name': 'Pilot Project',
+            'version': '1.0',
+            'description': 'A description for Pilot Project'
+        },
+        {
+            'id': 'cFAB2',
+            'name': 'E. coli Central Dogma',
+            'version': '1.0',
+            'description': 'A description for E. coli Central Dogma (E. coli C-Dog) collection.'
+        },
+        {
+            'id': 'cFAB3',
+            'name': 'Promoter Library',
+            'version': '1.0',
+            'description': 'A description for Promoter Library.'
+        }
+    ]
+}

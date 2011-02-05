@@ -14,7 +14,10 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
     initComponent: function()
     {
         DataAccessClientViewport.superclass.initComponent.call(this);
-        
+
+        var collectionsGridSelectionModel = this.constructsGridPanel.getSelectionModel();
+	collectionsGridSelectionModel.on('rowselect', this.collectionsGridRowSelectHandler, this);
+
         var constructsGridSelectionModel = this.constructsGridPanel.getSelectionModel();
 	constructsGridSelectionModel.on('rowselect', this.constructsGridRowSelectHandler, this);
 		
@@ -29,6 +32,11 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 
         this.partsGridExportButton.setHandler(this.partsGridExportButtonClickHandler, this);
         this.constructsGridExportButton.setHandler(this.constructsGridExportButtonClickHandler, this);
+    },
+
+    collectionsGridRowSelectHandler: function(selectModel, rowIndex, record)
+    {
+
     },
     
     partsGridRowSelectHandler: function(selectModel, rowIndex, record)
@@ -61,7 +69,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
     	this.constructsGridPanel.setTitle('Constructs with ' + partID);
 	},
 	
-    constructsGridRowSelectHandler: function(selectModel, rowIndex, record)
+        constructsGridRowSelectHandler: function(selectModel, rowIndex, record)
 	{
 	    var id = record.get("id");
 	    this.showDatasheet(id);
