@@ -31,6 +31,7 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                         split: true,
                         columnLines: true,
                         stripeRows: true,
+                        autoExpandColumn: 2,
                         ref: '../partsGridPanel',
                         id: 'partsGridPanel',
                         selModel: new Ext.grid.RowSelectionModel({

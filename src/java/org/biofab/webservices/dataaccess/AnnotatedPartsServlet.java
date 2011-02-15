@@ -47,7 +47,7 @@ public class AnnotatedPartsServlet extends DataAccessServlet
             {
                 _connection = DriverManager.getConnection(_jdbcDriver, _user, _password);
                 statement = _connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT annotated_part.biofab_id, feature.biofab_type, feature.description, feature.seq FROM annotated_part, feature WHERE annotated_part.feature_id=feature.id ORDER BY feature.biofab_type DESC, annotated_part.id ASC;");
+                ResultSet resultSet = statement.executeQuery("SELECT annotated_part.biofab_id, feature.biofab_type, feature.description, feature.dna_sequence FROM annotated_part, feature WHERE annotated_part.feature_id=feature.id ORDER BY feature.biofab_type DESC, annotated_part.id ASC;");
 
                 if(format.equalsIgnoreCase("json"))
                 {
@@ -133,7 +133,7 @@ public class AnnotatedPartsServlet extends DataAccessServlet
             String id = resultSet.getString("biofab_id");
             String type = resultSet.getString("biofab_type");
             String description = resultSet.getString("description");
-            String sequence = resultSet.getString("seq");
+            String sequence = resultSet.getString("dna_sequence");
 
             responseText.append(id);
             responseText.append(",");
@@ -157,7 +157,7 @@ public class AnnotatedPartsServlet extends DataAccessServlet
             String id = resultSet.getString("biofab_id");
             String type = resultSet.getString("biofab_type");
             String description = resultSet.getString("description");
-            String sequence = resultSet.getString("seq");
+            String sequence = resultSet.getString("dna_sequence");
 
             responseText.append("{'id':'");
             responseText.append(id);
