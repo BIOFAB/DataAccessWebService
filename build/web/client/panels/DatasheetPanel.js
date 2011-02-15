@@ -30,7 +30,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
     {
         this.designPanelText.setVisible(true);
             Ext.Ajax.request({
-                       url: WEB_SERVICE_BASE_URL + 'design',
+                       url: WEB_SERVICE_BASE_URL + 'construct/design',
                        method: "GET",
                        success: this.fetchDesignResultHandler,
                        failure: this.fetchDesignErrorHandler,
@@ -73,7 +73,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
 
     histogramContainerAfterRenderHandler: function(component)
     {
-      elementID = component.getId();
+      var elementID = component.getId();
 
       var store = new Ext.data.JsonStore({
           xtype: 'jsonstore',

@@ -37,17 +37,17 @@ public class ConstructsServlet extends DataAccessServlet
     throws ServletException, IOException
     {
         Statement statement = null;
-        String projectID = request.getParameter("projectid");
+        String collectionID = request.getParameter("collectionid");
         String format = request.getParameter("format");
         String responseString = null;
 
-        if(projectID != null && projectID.length() > 0)
+        if(collectionID != null && collectionID.length() > 0)
         {
             try
             {
                 _connection = DriverManager.getConnection(_jdbcDriver, _user, _password);
                 statement = _connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT pilot_project_construct.id,pilot_project_construct.description,pilot_project_construct.mid_log_phase_fluorescence,pilot_project_construct.chassis,pilot_project_construct.media FROM pilot_project_construct ORDER BY pilot_project_construct.mid_log_phase_fluorescence DESC");
+                ResultSet resultSet = statement.executeQuery("SELECT * FROM new_pilot_project_construct ORDER BY new_pilot_project_construct.fluorescence_over_od_mean DESC");
 
                 if(format.equalsIgnoreCase("json"))
                 {
@@ -104,10 +104,8 @@ public class ConstructsServlet extends DataAccessServlet
         }
         else
         {
-            textError(response, "The BIOFAB Data Access Web Service requires a project ID to provide annotated parts. Please review the application interface documentation.");
+            textError(response, "The BIOFAB Data Access Web Service requires a collection ID to provide construct information. Please review the application interface documentation.");
         }
-
-
     }
 
     @Override
@@ -127,25 +125,31 @@ public class ConstructsServlet extends DataAccessServlet
 
     protected String generateCSV(ResultSet resultSet) throws SQLException
     {
-        StringBuilder responseText = new StringBuilder("id,description,mid_log_phase_fluorescence,chassis,media\n");
+        StringBuilder responseText = new StringBuilder("id,biofab_id,description,fluorescence_over_od_mean,fluorescence_over_od_sd,fluorescence_per_cell_mean,fluorescence_per_cell_sd\n");
 
         while (resultSet.next())
         {
             String id = resultSet.getString("id");
+            String biofab_id = resultSet.getString("biofab_id");
             String description = resultSet.getString("description");
-            String fluorescence = resultSet.getString("mid_log_phase_fluorescence");
-            String chassis = resultSet.getString("chassis");
-            String media = resultSet.getString("media");
+            String fluorescenceODMean = resultSet.getString("fluorescence_over_od_mean");
+            String fluorescenceODSD = resultSet.getString("fluorescence_over_od_sd");
+            String fluorescenceCellMean = resultSet.getString("fluorescence_per_cell_mean");
+            String fluorescenceCellSD = resultSet.getString("fluorescence_per_cell_sd");
 
             responseText.append(id);
             responseText.append(",");
+            responseText.append(biofab_id);
+            responseText.append(",");
             responseText.append(description);
             responseText.append(",");
-            responseText.append(fluorescence);
+            responseText.append(fluorescenceODMean);
             responseText.append(",");
-            responseText.append(chassis);
+            responseText.append(fluorescenceODSD);
             responseText.append(",");
-            responseText.append(media);
+            responseText.append(fluorescenceCellMean);
+            responseText.append(",");
+            responseText.append(fluorescenceCellSD);
             responseText.append("\n");
         }
 
@@ -159,33 +163,42 @@ public class ConstructsServlet extends DataAccessServlet
         while (resultSet.next())
         {
             String id = resultSet.getString("id");
+            String biofab_id = resultSet.getString("biofab_id");
             String description = resultSet.getString("description");
-            String fluorescence = resultSet.getString("mid_log_phase_fluorescence");
-            String chassis = resultSet.getString("chassis");
-            String media = resultSet.getString("media");
+            String fluorescenceODMean = resultSet.getString("fluorescence_over_od_mean");
+            String fluorescenceODSD = resultSet.getString("fluorescence_over_od_sd");
+            String fluorescenceCellMean = resultSet.getString("fluorescence_per_cell_mean");
+            String fluorescenceCellSD = resultSet.getString("fluorescence_per_cell_sd");
 
-            responseText.append("{'id':'");
+            responseText.append("{'id':");
             responseText.append(id);
+            responseText.append(", ");
+            responseText.append("'biofab_id':'");
+            responseText.append(biofab_id);
             responseText.append("', ");
             responseText.append("'description':\"");
             responseText.append(description);
             responseText.append("\", ");
-            responseText.append("'mid_log_phase_fluorescence':");
-            responseText.append(fluorescence);
+            responseText.append("'fluorescence_over_od_mean':");
+            responseText.append(fluorescenceODMean);
             responseText.append(", ");
-            responseText.append("'chassis':'");
-            responseText.append(chassis);
-            responseText.append("', 'media':'");
-            responseText.append(media);
+            responseText.append("'fluorescence_over_od_sd':");
+            responseText.append(fluorescenceODSD);
+            responseText.append(", ");
+            responseText.append("'fluorescence_per_cell_mean':");
+            responseText.append(fluorescenceCellMean);
+            responseText.append(", ");
+            responseText.append("'fluorescence_per_cell_sd':");
+            responseText.append(fluorescenceCellSD);
 
             if(resultSet.isLast() == false)
             {
-                responseText.append("'},");
+                responseText.append("},");
                 responseText.append("\n");
             }
             else
             {
-                responseText.append("'}\n]}");
+                responseText.append("}\n]}");
             }
         }
 

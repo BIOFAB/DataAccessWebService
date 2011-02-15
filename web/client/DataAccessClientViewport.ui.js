@@ -13,213 +13,285 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
     initComponent: function() {
         this.items = [
             {
-                xtype: 'tabpanel',
-                activeTab: 0,
+                xtype: 'container',
                 region: 'west',
                 width: 400,
+                layout: 'border',
                 split: true,
-                ref: 'inventoryTabPanel',
-                id: 'inventoryTabPanel',
+                id: 'inventoryContainer',
                 items: [
                     {
-                        xtype: 'panel',
+                        xtype: 'grid',
                         title: 'Collections',
-                        layout: 'border',
-                        items: [
-                            {
-                                xtype: 'grid',
-                                store: 'aCollectionsStore',
-                                region: 'center',
-                                split: true,
-                                height: 200,
-                                autoExpandColumn: 2,
-                                ref: '../../collectionsGridPanel',
-                                id: 'collectionsGridPanel',
-                                selModel: new Ext.grid.RowSelectionModel({
+                        store: 'aCollectionsStore',
+                        region: 'north',
+                        split: true,
+                        height: 150,
+                        autoExpandColumn: 2,
+                        anchor: '100%,33%',
+                        flex: 0.2,
+                        ref: '../collectionsGridPanel',
+                        id: 'collectionsGridPanel',
+                        selModel: new Ext.grid.RowSelectionModel({
 
-                                }),
-                                columns: [
-                                    {
-                                        xtype: 'gridcolumn',
-                                        dataIndex: 'id',
-                                        header: 'Identifier',
-                                        sortable: true,
-                                        width: 60,
-                                        editable: false
-                                    },
-                                    {
-                                        xtype: 'gridcolumn',
-                                        dataIndex: 'name',
-                                        header: 'Name',
-                                        sortable: true,
-                                        width: 150,
-                                        editable: false
-                                    },
-                                    {
-                                        xtype: 'gridcolumn',
-                                        header: 'Version',
-                                        sortable: true,
-                                        editable: false,
-                                        dataIndex: 'version'
-                                    }
-                                ],
-                                tbar: {
-                                    xtype: 'toolbar',
-                                    id: 'collectionsToolbar',
-                                    items: [
-                                        {
-                                            xtype: 'button',
-                                            text: 'Export',
-                                            ref: '../../../../collectionGridExportButton',
-                                            id: 'collectionGridExportButton'
-                                        }
-                                    ]
-                                }
+                        }),
+                        columns: [
+                            {
+                                xtype: 'gridcolumn',
+                                dataIndex: 'id',
+                                header: 'Identifier',
+                                sortable: true,
+                                width: 60,
+                                editable: false
                             },
                             {
-                                xtype: 'panel',
-                                title: 'Collection Description',
-                                region: 'south',
-                                height: 400,
-                                split: true,
-                                layout: 'fit',
-                                items: [
-                                    {
-                                        xtype: 'textarea',
-                                        ref: '../../../collectionDescTextArea',
-                                        id: 'collectionDescTextArea'
-                                    }
-                                ]
+                                xtype: 'gridcolumn',
+                                dataIndex: 'name',
+                                header: 'Name',
+                                sortable: true,
+                                width: 150,
+                                editable: false
+                            },
+                            {
+                                xtype: 'gridcolumn',
+                                header: 'Version',
+                                sortable: true,
+                                editable: false,
+                                dataIndex: 'version'
                             }
-                        ]
+                        ],
+                        tbar: {
+                            xtype: 'toolbar',
+                            id: 'collectionsToolbar',
+                            items: [
+                                {
+                                    xtype: 'tbfill'
+                                },
+                                {
+                                    xtype: 'button',
+                                    text: 'Export',
+                                    ref: '../../../collectionsGridExportButtonRef',
+                                    id: 'collectionsGridExportButton'
+                                }
+                            ]
+                        }
                     },
                     {
                         xtype: 'panel',
-                        title: 'Components',
-                        layout: 'border',
-                        id: 'componentsPanel',
+                        title: 'Parts',
+                        region: 'center',
+                        anchor: '100%, 33%',
+                        layout: 'fit',
+                        flex: 0.4,
+                        height: 300,
+                        split: true,
+                        ref: '../partsPanelRef',
+                        id: 'partsPanel',
                         items: [
                             {
-                                xtype: 'grid',
-                                title: 'Parts',
-                                store: 'partStore',
-                                height: 300,
-                                columnLines: true,
-                                stripeRows: true,
-                                region: 'north',
-                                autoExpandColumn: 2,
-                                ref: '../../partsGridPanel',
-                                id: 'partsGridPanel',
-                                selModel: new Ext.grid.RowSelectionModel({
-                                    singleSelect: true
-                                }),
-                                columns: [
+                                xtype: 'tabpanel',
+                                activeTab: 0,
+                                ref: '../../partsTabPanelRef',
+                                id: 'partsTabPanel',
+                                items: [
                                     {
-                                        xtype: 'gridcolumn',
-                                        dataIndex: 'id',
-                                        header: 'Identifier',
-                                        sortable: true,
-                                        width: 80,
-                                        editable: false
+                                        xtype: 'grid',
+                                        title: 'Promoters',
+                                        store: 'partStore',
+                                        height: 300,
+                                        columnLines: true,
+                                        stripeRows: true,
+                                        autoExpandColumn: 1,
+                                        ref: '../../../promotersGridPanelRef',
+                                        id: 'promotersGridPanel',
+                                        selModel: new Ext.grid.RowSelectionModel({
+                                            singleSelect: true
+                                        }),
+                                        columns: [
+                                            {
+                                                xtype: 'gridcolumn',
+                                                dataIndex: 'id',
+                                                header: 'Identifier',
+                                                sortable: true,
+                                                width: 80,
+                                                editable: false
+                                            },
+                                            {
+                                                xtype: 'gridcolumn',
+                                                header: 'Type',
+                                                sortable: true,
+                                                width: 100,
+                                                dataIndex: 'type'
+                                            },
+                                            {
+                                                xtype: 'gridcolumn',
+                                                header: 'Description',
+                                                sortable: true,
+                                                width: 175,
+                                                dataIndex: 'description'
+                                            }
+                                        ]
                                     },
                                     {
-                                        xtype: 'gridcolumn',
-                                        header: 'Type',
-                                        sortable: true,
-                                        width: 100,
-                                        dataIndex: 'type'
-                                    },
-                                    {
-                                        xtype: 'gridcolumn',
-                                        header: 'Description',
-                                        sortable: true,
-                                        width: 175,
-                                        dataIndex: 'description'
+                                        xtype: 'grid',
+                                        title: '5\' UTR',
+                                        store: 'partStore',
+                                        height: 300,
+                                        columnLines: true,
+                                        stripeRows: true,
+                                        autoExpandColumn: 1,
+                                        ref: '../../../rbsGridPanelRef',
+                                        id: 'rbsGridPanel',
+                                        selModel: new Ext.grid.RowSelectionModel({
+                                            singleSelect: true
+                                        }),
+                                        columns: [
+                                            {
+                                                xtype: 'gridcolumn',
+                                                dataIndex: 'id',
+                                                header: 'Identifier',
+                                                sortable: true,
+                                                width: 80,
+                                                editable: false
+                                            },
+                                            {
+                                                xtype: 'gridcolumn',
+                                                header: 'Type',
+                                                sortable: true,
+                                                width: 100,
+                                                dataIndex: 'type'
+                                            },
+                                            {
+                                                xtype: 'gridcolumn',
+                                                header: 'Description',
+                                                sortable: true,
+                                                width: 175,
+                                                dataIndex: 'description'
+                                            }
+                                        ]
                                     }
-                                ],
-                                tbar: {
-                                    xtype: 'toolbar',
-                                    items: [
-                                        {
-                                            xtype: 'button',
-                                            text: 'Export',
-                                            ref: '../../../../partsGridExportButton',
-                                            id: 'partsGridExportButton'
-                                        }
-                                    ]
+                                ]
+                            }
+                        ],
+                        tbar: {
+                            xtype: 'toolbar',
+                            items: [
+                                {
+                                    xtype: 'tbfill'
+                                },
+                                {
+                                    xtype: 'button',
+                                    text: 'Show All',
+                                    ref: '../../../showAllPartsButtonRef',
+                                    id: 'showAllPartsButton'
+                                },
+                                {
+                                    xtype: 'tbseparator'
+                                },
+                                {
+                                    xtype: 'button',
+                                    text: 'Export',
+                                    ref: '../../../partsGridExportButton',
+                                    id: 'partsGridExportButton'
                                 }
+                            ]
+                        }
+                    },
+                    {
+                        xtype: 'grid',
+                        title: 'Constructs',
+                        store: 'constructDisplayStore',
+                        height: 300,
+                        stripeRows: true,
+                        columnLines: true,
+                        region: 'south',
+                        split: true,
+                        anchor: '100%, 33%',
+                        flex: 0.4,
+                        ref: '../constructsGridPanel',
+                        id: 'constructsGridPanel',
+                        selModel: new Ext.grid.RowSelectionModel({
+                            singleSelect: true
+                        }),
+                        columns: [
+                            {
+                                xtype: 'gridcolumn',
+                                dataIndex: 'biofab_id',
+                                header: 'Identifier',
+                                sortable: true,
+                                width: 100,
+                                editable: false
                             },
                             {
-                                xtype: 'grid',
-                                title: 'Constructs',
-                                store: 'constructDisplayStore',
-                                height: 300,
-                                stripeRows: true,
-                                columnLines: true,
-                                region: 'center',
-                                ref: '../../constructsGridPanel',
-                                id: 'constructsGridPanel',
-                                selModel: new Ext.grid.RowSelectionModel({
-                                    singleSelect: true
-                                }),
-                                columns: [
-                                    {
-                                        xtype: 'gridcolumn',
-                                        dataIndex: 'id',
-                                        header: 'Identifier',
-                                        sortable: true,
-                                        width: 100,
-                                        editable: false
-                                    },
-                                    {
-                                        xtype: 'gridcolumn',
-                                        header: 'Description',
-                                        sortable: true,
-                                        width: 200,
-                                        dataIndex: 'description',
-                                        editable: false
-                                    },
-                                    {
-                                        xtype: 'numbercolumn',
-                                        header: 'Mid Log Phase Fluorescence',
-                                        sortable: true,
-                                        width: 175,
-                                        align: 'left',
-                                        editable: false,
-                                        dataIndex: 'mid_log_phase_fluorescence'
-                                    },
-                                    {
-                                        xtype: 'gridcolumn',
-                                        dataIndex: 'chassis',
-                                        header: 'Strain',
-                                        sortable: true,
-                                        width: 100,
-                                        editable: false
-                                    },
-                                    {
-                                        xtype: 'gridcolumn',
-                                        header: 'Media',
-                                        sortable: true,
-                                        width: 100,
-                                        dataIndex: 'media',
-                                        editable: false
-                                    }
-                                ],
-                                tbar: {
-                                    xtype: 'toolbar',
-                                    ref: '../../../constructsGridToolbar',
-                                    id: 'constructsGridToollbar',
-                                    items: [
-                                        {
-                                            xtype: 'button',
-                                            text: 'Export',
-                                            ref: '../../../../constructsGridExportButton',
-                                            id: 'constructsGridExportButton'
-                                        }
-                                    ]
-                                }
+                                xtype: 'gridcolumn',
+                                header: 'Description',
+                                sortable: true,
+                                width: 200,
+                                dataIndex: 'description',
+                                editable: false
+                            },
+                            {
+                                xtype: 'numbercolumn',
+                                header: 'Mean Mid Log Phase Fluorescence/OD',
+                                sortable: true,
+                                width: 175,
+                                align: 'left',
+                                editable: false,
+                                dataIndex: 'fluorescence_over_od_mean'
+                            },
+                            {
+                                xtype: 'numbercolumn',
+                                header: 'Standard Deviation',
+                                sortable: true,
+                                width: 175,
+                                align: 'left',
+                                editable: false,
+                                dataIndex: 'fluorescence_over_od_sd'
+                            },
+                            {
+                                xtype: 'numbercolumn',
+                                header: 'Mean Fluorescence per Cell',
+                                sortable: true,
+                                width: 175,
+                                align: 'left',
+                                editable: false,
+                                dataIndex: 'fluorescence_per_cell_mean'
+                            },
+                            {
+                                xtype: 'numbercolumn',
+                                header: 'Standard Deviation',
+                                sortable: true,
+                                width: 175,
+                                align: 'left',
+                                editable: false,
+                                dataIndex: 'fluorescence_per_cell_sd'
                             }
-                        ]
+                        ],
+                        tbar: {
+                            xtype: 'toolbar',
+                            ref: '../../constructsGridToolbar',
+                            id: 'constructsGridToollbar',
+                            items: [
+                                {
+                                    xtype: 'tbfill'
+                                },
+                                {
+                                    xtype: 'button',
+                                    text: 'Show All',
+                                    ref: '../../../showAllConstructsButtonRef',
+                                    id: 'showAllConstructsButton'
+                                },
+                                {
+                                    xtype: 'tbseparator'
+                                },
+                                {
+                                    xtype: 'button',
+                                    text: 'Export',
+                                    ref: '../../../constructsGridExportButton',
+                                    id: 'constructsGridExportButton'
+                                }
+                            ]
+                        }
                     }
                 ]
             },
