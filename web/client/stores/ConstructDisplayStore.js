@@ -32,25 +32,29 @@ ConstructDisplayStore = Ext.extend(Ext.data.JsonStore, {
                     type: 'string'
                 },
                 {
-                    name: 'fluorescence_over_od_mean',
+                    name: 'reporter',
+                    type: 'string'
+                },
+                {
+                    name: 'bulk_gene_expression',
                     allowBlank: false,
                     type: 'float',
                     sortDir: 'DESC'
                 },
                 {
-                    name: 'fluorescence_over_od_sd',
+                    name: 'bulk_gene_expression_sd',
                     allowBlank: false,
                     type: 'float',
                     sortDir: 'DESC'
                 },
                 {
-                    name: 'fluorescence_per_cell_mean',
+                    name: 'gene_expression_per_cell',
                     allowBlank: false,
                     type: 'float',
                     sortDir: 'DESC'
                 },
                 {
-                    name: 'fluorescence_per_cell_sd',
+                    name: 'gene_expression_per_cell_sd',
                     allowBlank: false,
                     type: 'float',
                     sortDir: 'DESC'

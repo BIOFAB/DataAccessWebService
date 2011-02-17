@@ -6,17 +6,14 @@ import java.sql.Statement;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
-import org.biojava.bio.BioException;
 
+import org.biojava.bio.BioException;
 import org.biojava.bio.seq.DNATools;
 import org.biojava.bio.seq.Feature;
 import org.biojava.bio.seq.StrandedFeature;
-import org.biojava.bio.symbol.IllegalSymbolException;
 import org.biojava.bio.symbol.RangeLocation;
 
 import org.biojavax.Namespace;
@@ -69,7 +66,7 @@ public class ConstructDesignServlet extends DataAccessServlet
                     
                     try
                     {
-                        features = featuresStatement.executeQuery("SELECT feature.description, feature.genbank_type, design_feature.start, design_feature.stop FROM design_feature, feature WHERE design_feature.design_id = '" + designID + "' AND feature.id = design_feature.feature_id");
+                        features = featuresStatement.executeQuery("SELECT feature.description, feature.genbank_type, design_feature.start, design_feature.stop FROM design_feature, feature WHERE design_feature.design_id = '" + designID + "' AND feature.id = design_feature.feature_id AND feature.display_in_view = TRUE ORDER BY design_feature.start ASC");
                         richSequence = RichSequence.Tools.createRichSequence(constructID, DNATools.createDNA(dnaSequence));
                         addFeatures(richSequence, features);
                         addComment(richSequence, "The genetic constructs used here are taken or composed from available, well known genetic elements.  At this time BIOFAB staff have not yet taken care to define the precise functional boundaries of these genetic elements.  Thus, for example, a part labeled as a \"promoter\" may include sequences encoding all or part of a 5' UTR downstream of a transcription start site. And so on. Part of the mission of the BIOFAB is to define compatible sets of genetic objects with precise and composable boundaries. Such well engineered parts will be noted once available.");
@@ -142,12 +139,21 @@ public class ConstructDesignServlet extends DataAccessServlet
         while (features.next())
         {
             featureType = features.getString("genbank_type");
-            noteType = "label";
             noteValue = features.getString("description");
             start = features.getInt("start");
             stop = features.getInt("stop");
-            
+
+            if(featureType.equalsIgnoreCase("CDS"))
+            {
+                noteType = "gene";
+            }
+            else
+            {
+                noteType = "label";
+            }
+
             SimpleRichAnnotation annotation = new SimpleRichAnnotation();
+            
             annotation.addNote(new SimpleNote(RichObjectFactory.getDefaultOntology().getOrCreateTerm(noteType), noteValue, 0));
             StrandedFeature.Template featureTemplate = new StrandedFeature.Template();
             featureTemplate.annotation = annotation;

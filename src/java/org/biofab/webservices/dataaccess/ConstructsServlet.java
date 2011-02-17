@@ -47,7 +47,7 @@ public class ConstructsServlet extends DataAccessServlet
             {
                 _connection = DriverManager.getConnection(_jdbcDriver, _user, _password);
                 statement = _connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT * FROM new_pilot_project_construct ORDER BY new_pilot_project_construct.fluorescence_over_od_mean DESC");
+                ResultSet resultSet = statement.executeQuery("SELECT * FROM new_pilot_project_construct ORDER BY new_pilot_project_construct.bulk_gene_expression DESC, new_pilot_project_construct.reporter DESC");
 
                 if(format.equalsIgnoreCase("json"))
                 {
@@ -125,17 +125,18 @@ public class ConstructsServlet extends DataAccessServlet
 
     protected String generateCSV(ResultSet resultSet) throws SQLException
     {
-        StringBuilder responseText = new StringBuilder("id,biofab_id,description,fluorescence_over_od_mean,fluorescence_over_od_sd,fluorescence_per_cell_mean,fluorescence_per_cell_sd\n");
+        StringBuilder responseText = new StringBuilder("id,biofab_id,description,reporter,bulk_gene_expression,bulk_gene_expression_sd,gene_expression_per_cell,gene_expression_per_cell_sd\n");
 
         while (resultSet.next())
         {
             String id = resultSet.getString("id");
             String biofab_id = resultSet.getString("biofab_id");
             String description = resultSet.getString("description");
-            String fluorescenceODMean = resultSet.getString("fluorescence_over_od_mean");
-            String fluorescenceODSD = resultSet.getString("fluorescence_over_od_sd");
-            String fluorescenceCellMean = resultSet.getString("fluorescence_per_cell_mean");
-            String fluorescenceCellSD = resultSet.getString("fluorescence_per_cell_sd");
+            String reporter = resultSet.getString("reporter");
+            String bulkGeneExpression = resultSet.getString("bulk_gene_expression");
+            String bulkGeneExpressionSD = resultSet.getString("bulk_gene_expression_sd");
+            String geneExpressionPerCell = resultSet.getString("gene_expression_per_cell");
+            String geneExpressionPerCellSD = resultSet.getString("gene_expression_per_cell_sd");
 
             responseText.append(id);
             responseText.append(",");
@@ -143,13 +144,15 @@ public class ConstructsServlet extends DataAccessServlet
             responseText.append(",");
             responseText.append(description);
             responseText.append(",");
-            responseText.append(fluorescenceODMean);
+            responseText.append(reporter);
             responseText.append(",");
-            responseText.append(fluorescenceODSD);
+            responseText.append(bulkGeneExpression);
             responseText.append(",");
-            responseText.append(fluorescenceCellMean);
+            responseText.append(bulkGeneExpressionSD);
             responseText.append(",");
-            responseText.append(fluorescenceCellSD);
+            responseText.append(geneExpressionPerCell);
+            responseText.append(",");
+            responseText.append(geneExpressionPerCellSD);
             responseText.append("\n");
         }
 
@@ -165,10 +168,11 @@ public class ConstructsServlet extends DataAccessServlet
             String id = resultSet.getString("id");
             String biofab_id = resultSet.getString("biofab_id");
             String description = resultSet.getString("description");
-            String fluorescenceODMean = resultSet.getString("fluorescence_over_od_mean");
-            String fluorescenceODSD = resultSet.getString("fluorescence_over_od_sd");
-            String fluorescenceCellMean = resultSet.getString("fluorescence_per_cell_mean");
-            String fluorescenceCellSD = resultSet.getString("fluorescence_per_cell_sd");
+            String reporter = resultSet.getString("reporter");
+            String bulkGeneExpression = resultSet.getString("bulk_gene_expression");
+            String bulkGeneExpressionSD = resultSet.getString("bulk_gene_expression_sd");
+            String geneExpressionPerCell = resultSet.getString("gene_expression_per_cell");
+            String geneExpressionPerCellSD = resultSet.getString("gene_expression_per_cell_sd");
 
             responseText.append("{'id':");
             responseText.append(id);
@@ -176,20 +180,23 @@ public class ConstructsServlet extends DataAccessServlet
             responseText.append("'biofab_id':'");
             responseText.append(biofab_id);
             responseText.append("', ");
-            responseText.append("'description':\"");
+            responseText.append("'description':'");
             responseText.append(description);
-            responseText.append("\", ");
-            responseText.append("'fluorescence_over_od_mean':");
-            responseText.append(fluorescenceODMean);
+            responseText.append("', ");
+            responseText.append("'reporter':'");
+            responseText.append(reporter);
+            responseText.append("', ");
+            responseText.append("'bulk_gene_expression':");
+            responseText.append(bulkGeneExpression);
             responseText.append(", ");
-            responseText.append("'fluorescence_over_od_sd':");
-            responseText.append(fluorescenceODSD);
+            responseText.append("'bulk_gene_expression_sd':");
+            responseText.append(bulkGeneExpressionSD);
             responseText.append(", ");
-            responseText.append("'fluorescence_per_cell_mean':");
-            responseText.append(fluorescenceCellMean);
+            responseText.append("'gene_expression_per_cell':");
+            responseText.append(geneExpressionPerCell);
             responseText.append(", ");
-            responseText.append("'fluorescence_per_cell_sd':");
-            responseText.append(fluorescenceCellSD);
+            responseText.append("'gene_expression_per_cell_sd':");
+            responseText.append(geneExpressionPerCellSD);
 
             if(resultSet.isLast() == false)
             {

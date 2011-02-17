@@ -15,7 +15,7 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
             {
                 xtype: 'container',
                 region: 'west',
-                width: 400,
+                width: 500,
                 layout: 'border',
                 split: true,
                 id: 'inventoryContainer',
@@ -101,7 +101,7 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                         height: 300,
                                         columnLines: true,
                                         stripeRows: true,
-                                        autoExpandColumn: 1,
+                                        autoExpandColumn: 2,
                                         ref: '../../../promotersGridPanelRef',
                                         id: 'promotersGridPanel',
                                         selModel: new Ext.grid.RowSelectionModel({
@@ -139,7 +139,7 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                         height: 300,
                                         columnLines: true,
                                         stripeRows: true,
-                                        autoExpandColumn: 1,
+                                        autoExpandColumn: 2,
                                         ref: '../../../rbsGridPanelRef',
                                         id: 'rbsGridPanel',
                                         selModel: new Ext.grid.RowSelectionModel({
@@ -231,13 +231,22 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                 editable: false
                             },
                             {
+                                xtype: 'gridcolumn',
+                                header: 'Reporter',
+                                sortable: true,
+                                width: 75,
+                                dataIndex: 'reporter',
+                                editable: false
+                            },
+                            {
                                 xtype: 'numbercolumn',
-                                header: 'Mean Mid Log Phase Fluorescence/OD',
+                                header: 'Bulk Gene Expression',
                                 sortable: true,
                                 width: 175,
                                 align: 'left',
                                 editable: false,
-                                dataIndex: 'fluorescence_over_od_mean'
+                                dataIndex: 'bulk_gene_expression',
+                                format: '0,000'
                             },
                             {
                                 xtype: 'numbercolumn',
@@ -246,16 +255,18 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                 width: 175,
                                 align: 'left',
                                 editable: false,
-                                dataIndex: 'fluorescence_over_od_sd'
+                                dataIndex: 'bulk_gene_expression_sd',
+                                format: '0,000.0'
                             },
                             {
                                 xtype: 'numbercolumn',
-                                header: 'Mean Fluorescence per Cell',
+                                header: 'Gene Expression per Cell',
                                 sortable: true,
                                 width: 175,
                                 align: 'left',
                                 editable: false,
-                                dataIndex: 'fluorescence_per_cell_mean'
+                                dataIndex: 'gene_expression_per_cell',
+                                format: '0,000'
                             },
                             {
                                 xtype: 'numbercolumn',
@@ -264,7 +275,8 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                 width: 175,
                                 align: 'left',
                                 editable: false,
-                                dataIndex: 'fluorescence_per_cell_sd'
+                                dataIndex: 'gene_expression_per_cell_sd',
+                                format: '0,000.0'
                             }
                         ],
                         tbar: {
