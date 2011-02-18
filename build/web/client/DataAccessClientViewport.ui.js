@@ -77,105 +77,44 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                         }
                     },
                     {
-                        xtype: 'panel',
+                        xtype: 'grid',
                         title: 'Parts',
-                        region: 'center',
-                        anchor: '100%, 33%',
-                        layout: 'fit',
-                        flex: 0.4,
+                        store: 'partStore',
                         height: 300,
+                        columnLines: true,
+                        stripeRows: true,
+                        autoExpandColumn: 2,
                         split: true,
-                        ref: '../partsPanelRef',
-                        id: 'partsPanel',
-                        items: [
-                            {
-                                xtype: 'tabpanel',
-                                activeTab: 0,
-                                ref: '../../partsTabPanelRef',
-                                id: 'partsTabPanel',
-                                items: [
-                                    {
-                                        xtype: 'grid',
-                                        title: 'Promoters',
-                                        store: 'partStore',
-                                        height: 300,
-                                        columnLines: true,
-                                        stripeRows: true,
-                                        autoExpandColumn: 2,
-                                        ref: '../../../promotersGridPanelRef',
-                                        id: 'promotersGridPanel',
-                                        selModel: new Ext.grid.RowSelectionModel({
-                                            singleSelect: true
-                                        }),
-                                        columns: [
-                                            {
-                                                xtype: 'gridcolumn',
-                                                dataIndex: 'id',
-                                                header: 'Identifier',
-                                                sortable: true,
-                                                width: 80,
-                                                editable: false
-                                            },
-                                            {
-                                                xtype: 'gridcolumn',
-                                                header: 'Type',
-                                                sortable: true,
-                                                width: 100,
-                                                dataIndex: 'type'
-                                            },
-                                            {
-                                                xtype: 'gridcolumn',
-                                                header: 'Description',
-                                                sortable: true,
-                                                width: 175,
-                                                dataIndex: 'description'
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        xtype: 'grid',
-                                        title: '5\' UTR',
-                                        store: 'partStore',
-                                        height: 300,
-                                        columnLines: true,
-                                        stripeRows: true,
-                                        autoExpandColumn: 2,
-                                        ref: '../../../rbsGridPanelRef',
-                                        id: 'rbsGridPanel',
-                                        selModel: new Ext.grid.RowSelectionModel({
-                                            singleSelect: true
-                                        }),
-                                        columns: [
-                                            {
-                                                xtype: 'gridcolumn',
-                                                dataIndex: 'id',
-                                                header: 'Identifier',
-                                                sortable: true,
-                                                width: 80,
-                                                editable: false
-                                            },
-                                            {
-                                                xtype: 'gridcolumn',
-                                                header: 'Type',
-                                                sortable: true,
-                                                width: 100,
-                                                dataIndex: 'type'
-                                            },
-                                            {
-                                                xtype: 'gridcolumn',
-                                                header: 'Description',
-                                                sortable: true,
-                                                width: 175,
-                                                dataIndex: 'description'
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        ],
+                        region: 'center',
+                        ref: '../partsGridPanelRef',
+                        id: 'partsGridPanel',
                         tbar: {
                             xtype: 'toolbar',
                             items: [
+                                {
+                                    xtype: 'button',
+                                    text: 'Promoters',
+                                    ref: '../../../promotersButtonRef',
+                                    id: 'promotersButton'
+                                },
+                                {
+                                    xtype: 'tbseparator'
+                                },
+                                {
+                                    xtype: 'button',
+                                    text: 'RBS',
+                                    ref: '../../../rbsButtonRef',
+                                    id: 'rbsButton'
+                                },
+                                {
+                                    xtype: 'tbseparator'
+                                },
+                                {
+                                    xtype: 'button',
+                                    text: 'CDS',
+                                    ref: '../../../cdsButtonRef',
+                                    id: 'cdsButton'
+                                },
                                 {
                                     xtype: 'tbfill'
                                 },
@@ -195,7 +134,35 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                     id: 'partsGridExportButton'
                                 }
                             ]
-                        }
+                        },
+                        selModel: new Ext.grid.RowSelectionModel({
+                            singleSelect: true
+                        }),
+                        columns: [
+                            {
+                                xtype: 'gridcolumn',
+                                dataIndex: 'id',
+                                header: 'Identifier',
+                                sortable: true,
+                                width: 80,
+                                editable: false
+                            },
+                            {
+                                xtype: 'gridcolumn',
+                                header: 'Type',
+                                sortable: true,
+                                width: 100,
+                                editable: false,
+                                dataIndex: 'type'
+                            },
+                            {
+                                xtype: 'gridcolumn',
+                                header: 'Description',
+                                sortable: true,
+                                width: 175,
+                                dataIndex: 'description'
+                            }
+                        ]
                     },
                     {
                         xtype: 'grid',
@@ -228,14 +195,6 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                 sortable: true,
                                 width: 200,
                                 dataIndex: 'description',
-                                editable: false
-                            },
-                            {
-                                xtype: 'gridcolumn',
-                                header: 'Reporter',
-                                sortable: true,
-                                width: 75,
-                                dataIndex: 'reporter',
                                 editable: false
                             },
                             {

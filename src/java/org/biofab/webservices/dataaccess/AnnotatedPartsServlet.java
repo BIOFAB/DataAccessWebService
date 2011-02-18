@@ -37,29 +37,69 @@ public class AnnotatedPartsServlet extends DataAccessServlet
     throws ServletException, IOException
     {
         Statement statement = null;
-        String projectID = request.getParameter("projectid");
+        String collectionID = request.getParameter("collectionid");
         String format = request.getParameter("format");
         String responseString = null;
+        String queryString = null;
 
-        if(projectID != null && projectID.length() > 0)
+        //TODO Do stronger validation of collectionid
+
+        if(collectionID != null && collectionID.length() > 0)
         {
-            try
-            {
-                _connection = DriverManager.getConnection(_jdbcDriver, _user, _password);
-                statement = _connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT annotated_part.biofab_id, feature.biofab_type, feature.description, feature.dna_sequence FROM annotated_part, feature WHERE annotated_part.feature_id=feature.id ORDER BY feature.biofab_type DESC, annotated_part.id ASC;");
+            queryString = "SELECT annotated_part.biofab_id, feature.biofab_type, feature.description, feature.dna_sequence "
+                    + "FROM collection_annotated_part "
+                    + "INNER JOIN collection ON collection_annotated_part.collection_id = collection.id "
+                    + "INNER JOIN annotated_part ON collection_annotated_part.part_id = annotated_part.id "
+                    + "INNER JOIN feature ON annotated_part.feature_id = feature.id "
+                    + "WHERE collection.id = " + collectionID + " "
+                    + "ORDER BY feature.biofab_type DESC, annotated_part.id ASC";
+        }
+        else
+        {
+            queryString = "SELECT annotated_part.biofab_id, feature.biofab_type, feature.description, feature.dna_sequence "
+                    + "FROM annotated_part "
+                    + "INNER JOIN feature ON annotated_part.feature_id = feature.id "
+                    + "ORDER BY feature.biofab_type DESC, annotated_part.id ASC;";
+        }
 
+        try
+        {
+            _connection = DriverManager.getConnection(_jdbcDriver, _user, _password);
+            statement = _connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(queryString);
+
+            if(format.equalsIgnoreCase("json"))
+            {
+               responseString = generateJSON(resultSet);
+               this.textSuccess(response, responseString);
+            }
+            else
+            {
+               responseString = generateCSV(resultSet);
+               this.textSuccess(response, responseString);
+            }
+
+        }
+        catch (SQLException ex)
+        {
+            if(format != null && format.length() > 0)
+            {
                 if(format.equalsIgnoreCase("json"))
                 {
-                   responseString = generateJSON(resultSet);
-                   this.textSuccess(response, responseString);
+                    jsonError(response, "Error while fetching data: " + ex.getMessage());
+
                 }
                 else
                 {
-                   responseString = generateCSV(resultSet);
-                   this.textSuccess(response, responseString);
+                    textError(response, "Error while fetching data: " + ex.getMessage());
                 }
-
+            }
+        }
+        finally
+        {
+            try
+            {
+                _connection.close();
             }
             catch (SQLException ex)
             {
@@ -68,43 +108,17 @@ public class AnnotatedPartsServlet extends DataAccessServlet
                     if(format.equalsIgnoreCase("json"))
                     {
                         jsonError(response, "Error while fetching data: " + ex.getMessage());
-
                     }
                     else
                     {
                         textError(response, "Error while fetching data: " + ex.getMessage());
                     }
                 }
-            }
-            finally
-            {
-                try
+                else
                 {
-                    _connection.close();
-                } 
-                catch (SQLException ex)
-                {
-                    if(format != null && format.length() > 0)
-                    {
-                        if(format.equalsIgnoreCase("json"))
-                        {
-                            jsonError(response, "Error while fetching data: " + ex.getMessage());
-                        }
-                        else
-                        {
-                            textError(response, "Error while fetching data: " + ex.getMessage());
-                        }
-                    }
-                    else
-                    {
-                        textError(response, "Error while fetching data: " + ex.getMessage());
-                    }
+                    textError(response, "Error while fetching data: " + ex.getMessage());
                 }
             }
-        }
-        else
-        {
-            textError(response, "The BIOFAB Data Access Web Service requires a project ID to provide annotated parts. Please review the application interface documentation.");
         }
     }
 

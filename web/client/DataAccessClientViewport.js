@@ -22,13 +22,16 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
         var constructsGridSelectionModel = this.constructsGridPanel.getSelectionModel();
 	constructsGridSelectionModel.on('rowselect', this.constructsGridRowSelectHandler, this);
 		
-	var promotersGridSelectionModel = this.promotersGridPanelRef.getSelectionModel();
-	promotersGridSelectionModel.on('rowselect', this.promotersGridRowSelectHandler, this);
+	var partsGridSelectionModel = this.partsGridPanelRef.getSelectionModel();
+	partsGridSelectionModel.on('rowselect', this.partsGridRowSelectHandler, this);
 
 //        var partsGridSelectionModel = this.partsGridPanel.getSelectionModel();
 //	partsGridSelectionModel.on('rowselect', this.partsGridRowSelectHandler, this);
 		
 	//this.constructsGridPanel.getStore().on('load', this.constructStoreLoadHandler, this);
+
+        this.promotersButtonRef.setHandler(this.promotersButtonClickHandler, this);
+
 		
 	this.constructHasPartStore = new ConstructHasPartStore();
 	this.constructStore = new ConstructStore();
@@ -49,7 +52,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
         this.showCollectionPanel(record);
     },
     
-    promotersGridRowSelectHandler: function(selectModel, rowIndex, record)
+    partsGridRowSelectHandler: function(selectModel, rowIndex, record)
     {
         var partID = record.get("id");
         var relationRecord = null;
@@ -145,6 +148,11 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 		this.showCollectionPanel(collectionRecord);
 
 		//TODO Deal with case where the constructs could not be loaded
+        },
+
+        promotersButtonClickHandler: function(button, event)
+        {
+            this.partsGridPanelRef.getStore().filter([{property: 'type', value: "promoter", anyMatch: true, caseSensitive: false}]);
         },
 	
 /*
