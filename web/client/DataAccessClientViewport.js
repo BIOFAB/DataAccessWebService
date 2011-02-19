@@ -10,6 +10,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
     constructStore: null,
     constructHasPartStore: null,
     performanceStore: null,
+    constructLoadCount: 0,
 	
     initComponent: function()
     {
@@ -27,15 +28,16 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 
 //        var partsGridSelectionModel = this.partsGridPanel.getSelectionModel();
 //	partsGridSelectionModel.on('rowselect', this.partsGridRowSelectHandler, this);
-		
-	//this.constructsGridPanel.getStore().on('load', this.constructStoreLoadHandler, this);
 
         this.promotersButtonRef.setHandler(this.promotersButtonClickHandler, this);
+        this.rbsButtonRef.setHandler(this.rbsButtonClickHandler, this);
+        this.cdsButtonRef.setHandler(this.cdsButtonClickHandler, this);
 
-		
-	this.constructHasPartStore = new ConstructHasPartStore();
-	this.constructStore = new ConstructStore();
-	//this.performanceStore = new PerformanceStore();
+	this.constructsGridPanel.getStore().on('load', this.constructStoreForDisplayLoadHandler, this);
+
+        this.constructHasPartStore = new ConstructHasPartStore();
+
+        //this.performanceStore = new PerformanceStore();
 
         this.collectionsGridExportButtonRef.setHandler(this.collectionsGridExportButtonClickHandler, this);
         this.partsGridExportButton.setHandler(this.partsGridExportButtonClickHandler, this);
@@ -47,7 +49,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
     collectionsGridRowSelectHandler: function(selectModel, rowIndex, record)
     {
 	var collectionName = record.get('name');
-        this.partsPanelRef.setTitle(collectionName + ' Parts');
+        this.partsGridPanelRef.setTitle(collectionName + ' Parts');
         this.constructsGridPanel.setTitle(collectionName + ' Constructs');
         this.showCollectionPanel(record);
     },
@@ -55,6 +57,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
     partsGridRowSelectHandler: function(selectModel, rowIndex, record)
     {
         var partID = record.get("id");
+        var description = record.get('description');
         var relationRecord = null;
         var constructID = null;
         var constructRecord = null;
@@ -73,13 +76,26 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
                     constructID = relationRecord.get("construct");
                     constructRecords = this.constructStore.query('biofab_id', new RegExp(constructID), false, false, true);
                     constructRecord = constructRecords.itemAt(0);
-                    constructRecordsForDisplay.push(constructRecord);
+
+                    if(constructRecord !== null && constructRecord !== undefined)
+                    {
+                        constructRecordsForDisplay.push(constructRecord);
+                    }
             }
         }
 
-        this.constructsGridPanel.getStore().removeAll();
-        this.constructsGridPanel.getStore().add(constructRecordsForDisplay);
-        this.constructsGridPanel.setTitle('Constructs with ' + partID);
+        if(constructRecordsForDisplay.length > 0)
+        {
+            this.constructsGridPanel.getStore().removeAll();
+            this.constructsGridPanel.getStore().add(constructRecordsForDisplay);
+            this.constructsGridPanel.setTitle('Constructs with ' + description);
+        }
+        else
+        {
+            Ext.Msg.alert('Data Access Client', 'No construct has ' + description);
+        }
+
+        
     },
 	
         constructsGridRowSelectHandler: function(selectModel, rowIndex, record)
@@ -87,14 +103,28 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 	    var id = record.get("biofab_id");
 	    this.showDatasheet(id);
 	},
+
+        constructStoreForDisplayLoadHandler: function(store, records, options)
+        {
+            if(this.constructStore === null)
+            {
+               this.constructStore = new ConstructStore();
+               this.constructStore.on('load', this.constructStoreLoadHandler, this);
+            }
+            
+            this.constructStore.load({callback: this.constructStoreLoadHandler, scope:this, add:false});
+        },
 	
 	constructStoreLoadHandler: function(store, records, options)
 	{
-//		var record = store.getAt(0);
-//		var id = record.get("id");
-//		this.showDatasheet(id);
-//
-//		//TODO Deal with case where the constructs could not be loaded
+            var countA = this.constructStore.getCount();
+            var countB = this.constructsGridPanel.getStore().getCount();
+            this.constructLoadCount += 1;
+
+            if(countA !== countB && this.constructLoadCount < 10 && countA === 0)
+            {
+               this.constructStore.load({callback: this.constructStoreLoadHandler, scope:this, add:false});
+            }
 	},
 
         collectionsGridExportButtonClickHandler: function(button, event)
@@ -120,7 +150,8 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 
         showAllPartsButtonClickHandler:function(button, event)
         {
-            this.partsPanelRef.setTitle('Parts');
+            this.partsGridPanelRef.setTitle('Parts');
+            this.partsGridPanelRef.getStore().clearFilter(false);
         },
 
         showAllConstructsButtonClickHandler: function(button, event)
@@ -153,6 +184,16 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
         promotersButtonClickHandler: function(button, event)
         {
             this.partsGridPanelRef.getStore().filter([{property: 'type', value: "promoter", anyMatch: true, caseSensitive: false}]);
+        },
+
+        rbsButtonClickHandler: function(button, event)
+        {
+            this.partsGridPanelRef.getStore().filter([{property: 'type', value: "5' UTR", anyMatch: true, caseSensitive: false}]);
+        },
+
+        cdsButtonClickHandler: function(button, event)
+        {
+            this.partsGridPanelRef.getStore().filter([{property: 'type', value: "CDS", anyMatch: true, caseSensitive: false}]);
         },
 	
 /*

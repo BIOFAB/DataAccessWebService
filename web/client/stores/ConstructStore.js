@@ -14,7 +14,7 @@ ConstructStore = Ext.extend(Ext.data.JsonStore, {
             storeId: 'constructStore',
             root: 'constructs',
             url: '../constructs?collectionid=1&format=json',
-            autoLoad: true,
+            autoLoad: false,
             fields: [
                 {
                     name: 'id',

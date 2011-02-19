@@ -25,94 +25,94 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                             ref: '../../designPanelToolbar',
                             items: [
                                 {
-                                    xtype: 'button',
-                                    text: 'Export',
-                                    ref: '../../../designPanelExportButton'
-                                },
-                                {
-                                    xtype: 'tbfill'
-                                },
-                                {
                                     xtype: 'tbtext',
                                     text: 'Fetching Design...',
                                     hidden: true,
                                     ref: '../../../designPanelText'
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        xtype: 'panel',
-                        title: 'Performance',
-                        layout: 'table',
-                        autoscroll: true,
-                        ref: '../performancePanel',
-                        tbar: {
-                            xtype: 'toolbar',
-                            ref: '../../performPanelToolbar',
-                            items: [
-                                {
-                                    xtype: 'button',
-                                    text: 'Export',
-                                    ref: '../../../performPanelExportButton'
                                 },
                                 {
                                     xtype: 'tbfill'
                                 },
                                 {
-                                    xtype: 'tbtext',
-                                    text: 'Fetching Data...',
-                                    hidden: true,
-                                    ref: '../../../performPanelText'
+                                    xtype: 'button',
+                                    text: 'Export',
+                                    ref: '../../../designPanelExportButton'
                                 }
                             ]
-                        },
-                        layoutConfig:{columns: 2},
-                        items:[
-                                {
-                                    xtype:'panel',
-                                    title: 'Temporal Gene Expression  (Under Development)',
-                                    layout: 'auto',
-                                    width: 500,
-                                    height: 300,
-                                    items:[
-                                            {
-                                              xtype:'container',
-                                              ref: '../../../temporalPlotContainer',
-                                              autoEl: 'div',
-                                              layout: 'auto'
-                                            }
-                                    ]
-                                },
-                                {
-                                    xtype:'panel',
-                                    title: 'Data Acquisition Information',
-                                    width: 300,
-                                    height: 300
-                                },
-                                {
-                                    xtype:'panel',
-                                    title: 'Gene Expression per Cell  (Under Development)',
-                                    width: 500,
-                                    height: 300,
-                                    items:[
-                                            {
-                                              xtype:'container',
-                                              ref: '../../../histogramContainer',
-                                              autoEl: 'div',
-                                              layout: 'auto'
-                                              
-                                            }
-                                    ]
-                                },
-                                {
-                                    xtype:'panel',
-                                    title: 'Data Acquisition Information',
-                                    width: 300,
-                                    height: 300
-                                }
-                        ]
+                        }
                     }
+//                    {
+//                        xtype: 'panel',
+//                        title: 'Performance',
+//                        layout: 'table',
+//                        autoscroll: true,
+//                        ref: '../performancePanel',
+//                        tbar: {
+//                            xtype: 'toolbar',
+//                            ref: '../../performPanelToolbar',
+//                            items: [
+//                                {
+//                                    xtype: 'button',
+//                                    text: 'Export',
+//                                    ref: '../../../performPanelExportButton'
+//                                },
+//                                {
+//                                    xtype: 'tbfill'
+//                                },
+//                                {
+//                                    xtype: 'tbtext',
+//                                    text: 'Fetching Data...',
+//                                    hidden: true,
+//                                    ref: '../../../performPanelText'
+//                                }
+//                            ]
+//                        },
+//                        layoutConfig:{columns: 2},
+//                        items:[
+//                                {
+//                                    xtype:'panel',
+//                                    title: 'Temporal Gene Expression  (Under Development)',
+//                                    layout: 'auto',
+//                                    width: 500,
+//                                    height: 300,
+//                                    items:[
+//                                            {
+//                                              xtype:'container',
+//                                              ref: '../../../temporalPlotContainer',
+//                                              autoEl: 'div',
+//                                              layout: 'auto'
+//                                            }
+//                                    ]
+//                                },
+//                                {
+//                                    xtype:'panel',
+//                                    title: 'Data Acquisition Information',
+//                                    width: 300,
+//                                    height: 300
+//                                },
+//                                {
+//                                    xtype:'panel',
+//                                    title: 'Gene Expression per Cell  (Under Development)',
+//                                    width: 500,
+//                                    height: 300,
+//                                    items:[
+//                                            {
+//                                              xtype:'container',
+//                                              ref: '../../../histogramContainer',
+//                                              autoEl: 'div',
+//                                              layout: 'auto'
+//
+//                                            }
+//                                    ]
+//                                },
+//                                {
+//                                    xtype:'panel',
+//                                    title: 'Data Acquisition Information',
+//                                    width: 300,
+//                                    height: 300
+//                                }
+//                        ]
+//                    }
                 ]
             }
         ];

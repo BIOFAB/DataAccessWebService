@@ -14,9 +14,9 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         DatasheetPanel.superclass.initComponent.call(this);
 
         this.designPanelExportButton.setHandler(this.designPanelExportButtonClickHandler, this);
-        this.performPanelExportButton.setHandler(this.performPanelExportButtonClickHandler, this);
-        this.temporalPlotContainer.on('afterrender', this.temporalPlotContainerAfterRenderHandler, this);
-        this.histogramContainer.on('afterrender', this.histogramContainerAfterRenderHandler, this);
+//        this.performPanelExportButton.setHandler(this.performPanelExportButtonClickHandler, this);
+//        this.temporalPlotContainer.on('afterrender', this.temporalPlotContainerAfterRenderHandler, this);
+//        this.histogramContainer.on('afterrender', this.histogramContainerAfterRenderHandler, this);
     },
 
     setComponentID: function(componentID)
@@ -141,7 +141,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
 
     designPanelExportButtonClickHandler: function(button, event)
     {
-        var genbankWindow = window.open(WEB_SERVICE_BASE_URL + 'design' + "?id=" + this.componentID + "&format=genbank","Genbank File for " + this.componentID,"width=640,height=480");
+        var genbankWindow = window.open(WEB_SERVICE_BASE_URL + 'construct/design' + "?id=" + this.componentID + "&format=genbank","Genbank File for " + this.componentID,"width=640,height=480");
         genbankWindow.alert("Use File/Save As in the menu bar to save this document.");
         genbankWindow.scrollbars.visible = true;
     },
