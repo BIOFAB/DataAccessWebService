@@ -180,9 +180,9 @@ public class ConstructsServlet extends DataAccessServlet
             responseText.append("'biofab_id':'");
             responseText.append(biofab_id);
             responseText.append("', ");
-            responseText.append("'description':'");
+            responseText.append("'description':\"");
             responseText.append(description);
-            responseText.append("', ");
+            responseText.append("\", ");
             responseText.append("'reporter':'");
             responseText.append(reporter);
             responseText.append("', ");

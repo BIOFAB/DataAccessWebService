@@ -102,9 +102,9 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                 },
                                 {
                                     xtype: 'button',
-                                    text: 'RBS',
-                                    ref: '../../../rbsButtonRef',
-                                    id: 'rbsButton'
+                                    text: '5\' UTR',
+                                    ref: '../../../fiveUTRButtonRef',
+                                    id: 'fiveUTRButton'
                                 },
                                 {
                                     xtype: 'tbseparator'

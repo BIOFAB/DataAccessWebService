@@ -30,7 +30,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 //	partsGridSelectionModel.on('rowselect', this.partsGridRowSelectHandler, this);
 
         this.promotersButtonRef.setHandler(this.promotersButtonClickHandler, this);
-        this.rbsButtonRef.setHandler(this.rbsButtonClickHandler, this);
+        this.fiveUTRButtonRef.setHandler(this.fiveUTRButtonClickHandler, this);
         this.cdsButtonRef.setHandler(this.cdsButtonClickHandler, this);
 
 	this.constructsGridPanel.getStore().on('load', this.constructStoreForDisplayLoadHandler, this);
@@ -186,7 +186,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
             this.partsGridPanelRef.getStore().filter([{property: 'type', value: "promoter", anyMatch: true, caseSensitive: false}]);
         },
 
-        rbsButtonClickHandler: function(button, event)
+        fiveUTRButtonClickHandler: function(button, event)
         {
             this.partsGridPanelRef.getStore().filter([{property: 'type', value: "5' UTR", anyMatch: true, caseSensitive: false}]);
         },

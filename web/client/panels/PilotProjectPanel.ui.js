@@ -12,8 +12,8 @@ PilotProjectPanelUi = Ext.extend(Ext.Panel, {
     layout: 'absolute',
     tpl: '',
     closable: true,
-    id: 'pilotProjectPanel',
     autoScroll: true,
+    id: 'pilotProjectPanel',
     initComponent: function() {
         this.items = [
             {
@@ -37,6 +37,7 @@ PilotProjectPanelUi = Ext.extend(Ext.Panel, {
                         xtype: 'panel',
                         title: 'Collection Performance',
                         layout: 'fit',
+                        anchor: '100%, 75%',
                         id: 'collectionPerformancePanel',
                         items: [
                             {

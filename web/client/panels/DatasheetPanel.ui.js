@@ -71,7 +71,7 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
 //                        items:[
 //                                {
 //                                    xtype:'panel',
-//                                    title: 'Temporal Gene Expression  (Under Development)',
+//                                    title: 'Bulk Gene Expression  (Under Development)',
 //                                    layout: 'auto',
 //                                    width: 500,
 //                                    height: 300,

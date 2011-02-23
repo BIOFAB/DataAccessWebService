@@ -179,9 +179,9 @@ public class AnnotatedPartsServlet extends DataAccessServlet
             responseText.append("'type':\"");
             responseText.append(type);
             responseText.append("\", ");
-            responseText.append("'description':'");
+            responseText.append("'description':\"");
             responseText.append(description);
-            responseText.append("', ");
+            responseText.append("\", ");
             responseText.append("'sequence':'");
             responseText.append(sequence);
 
