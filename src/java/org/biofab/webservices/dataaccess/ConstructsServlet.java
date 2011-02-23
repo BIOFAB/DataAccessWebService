@@ -37,17 +37,17 @@ public class ConstructsServlet extends DataAccessServlet
     throws ServletException, IOException
     {
         Statement statement = null;
-        String projectID = request.getParameter("projectid");
+        String collectionID = request.getParameter("collectionid");
         String format = request.getParameter("format");
         String responseString = null;
 
-        if(projectID != null && projectID.length() > 0)
+        if(collectionID != null && collectionID.length() > 0)
         {
             try
             {
                 _connection = DriverManager.getConnection(_jdbcDriver, _user, _password);
                 statement = _connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT pilot_project_construct.id,pilot_project_construct.description,pilot_project_construct.mid_log_phase_fluorescence,pilot_project_construct.chassis,pilot_project_construct.media FROM pilot_project_construct ORDER BY pilot_project_construct.mid_log_phase_fluorescence DESC");
+                ResultSet resultSet = statement.executeQuery("SELECT * FROM new_pilot_project_construct ORDER BY new_pilot_project_construct.bulk_gene_expression DESC, new_pilot_project_construct.reporter DESC");
 
                 if(format.equalsIgnoreCase("json"))
                 {
@@ -104,10 +104,8 @@ public class ConstructsServlet extends DataAccessServlet
         }
         else
         {
-            textError(response, "The BIOFAB Data Access Web Service requires a project ID to provide annotated parts. Please review the application interface documentation.");
+            textError(response, "The BIOFAB Data Access Web Service requires a collection ID to provide construct information. Please review the application interface documentation.");
         }
-
-
     }
 
     @Override
@@ -127,25 +125,34 @@ public class ConstructsServlet extends DataAccessServlet
 
     protected String generateCSV(ResultSet resultSet) throws SQLException
     {
-        StringBuilder responseText = new StringBuilder("id,description,mid_log_phase_fluorescence,chassis,media\n");
+        StringBuilder responseText = new StringBuilder("id,biofab_id,description,reporter,bulk_gene_expression,bulk_gene_expression_sd,gene_expression_per_cell,gene_expression_per_cell_sd\n");
 
         while (resultSet.next())
         {
             String id = resultSet.getString("id");
+            String biofab_id = resultSet.getString("biofab_id");
             String description = resultSet.getString("description");
-            String fluorescence = resultSet.getString("mid_log_phase_fluorescence");
-            String chassis = resultSet.getString("chassis");
-            String media = resultSet.getString("media");
+            String reporter = resultSet.getString("reporter");
+            String bulkGeneExpression = resultSet.getString("bulk_gene_expression");
+            String bulkGeneExpressionSD = resultSet.getString("bulk_gene_expression_sd");
+            String geneExpressionPerCell = resultSet.getString("gene_expression_per_cell");
+            String geneExpressionPerCellSD = resultSet.getString("gene_expression_per_cell_sd");
 
             responseText.append(id);
             responseText.append(",");
+            responseText.append(biofab_id);
+            responseText.append(",");
             responseText.append(description);
             responseText.append(",");
-            responseText.append(fluorescence);
+            responseText.append(reporter);
             responseText.append(",");
-            responseText.append(chassis);
+            responseText.append(bulkGeneExpression);
             responseText.append(",");
-            responseText.append(media);
+            responseText.append(bulkGeneExpressionSD);
+            responseText.append(",");
+            responseText.append(geneExpressionPerCell);
+            responseText.append(",");
+            responseText.append(geneExpressionPerCellSD);
             responseText.append("\n");
         }
 
@@ -159,33 +166,46 @@ public class ConstructsServlet extends DataAccessServlet
         while (resultSet.next())
         {
             String id = resultSet.getString("id");
+            String biofab_id = resultSet.getString("biofab_id");
             String description = resultSet.getString("description");
-            String fluorescence = resultSet.getString("mid_log_phase_fluorescence");
-            String chassis = resultSet.getString("chassis");
-            String media = resultSet.getString("media");
+            String reporter = resultSet.getString("reporter");
+            String bulkGeneExpression = resultSet.getString("bulk_gene_expression");
+            String bulkGeneExpressionSD = resultSet.getString("bulk_gene_expression_sd");
+            String geneExpressionPerCell = resultSet.getString("gene_expression_per_cell");
+            String geneExpressionPerCellSD = resultSet.getString("gene_expression_per_cell_sd");
 
-            responseText.append("{'id':'");
+            responseText.append("{'id':");
             responseText.append(id);
+            responseText.append(", ");
+            responseText.append("'biofab_id':'");
+            responseText.append(biofab_id);
             responseText.append("', ");
             responseText.append("'description':\"");
             responseText.append(description);
             responseText.append("\", ");
-            responseText.append("'mid_log_phase_fluorescence':");
-            responseText.append(fluorescence);
+            responseText.append("'reporter':'");
+            responseText.append(reporter);
+            responseText.append("', ");
+            responseText.append("'bulk_gene_expression':");
+            responseText.append(bulkGeneExpression);
             responseText.append(", ");
-            responseText.append("'chassis':'");
-            responseText.append(chassis);
-            responseText.append("', 'media':'");
-            responseText.append(media);
+            responseText.append("'bulk_gene_expression_sd':");
+            responseText.append(bulkGeneExpressionSD);
+            responseText.append(", ");
+            responseText.append("'gene_expression_per_cell':");
+            responseText.append(geneExpressionPerCell);
+            responseText.append(", ");
+            responseText.append("'gene_expression_per_cell_sd':");
+            responseText.append(geneExpressionPerCellSD);
 
             if(resultSet.isLast() == false)
             {
-                responseText.append("'},");
+                responseText.append("},");
                 responseText.append("\n");
             }
             else
             {
-                responseText.append("'}\n]}");
+                responseText.append("}\n]}");
             }
         }
 
