@@ -23,7 +23,7 @@ PilotProjectPanelUi = Ext.extend(Ext.Panel, {
                 layout: 'anchor',
                 width: 600,
                 itemId: 'centerPanel',
-                x: 150,
+                x: 25,
                 y: 25,
                 ref: 'centerPanelRef',
                 items: [

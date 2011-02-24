@@ -26,7 +26,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 	var partsGridSelectionModel = this.partsGridPanelRef.getSelectionModel();
 	partsGridSelectionModel.on('rowselect', this.partsGridRowSelectHandler, this);
 
-//        var partsGridSelectionModel = this.partsGridPanel.getSelectionModel();
+//      var partsGridSelectionModel = this.partsGridPanel.getSelectionModel();
 //	partsGridSelectionModel.on('rowselect', this.partsGridRowSelectHandler, this);
 
         this.promotersButtonRef.setHandler(this.promotersButtonClickHandler, this);
@@ -34,7 +34,6 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
         this.cdsButtonRef.setHandler(this.cdsButtonClickHandler, this);
 
 	this.constructsGridPanel.getStore().on('load', this.constructStoreForDisplayLoadHandler, this);
-
         this.constructHasPartStore = new ConstructHasPartStore();
 
         //this.performanceStore = new PerformanceStore();
@@ -44,6 +43,8 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
         this.constructsGridExportButton.setHandler(this.constructsGridExportButtonClickHandler, this);
         this.showAllPartsButtonRef.setHandler(this.showAllPartsButtonClickHandler, this);
         this.showAllConstructsButtonRef.setHandler(this.showAllConstructsButtonClickHandler, this);
+
+        this.helpButtonRef.setHandler(this.helpButtonClickHandler, this);
     },
 
     collectionsGridRowSelectHandler: function(selectModel, rowIndex, record)
@@ -194,6 +195,12 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
         cdsButtonClickHandler: function(button, event)
         {
             this.partsGridPanelRef.getStore().filter([{property: 'type', value: "CDS", anyMatch: true, caseSensitive: false}]);
+        },
+
+        helpButtonClickHandler: function(button, event)
+        {
+            var helpWindow = window.open(HELP_PAGE);
+            helpWindow.scrollbars.visible = true;
         },
 	
 /*
