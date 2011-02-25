@@ -14,6 +14,30 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
         this.items = [
             {
                 xtype: 'container',
+                region: 'north',
+                width: 100,
+                layout: 'fit',
+                height: 30,
+                id: 'northContainer',
+                items: [
+                    {
+                        xtype: 'toolbar',
+                        items: [
+                            {
+                                xtype: 'tbfill'
+                            },
+                            {
+                                xtype: 'button',
+                                text: 'Help',
+                                ref: '../../helpButtonRef',
+                                id: 'helpButton'
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                xtype: 'container',
                 region: 'west',
                 width: 500,
                 layout: 'border',
@@ -70,6 +94,7 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                 {
                                     xtype: 'button',
                                     text: 'Export',
+                                    tooltip: 'Export collection information in CSV format.',
                                     ref: '../../../collectionsGridExportButtonRef',
                                     id: 'collectionsGridExportButton'
                                 }
@@ -94,6 +119,7 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                 {
                                     xtype: 'button',
                                     text: 'Promoters',
+                                    tooltip: 'Show only the promoters',
                                     ref: '../../../promotersButtonRef',
                                     id: 'promotersButton'
                                 },
@@ -103,6 +129,7 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                 {
                                     xtype: 'button',
                                     text: '5\' UTR',
+                                    tooltip: 'Show only 5\' UTRs',
                                     ref: '../../../fiveUTRButtonRef',
                                     id: 'fiveUTRButton'
                                 },
@@ -112,6 +139,7 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                 {
                                     xtype: 'button',
                                     text: 'CDS',
+                                    tooltip: 'Show only the CDSs',
                                     ref: '../../../cdsButtonRef',
                                     id: 'cdsButton'
                                 },
@@ -121,6 +149,7 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                 {
                                     xtype: 'button',
                                     text: 'Show All',
+                                    tooltip: 'Show all the parts',
                                     ref: '../../../showAllPartsButtonRef',
                                     id: 'showAllPartsButton'
                                 },
@@ -130,6 +159,7 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                 {
                                     xtype: 'button',
                                     text: 'Export',
+                                    tooltip: 'Export all the parts in CSV format',
                                     ref: '../../../partsGridExportButton',
                                     id: 'partsGridExportButton'
                                 }
@@ -249,6 +279,7 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                 {
                                     xtype: 'button',
                                     text: 'Show All',
+                                    tooltip: 'Show all the constructs',
                                     ref: '../../../showAllConstructsButtonRef',
                                     id: 'showAllConstructsButton'
                                 },
@@ -258,6 +289,7 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                 {
                                     xtype: 'button',
                                     text: 'Export',
+                                    tooltip: 'Export all the construct information in CSV format',
                                     ref: '../../../constructsGridExportButton',
                                     id: 'constructsGridExportButton'
                                 }
