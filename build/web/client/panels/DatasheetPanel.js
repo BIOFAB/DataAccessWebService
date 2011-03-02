@@ -14,9 +14,9 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         DatasheetPanel.superclass.initComponent.call(this);
 
         this.designPanelExportButton.setHandler(this.designPanelExportButtonClickHandler, this);
-//        this.performPanelExportButton.setHandler(this.performPanelExportButtonClickHandler, this);
-//        this.temporalPlotContainer.on('afterrender', this.temporalPlotContainerAfterRenderHandler, this);
-//        this.histogramContainer.on('afterrender', this.histogramContainerAfterRenderHandler, this);
+        this.performPanelExportButton.setHandler(this.performPanelExportButtonClickHandler, this);
+        this.temporalPlotContainer.on('afterrender', this.temporalPlotContainerAfterRenderHandler, this);
+        this.histogramContainer.on('afterrender', this.histogramContainerAfterRenderHandler, this);
     },
 
     setComponentID: function(componentID)
