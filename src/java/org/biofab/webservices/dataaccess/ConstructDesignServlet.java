@@ -23,6 +23,9 @@ import org.biojavax.SimpleNote;
 import org.biojavax.SimpleRichAnnotation;
 import org.biojavax.bio.seq.RichSequence;
 
+import org.sbolstandard.libSBOLj.SBOLutil;
+import org.sbolstandard.libSBOLj.DnaComponent;
+
 @SuppressWarnings("serial")
 @WebServlet(name="ConstructDesignServlet", urlPatterns={"/construct/design/*"})
 public class ConstructDesignServlet extends DataAccessServlet
@@ -86,8 +89,36 @@ public class ConstructDesignServlet extends DataAccessServlet
                             }
                             else
                             {
-                                response.setContentType("text/plain");
-                                RichSequence.IOTools.writeGenbank(response.getOutputStream(), richSequence, ns);
+                                if(format.equalsIgnoreCase("sboljson"))
+                                {
+//                                    SBOLutil sbolUtil = new SBOLutil();
+//
+//
+//
+//                                    response.setContentType("text/xml");
+//                                    response.getWriter().write(format);
+//
+//                                    RichSequence.IOTools.writeINSDseq(response.getOutputStream(), richSequence, ns);
+                                }
+                                else
+                                {
+                                    if(format.equalsIgnoreCase("sbolrdf"))
+                                    {
+    //                                    SBOLutil sbolUtil = new SBOLutil();
+    //
+    //
+    //
+    //                                    response.setContentType("text/xml");
+    //                                    response.getWriter().write(format);
+    //
+    //                                    RichSequence.IOTools.writeINSDseq(response.getOutputStream(), richSequence, ns);
+                                    }
+                                    else
+                                    {
+                                        response.setContentType("text/plain");
+                                        RichSequence.IOTools.writeGenbank(response.getOutputStream(), richSequence, ns);
+                                    }
+                                }
                             }
                         }
                     }

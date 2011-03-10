@@ -5,20 +5,28 @@
 
 package org.biofab.webservices.dataaccess;
 
+import org.biofab.model.Construct;
+import org.biofab.model.ConstructPerformance;
+import org.biofab.model.Read;
+import org.biofab.model.Instrument;
+import org.biofab.model.Measurement;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.Gson;
 
-@WebServlet(name="PerformanceServlet", urlPatterns={"/performance/*"})
-public class PerformanceServlet extends DataAccessServlet
+
+@WebServlet(name="ConstructPerformanceServlet", urlPatterns={"/construct/performance/*"})
+public class ConstructPerformanceServlet extends DataAccessServlet
 {
     @Override
     public void init()
@@ -40,6 +48,7 @@ public class PerformanceServlet extends DataAccessServlet
         String constructID = request.getParameter("constructid");
         String format = request.getParameter("format");
         String responseString = null;
+        String queryString = null;
 
         if(constructID != null && constructID.length() > 0)
         {
@@ -47,7 +56,19 @@ public class PerformanceServlet extends DataAccessServlet
             {
                 _connection = DriverManager.getConnection(_jdbcDriver, _user, _password);
                 statement = _connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT  plate_raw_measurement.\"time\", plate_raw_measurement.a1 FROM plate_raw_measurement WHERE plate_raw_measurement.plate_read_id = 1;");
+
+                // TODO Do RegExp validation on constructID
+
+                if(constructID != null && constructID.length() > 0)
+                {
+                    queryString = "SELECT * FROM construct_read_view WHERE construct_read_view.construct_biofab_id = '" + constructID + "' ORDER BY construct_read_view.read_id ASC";
+                }
+                else
+                {
+                    // TODO Deal with the null case
+                }
+
+                ResultSet resultSet = statement.executeQuery(queryString);
 
                 if(format.equalsIgnoreCase("json"))
                 {
@@ -146,10 +167,51 @@ public class PerformanceServlet extends DataAccessServlet
 
     protected String generateJSON(ResultSet resultSet) throws SQLException
     {
-        StringBuilder responseText = new StringBuilder("TEST");
+        Gson                    gson = null;
+        Construct               construct = null;
+        ConstructPerformance    performance = null;
+        ArrayList<Read>         reads;
+        Read                    read = null;
+        int                     constructID;
+        String                  constructBiofabID = null;
+        String                  responseString = null;
+        int                     readID;
+        String                  readDate;
+        
+        gson = new Gson();
+        reads = new ArrayList<Read>();
 
         while (resultSet.next())
         {
+            if(construct == null)
+            {
+                constructID = resultSet.getInt("construct_id");
+                constructBiofabID = resultSet.getString("construct_biofab_id");
+                construct= new Construct(constructID, constructBiofabID, null);
+            }
+
+            readID = resultSet.getInt("read_id");
+            readDate = resultSet.getString("read_date");
+
+            //read = new Read(String date, String typeCode, String typeName, Instrument instrument, Measurement[] measurements);
+        }
+
+        responseString = gson.toJson(construct);
+
+        if(responseString == null || responseString.length() == 0)
+        {
+            //Throw exception
+        }
+
+        return responseString;
+    }
+
+//    protected String generateJSON(ResultSet resultSet) throws SQLException
+//    {
+//        StringBuilder responseText = new StringBuilder("TEST");
+//
+//        while (resultSet.next())
+//        {
 //            String time = resultSet.getString("time");
 //            String value = resultSet.getString(2);
 //
@@ -157,8 +219,8 @@ public class PerformanceServlet extends DataAccessServlet
 //            responseText.append(",");
 //            responseText.append(value);
 //            responseText.append("\n");
-        }
-
-        return responseText.toString();
-    }
+//        }
+//
+//        return responseText.toString();
+//    }
 }
