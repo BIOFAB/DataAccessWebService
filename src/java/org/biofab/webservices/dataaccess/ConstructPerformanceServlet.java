@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * 
+ * 
  */
 
 package org.biofab.webservices.dataaccess;
@@ -41,44 +41,83 @@ public class ConstructPerformanceServlet extends DataAccessServlet
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        Statement statement = null;
-        String constructID = request.getParameter("constructid");
-        String format = request.getParameter("format");
-        String responseString = null;
-        String queryString = null;
+        Statement               statement = null;
+        //Statement               secondStatement = null;
+        String                  constructIDParam = request.getParameter("constructid");
+        String                  format = request.getParameter("format");
+        String                  responseString = null;
+        String                  queryString = null;
+        Construct               construct = null;
+        ConstructPerformance    performance = null;
+        ArrayList<Read>         reads;
+        Read[]                  readArray = null;
+        Read                    read = null;
+        int                     constructID;
+        String                  constructBiofabID = null;
+        int                     readID;
+        String                  readDate = null;
+        String                  readTypeCode = null;
+        String                  readTypeName = null;
+        String                  instrumentType = null;
+        String                  instrumentMake = null;
+        String                  instrumentModel = null;
+        Instrument              instrument = null;
+        Measurement[]           measurements = null;
+        String                  plateWell = null;
 
-        if(constructID != null && constructID.length() > 0)
+        // TODO Do RegExp validation on constructIDParam
+        if(constructIDParam != null && constructIDParam.length() > 0)
         {
             try
             {
                 _connection = DriverManager.getConnection(_jdbcDriver, _user, _password);
                 statement = _connection.createStatement();
-
-                // TODO Do RegExp validation on constructID
-
-                if(constructID != null && constructID.length() > 0)
-                {
-                    queryString = "SELECT * FROM construct_read_view WHERE construct_read_view.construct_biofab_id = '" + constructID + "' ORDER BY construct_read_view.read_id ASC";
-                }
-                else
-                {
-                    // TODO Deal with the null case
-                }
-
+                queryString = "SELECT * FROM construct_read_view WHERE UPPER(construct_read_view.construct_biofab_id) = '" + constructIDParam.toUpperCase() + "' ORDER BY construct_read_view.read_id ASC";
                 ResultSet resultSet = statement.executeQuery(queryString);
+                reads = new ArrayList<Read>();
+
+                while (resultSet.next())
+                {
+                    if(construct == null)
+                    {
+                        constructID = resultSet.getInt("construct_id");
+                        constructBiofabID = resultSet.getString("construct_biofab_id");
+                        construct = new Construct(constructID, constructBiofabID, null);
+                    }
+
+                    readID = resultSet.getInt("read_id");
+                    readDate = resultSet.getString("read_date");
+                    readTypeCode = resultSet.getString("read_type_code");
+                    readTypeName = resultSet.getString("read_type_name");
+                    instrumentType = resultSet.getString("instrument_type");
+                    instrumentMake = resultSet.getString("instrument_make");
+                    instrumentModel = resultSet.getString("instrument_model");
+                    instrument = new Instrument(instrumentType, instrumentMake, instrumentModel);
+                    plateWell = resultSet.getString("plate_well");
+
+                    statement = _connection.createStatement();
+                    queryString = "SELECT measurement.time, measurement.a1 AS value FROM measurement WHERE measurement.read_id = 2";
+                    ResultSet measurementResultSet = statement.executeQuery(queryString);
+                    measurements = this.createMeasurementArray(measurementResultSet);
+                    read = new Read(readID, readDate, readTypeCode, readTypeName, instrument, measurements);
+                    reads.add(read);
+                }
+
+                readArray = new Read[reads.size()];
+                performance = new ConstructPerformance(reads.toArray(readArray));
+                construct.setPerformance(performance);
 
                 if(format.equalsIgnoreCase("json"))
                 {
-                   responseString = generateJSON(resultSet);
+                   responseString = generateJSON(construct);
                    this.textSuccess(response, responseString);
                 }
                 else
                 {
-                   responseString = generateCSV(resultSet);
-                   this.textSuccess(response, responseString);
+//                   responseString = generateCSV(resultSet);
+//                   this.textSuccess(response, responseString);
                 }
 
             }
@@ -127,8 +166,6 @@ public class ConstructPerformanceServlet extends DataAccessServlet
         {
             textError(response, "The BIOFAB Data Access Web Service requires a construct ID to provide performance data. Please review the application interface documentation.");
         }
-
-
     }
 
     @Override
@@ -146,6 +183,28 @@ public class ConstructPerformanceServlet extends DataAccessServlet
     }
 
     // Utility Functions
+
+    protected Measurement[] createMeasurementArray(ResultSet resultSet) throws SQLException
+    {
+        Measurement             measurement = null;
+        ArrayList<Measurement>  measurementArrayList = new ArrayList<Measurement>();
+        Measurement[]           measurements = null;
+        String                  time;
+        float                   value;
+
+        while (resultSet.next())
+        {
+            time = resultSet.getString("time");
+            value = resultSet.getFloat("value");
+            measurement = new Measurement(time, value);
+            measurementArrayList.add(measurement);
+        }
+
+        measurements = new Measurement[measurementArrayList.size()];
+        measurements = measurementArrayList.toArray(measurements);
+
+        return measurements;
+    }
 
     protected String generateCSV(ResultSet resultSet) throws SQLException
     {
@@ -165,37 +224,12 @@ public class ConstructPerformanceServlet extends DataAccessServlet
         return responseText.toString();
     }
 
-    protected String generateJSON(ResultSet resultSet) throws SQLException
+    protected String generateJSON(Construct construct)
     {
-        Gson                    gson = null;
-        Construct               construct = null;
-        ConstructPerformance    performance = null;
-        ArrayList<Read>         reads;
-        Read                    read = null;
-        int                     constructID;
-        String                  constructBiofabID = null;
-        String                  responseString = null;
-        int                     readID;
-        String                  readDate;
+        Gson    gson;
+        String  responseString;
         
         gson = new Gson();
-        reads = new ArrayList<Read>();
-
-        while (resultSet.next())
-        {
-            if(construct == null)
-            {
-                constructID = resultSet.getInt("construct_id");
-                constructBiofabID = resultSet.getString("construct_biofab_id");
-                construct= new Construct(constructID, constructBiofabID, null);
-            }
-
-            readID = resultSet.getInt("read_id");
-            readDate = resultSet.getString("read_date");
-
-            //read = new Read(String date, String typeCode, String typeName, Instrument instrument, Measurement[] measurements);
-        }
-
         responseString = gson.toJson(construct);
 
         if(responseString == null || responseString.length() == 0)
@@ -205,22 +239,4 @@ public class ConstructPerformanceServlet extends DataAccessServlet
 
         return responseString;
     }
-
-//    protected String generateJSON(ResultSet resultSet) throws SQLException
-//    {
-//        StringBuilder responseText = new StringBuilder("TEST");
-//
-//        while (resultSet.next())
-//        {
-//            String time = resultSet.getString("time");
-//            String value = resultSet.getString(2);
-//
-//            responseText.append(time);
-//            responseText.append(",");
-//            responseText.append(value);
-//            responseText.append("\n");
-//        }
-//
-//        return responseText.toString();
-//    }
 }

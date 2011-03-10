@@ -18,8 +18,9 @@ public class Read
 
 
 
-    public Read(String date, String typeCode, String typeName, Instrument instrument, Measurement[] measurements)
+    public Read(int id, String date, String typeCode, String typeName, Instrument instrument, Measurement[] measurements)
     {
+        this.id = id;
         this.date = date;
         this.typeCode = typeCode;
         this.typeName = typeName;
@@ -31,7 +32,7 @@ public class Read
     /**
      * @return the id
      */
-    public int getId()
+    public int getID()
     {
         return id;
     }

@@ -14,11 +14,7 @@ public class ConstructPerformance
     protected Read[]    reads;
 
 
-    public ConstructPerformance()
-    {
-        
-    }
-
+    
     public ConstructPerformance(Read[] reads)
     {
         this.reads = reads;

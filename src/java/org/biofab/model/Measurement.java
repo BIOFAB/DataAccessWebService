@@ -11,23 +11,23 @@ package org.biofab.model;
  */
 public class Measurement
 {
-    protected String    _time;
-    protected float     _value;
+    protected String    time;
+    protected float     value;
 
+    
+    public Measurement(String time, float value) 
+    {
+        this.time = time;
+        this.value = value;
+    }
+
+    
     /**
      * @return the _time
      */
     public String getTime()
     {
-        return _time;
-    }
-
-    /**
-     * @param time the _time to set
-     */
-    public void setTime(String time)
-    {
-        this._time = time;
+        return time;
     }
 
     /**
@@ -35,14 +35,6 @@ public class Measurement
      */
     public float getValue()
     {
-        return _value;
-    }
-
-    /**
-     * @param value the _value to set
-     */
-    public void setValue(float value)
-    {
-        this._value = value;
+        return value;
     }
 }
