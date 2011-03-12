@@ -45,7 +45,7 @@ public class ConstructPerformanceServlet extends DataAccessServlet
     {
         Statement               statement = null;
         //Statement               secondStatement = null;
-        String                  constructIDParam = request.getParameter("constructid");
+        String                  constructIDParam = request.getParameter("id");
         String                  format = request.getParameter("format");
         String                  responseString = null;
         String                  queryString = null;
@@ -98,7 +98,7 @@ public class ConstructPerformanceServlet extends DataAccessServlet
                     plateWell = resultSet.getString("plate_well");
 
                     statement = _connection.createStatement();
-                    queryString = "SELECT measurement.time, measurement.a1 AS value FROM measurement WHERE measurement.read_id = 2";
+                    queryString = "SELECT measurement.time, measurement." + plateWell.toLowerCase() + " AS value FROM measurement WHERE measurement.read_id = " + String.valueOf(readID);
                     ResultSet measurementResultSet = statement.executeQuery(queryString);
                     measurements = this.createMeasurementArray(measurementResultSet);
                     read = new Read(readID, readDate, readTypeCode, readTypeName, instrument, measurements);
