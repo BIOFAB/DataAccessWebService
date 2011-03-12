@@ -94,8 +94,16 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                                     title: 'Data Acquisition Information',
                                     width: 800,
                                     height: 200,
+                                    layout: 'fit',
                                     region: 'south',
-                                    split: true
+                                    split: true,
+                                    items:[
+                                        {
+                                            xtype: 'textarea',
+                                            value: 'The data displayed in the time and scatter plots are random test data. Please click on the "Export" button to examine real performance data.',
+                                            hidden: false
+                                        }
+                                    ]
                                 }
                         ]
                     }
