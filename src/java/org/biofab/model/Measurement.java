@@ -5,6 +5,8 @@
 
 package org.biofab.model;
 
+import java.sql.Time;
+
 /**
  *
  * @author cesarr
@@ -12,11 +14,11 @@ package org.biofab.model;
 public class Measurement
 {
     protected int       id;
-    protected String    time;
+    protected long      time;
     protected float     value;
 
     
-    public Measurement(int id, String time, float value)
+    public Measurement(int id, long time, float value)
     {
         this.id = id;
         this.time = time;
@@ -34,7 +36,7 @@ public class Measurement
     /**
      * @return the time
      */
-    public String getTime()
+    public long getTime()
     {
         return time;
     }

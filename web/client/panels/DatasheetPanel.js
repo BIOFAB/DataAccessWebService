@@ -92,7 +92,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
             this.construct = Ext.util.JSON.decode(response.responseText);
             panelConfig = {
                 xtype:'panel',
-                title: 'Bulk Gene Expression',
+                title: 'Bulk Gene Expression for ' + this.constructID,
                 layout: 'auto',
                 width: 400,
                 //height: 400,
@@ -127,7 +127,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         Ext4.regModel('Measurement', {
             fields: [
                 {name: 'id', type: 'int'},
-                {name: 'time', type: 'string'},
+                {name: 'time', type: 'int'},
                 {name: 'value', type: 'float'}
             ]
         });
@@ -145,29 +145,66 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
             theme: 'Category1',
             animate: false,
             store: store,
-            legend: {
-                position: 'bottom'
-            },
-            axes: [{
-                type: 'Numeric',
-                position: 'left',
-                fields: ['value'],
-                title: 'Fluorescence',
-                grid: true,
-                labelTitle: {font: '13px Arial'},
-                label: {font: '11px Arial'}
-            }],
+//            legend: {
+//                position: 'bottom'
+//            },
+            axes: [
+                {
+                    type: 'Numeric',
+                    position: 'left',
+                    fields: ['value'],
+                    title: 'Fluorescence (AU)',
+                    grid: false,
+                    labelTitle: {font: '13px Arial'},
+                    label: {font: '11px Arial'},
+                    minimum: 10
+                },
+//                {
+//                    type: 'Numeric',
+//                    position: 'right',
+//                    fields: ['value'],
+//                    title: 'Optical Density',
+//                    grid: false,
+//                    labelTitle: {font: '12px Arial'},
+//                    label: {font: '11px Arial'}
+//                },
+                {
+                    type: 'Numeric',
+                    position: 'bottom',
+                    fields: ['time'],
+                    title: 'Time (minutes)',
+                    //dateFormat: 'G:i',
+                    grid: false,
+                    labelTitle: {font: '12px Arial'},
+                    label: {font: '11px Arial'}
+                },
+
+            ],
             series: [{
                 title: 'Read 1',
                 type: 'line',
-                lineWidth: 4,
+                lineWidth: 2,
                 showMarkers: true,
-                fill: false,
+                fill: true,
                 axis: 'right',
-                xField: 'id',
+                xField: 'time',
                 yField: 'value',
-                style: {
-                    'stroke-width': 1
+//                style: {
+//                    'stroke-width': 1
+//                },
+                markerCfg: {
+                    type: 'circle',
+                    size: 3,
+                    radius: 3,
+                    'stroke-width': 0
+                },
+                tips: {
+                    trackMouse: true,
+                    width: 80,
+                    height: 40,
+                    renderer: function(storeItem, item) {
+                        this.setTitle(storeItem.get('value'));
+                    }
                 }
             }]
         };
@@ -229,14 +266,25 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
             flex: 1,
             animate: false,
             store: store1,
-            axes: [{
-                type: 'Numeric',
-                position: 'left',
-                fields: ['data1'],
-                title: 'Fluorescence',
-                labelTitle: {font: '13px Arial'},
-                label: {font: '11px Arial'}
-            }],
+            axes: [
+                {
+                    type: 'Numeric',
+                    position: 'left',
+                    fields: ['data1'],
+                    title: 'Fluorescence',
+                    labelTitle: {font: '12px Arial'},
+                    label: {font: '11px Arial'}
+                },
+                {
+                    type: 'Numeric',
+                    position: 'bottom',
+                    fields: ['data2'],
+                    title: 'Side Scatter',
+                    grid: false,
+                    labelTitle: {font: '12px Arial'},
+                    label: {font: '11px Arial'}
+                }
+            ],
             series: [{
                 type: 'scatter',
                 markerCfg: {

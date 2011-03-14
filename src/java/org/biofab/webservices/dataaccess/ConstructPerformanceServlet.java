@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.Time;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -98,7 +99,7 @@ public class ConstructPerformanceServlet extends DataAccessServlet
                     plateWell = resultSet.getString("plate_well");
 
                     statement = _connection.createStatement();
-                    queryString = "SELECT measurement.id, measurement.time, measurement." + plateWell.toLowerCase() + " AS value FROM measurement WHERE measurement.read_id = " + String.valueOf(readID);
+                    queryString = "SELECT measurement.id, measurement.time, measurement." + plateWell.toLowerCase() + " AS value FROM measurement WHERE measurement.read_id = " + String.valueOf(readID) + " ORDER BY measurement.time ASC";
                     ResultSet measurementResultSet = statement.executeQuery(queryString);
                     measurements = this.createMeasurementArray(measurementResultSet);
                     read = new Read(readID, readDate, readTypeCode, readTypeName, instrument, measurements);
@@ -189,17 +190,34 @@ public class ConstructPerformanceServlet extends DataAccessServlet
         Measurement             measurement = null;
         ArrayList<Measurement>  measurementArrayList = new ArrayList<Measurement>();
         Measurement[]           measurements = null;
-        String                  time;
         float                   value;
         int                     id;
+        Time                    time;
+        long                    minutes;
+        long                    firstTime = 0;
 
         while (resultSet.next())
         {
-            id = resultSet.getInt("id");
-            time = resultSet.getString("time");
-            value = resultSet.getFloat("value");
-            measurement = new Measurement(id, time, value);
-            measurementArrayList.add(measurement);
+            if(resultSet.isFirst())
+            {
+                time = resultSet.getTime("time");
+                firstTime = time.getTime()/1000/60;
+
+                id = resultSet.getInt("id");
+                value = resultSet.getFloat("value");
+                measurement = new Measurement(id, 0, value);
+                measurementArrayList.add(measurement);
+            }
+            else
+            {
+                time = resultSet.getTime("time");
+                minutes = (time.getTime()/1000/60) - firstTime;
+
+                id = resultSet.getInt("id");
+                value = resultSet.getFloat("value");
+                measurement = new Measurement(id, minutes, value);
+                measurementArrayList.add(measurement);
+            }
         }
 
         measurements = new Measurement[measurementArrayList.size()];

@@ -70,19 +70,9 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                             ]
                         },
                         items:[
-//                                {
-//                                    xtype:'panel',
-//                                    title: 'Bulk Gene Expression (Under Development)',
-//                                    layout: 'auto',
-//                                    width: 400,
-//                                    //height: 400,
-//                                    ref: '../../bulkGeneExpressionPanelRef',
-//                                    region: 'west',
-//                                    split: true
-//                                },
                                 {
                                     xtype:'panel',
-                                    title: 'Gene Expression per Cell',
+                                    title: 'Gene Expression per Cell (Under Development)',
                                     width: 400,
                                     //height: 400,
                                     ref:'../../geneExpressionPerCellPanelRef',
@@ -100,7 +90,7 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                                     items:[
                                         {
                                             xtype: 'textarea',
-                                            value: 'The data displayed in the time and scatter plots are random test data. Please click on the "Export" button to examine real performance data.',
+                                            value: 'The data displayed in the time plot are real data sets. The data in the scatter plot are random test data sets.',
                                             hidden: false
                                         }
                                     ]
