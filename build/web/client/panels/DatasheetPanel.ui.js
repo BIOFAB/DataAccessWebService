@@ -48,16 +48,16 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                         title: 'Performance',
                         layout: 'border',
                         autoscroll: true,
-                        ref: '../performPanelRef',
+                        ref: '../performancePanelRef',
                         tbar: {
                             xtype: 'toolbar',
-                            ref: '../../performPanelToolbar',
+                            ref: '../../performancePanelToolbar',
                             items: [
                                 {
                                     xtype: 'tbtext',
                                     text: 'Fetching Data...',
                                     hidden: true,
-                                    ref: '../../../performPanelTextRef'
+                                    ref: '../../../performancePanelTextRef'
                                 },
                                 {
                                     xtype: 'tbfill'
@@ -65,24 +65,24 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                                 {
                                     xtype: 'button',
                                     text: 'Export',
-                                    ref: '../../../performPanelExportButtonRef'
+                                    ref: '../../../performancePanelExportButtonRef'
                                 }
                             ]
                         },
                         items:[
+//                                {
+//                                    xtype:'panel',
+//                                    title: 'Bulk Gene Expression (Under Development)',
+//                                    layout: 'auto',
+//                                    width: 400,
+//                                    //height: 400,
+//                                    ref: '../../bulkGeneExpressionPanelRef',
+//                                    region: 'west',
+//                                    split: true
+//                                },
                                 {
                                     xtype:'panel',
-                                    title: 'Bulk Gene Expression (Under Development)',
-                                    layout: 'auto',
-                                    width: 400,
-                                    //height: 400,
-                                    ref: '../../bulkGeneExpressionPanelRef',
-                                    region: 'west',
-                                    split: true
-                                },
-                                {
-                                    xtype:'panel',
-                                    title: 'Gene Expression per Cell (Under Development)',
+                                    title: 'Gene Expression per Cell',
                                     width: 400,
                                     //height: 400,
                                     ref:'../../geneExpressionPerCellPanelRef',

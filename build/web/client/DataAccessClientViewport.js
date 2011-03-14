@@ -209,10 +209,10 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
  * 
  */	
 	
-	showDatasheet: function(componentID)
+	showDatasheet: function(constructID)
 	{		
             var datasheetPanel = new DatasheetPanel();
-            datasheetPanel.setComponentID(componentID);
+            datasheetPanel.setConstructID(constructID);
             var tab = this.infoTabPanel.add(datasheetPanel);
             this.infoTabPanel.setActiveTab(tab);
             //tab.renderData();

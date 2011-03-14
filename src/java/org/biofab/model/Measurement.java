@@ -11,19 +11,28 @@ package org.biofab.model;
  */
 public class Measurement
 {
+    protected int       id;
     protected String    time;
     protected float     value;
 
     
-    public Measurement(String time, float value) 
+    public Measurement(int id, String time, float value)
     {
+        this.id = id;
         this.time = time;
         this.value = value;
     }
-
     
     /**
-     * @return the _time
+     * @return th ID
+     */
+    public int getId()
+    {
+        return id;
+    }
+    
+    /**
+     * @return the time
      */
     public String getTime()
     {

@@ -98,7 +98,7 @@ public class ConstructPerformanceServlet extends DataAccessServlet
                     plateWell = resultSet.getString("plate_well");
 
                     statement = _connection.createStatement();
-                    queryString = "SELECT measurement.time, measurement." + plateWell.toLowerCase() + " AS value FROM measurement WHERE measurement.read_id = " + String.valueOf(readID);
+                    queryString = "SELECT measurement.id, measurement.time, measurement." + plateWell.toLowerCase() + " AS value FROM measurement WHERE measurement.read_id = " + String.valueOf(readID);
                     ResultSet measurementResultSet = statement.executeQuery(queryString);
                     measurements = this.createMeasurementArray(measurementResultSet);
                     read = new Read(readID, readDate, readTypeCode, readTypeName, instrument, measurements);
@@ -191,12 +191,14 @@ public class ConstructPerformanceServlet extends DataAccessServlet
         Measurement[]           measurements = null;
         String                  time;
         float                   value;
+        int                     id;
 
         while (resultSet.next())
         {
+            id = resultSet.getInt("id");
             time = resultSet.getString("time");
             value = resultSet.getFloat("value");
-            measurement = new Measurement(time, value);
+            measurement = new Measurement(id, time, value);
             measurementArrayList.add(measurement);
         }
 
