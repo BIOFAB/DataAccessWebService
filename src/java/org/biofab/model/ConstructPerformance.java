@@ -11,15 +11,16 @@ package org.biofab.model;
  */
 public class ConstructPerformance
 {
-    protected Read[]    reads;
+    protected Read[]            reads;
+    protected CytometerRead[]   cytometerReads;
 
 
     
-    public ConstructPerformance(Read[] reads)
+    public ConstructPerformance(Read[] reads, CytometerRead[] cytometerReads)
     {
         this.reads = reads;
+        this.cytometerReads = cytometerReads;
     }
-    
 
     /**
      * @return the _reads
@@ -35,5 +36,10 @@ public class ConstructPerformance
     public void setReads(Read[] reads)
     {
         this.reads = reads;
+    }
+
+    public CytometerRead[] getCytometerReads()
+    {
+        return cytometerReads;
     }
 }

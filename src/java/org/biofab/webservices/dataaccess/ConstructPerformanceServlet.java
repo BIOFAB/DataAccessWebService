@@ -8,8 +8,11 @@ package org.biofab.webservices.dataaccess;
 import org.biofab.model.Construct;
 import org.biofab.model.ConstructPerformance;
 import org.biofab.model.Read;
+import org.biofab.model.CytometerRead;
 import org.biofab.model.Instrument;
 import org.biofab.model.Measurement;
+import org.biofab.model.CytometerMeasurement;
+
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -106,8 +109,44 @@ public class ConstructPerformanceServlet extends DataAccessServlet
                     reads.add(read);
                 }
 
+                Statement cytoStatement = _connection.createStatement();
+                String cytoQueryString = "SELECT * FROM construct_cytometer_read_view WHERE UPPER(construct_cytometer_read_view.construct_biofab_id) = '" + constructIDParam.toUpperCase() + "' ORDER BY construct_cytometer_read_view.read_id ASC";
+                ResultSet cytoResultSet = statement.executeQuery(cytoQueryString);
+                ArrayList<CytometerRead>cytoReads = new ArrayList<CytometerRead>();
+
+                while (cytoResultSet.next())
+                {
+                    if(construct == null)
+                    {
+                        int cytoConstructID = cytoResultSet.getInt("construct_id");
+                        String cytoConstructBiofabID = cytoResultSet.getString("construct_biofab_id");
+                        construct = new Construct(cytoConstructID, cytoConstructBiofabID, null);
+                    }
+
+                    int cytoReadID = cytoResultSet.getInt("read_id");
+                    String cytoReadDate = cytoResultSet.getString("read_date");
+                    String cytoReadTypeCode = cytoResultSet.getString("read_type_code");
+                    String cytoReadTypeName = cytoResultSet.getString("read_type_name");
+                    String cytoInstrumentType = cytoResultSet.getString("instrument_type");
+                    String cytoInstrumentMake = cytoResultSet.getString("instrument_make");
+                    String cytoInstrumentModel = cytoResultSet.getString("instrument_model");
+                    Instrument cytoInstrument = new Instrument(cytoInstrumentType, cytoInstrumentMake, cytoInstrumentModel);
+                    String cytoPlateWell = cytoResultSet.getString("plate_well");
+
+                    cytoStatement = _connection.createStatement();
+                    cytoQueryString = "SELECT event.id, event.fluorescence,event.side_scatter,event.forward_scatter" + 
+                            " FROM event INNER JOIN cytometer_measurement ON event.cytometer_measurement_id = cytometer_measurement.id" +
+                            " WHERE well = '" + cytoPlateWell.toLowerCase() + "' AND cytometer_read_id = " + String.valueOf(cytoReadID);
+
+                    ResultSet cytoMeasurementResultSet = cytoStatement.executeQuery(cytoQueryString);
+                    CytometerMeasurement[] cytoMeasurements = this.createCytometerMeasurementArray(cytoMeasurementResultSet);
+                    CytometerRead cytoRead = new CytometerRead(cytoReadID, cytoReadDate, cytoReadTypeCode, cytoReadTypeName, cytoInstrument, cytoMeasurements);
+                    cytoReads.add(cytoRead);
+                }
+
                 readArray = new Read[reads.size()];
-                performance = new ConstructPerformance(reads.toArray(readArray));
+                CytometerRead[] cytoReadArray = new CytometerRead[cytoReads.size()];
+                performance = new ConstructPerformance(reads.toArray(readArray), cytoReads.toArray(cytoReadArray));
                 construct.setPerformance(performance);
 
                 if(format.equalsIgnoreCase("json"))
@@ -221,6 +260,32 @@ public class ConstructPerformanceServlet extends DataAccessServlet
         }
 
         measurements = new Measurement[measurementArrayList.size()];
+        measurements = measurementArrayList.toArray(measurements);
+
+        return measurements;
+    }
+
+    protected CytometerMeasurement[] createCytometerMeasurementArray(ResultSet resultSet) throws SQLException
+    {
+        CytometerMeasurement             measurement = null;
+        ArrayList<CytometerMeasurement>  measurementArrayList = new ArrayList<CytometerMeasurement>();
+        CytometerMeasurement[]           measurements = null;
+        long                    id;
+        float                   fluorescence;
+        float                   forwardScatter;
+        float                   sideScatter;
+
+        while (resultSet.next())
+        {
+            id = resultSet.getInt("id");
+            fluorescence = resultSet.getFloat("fluorescence");
+            forwardScatter = resultSet.getFloat("forward_scatter");
+            sideScatter = resultSet.getFloat("side_scatter");
+            measurement = new CytometerMeasurement(id, fluorescence, forwardScatter, sideScatter);
+            measurementArrayList.add(measurement);
+        }
+
+        measurements = new CytometerMeasurement[measurementArrayList.size()];
         measurements = measurementArrayList.toArray(measurements);
 
         return measurements;

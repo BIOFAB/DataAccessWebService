@@ -7,6 +7,7 @@
 DatasheetPanel = Ext.extend(DatasheetPanelUi,{
     constructID: null,
     construct: null,
+    displayWarning: true,
 
     initComponent: function()
     {
@@ -14,16 +15,20 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
 
         this.designPanelExportButtonRef.setHandler(this.designPanelExportButtonClickHandler, this);
         this.performancePanelExportButtonRef.setHandler(this.performancePanelExportButtonClickHandler, this);
-        
-        //this.performancePanelRef.on('afterrender', this.performancePanelAfterRenderHandler, this);
-        //this.bulkGeneExpressionPanelRef.on('afterrender', this.bulkGeneExpressionPanelAfterRenderHandler, this);
-        this.geneExpressionPerCellPanelRef.on('afterrender', this.geneExpressionPerCellPanelAfterRenderHandler, this);
+        this.displayAllEventsButtonRef.setHandler(this.displayAllEventsButtonClickHandler, this);
     },
 
     setConstructID: function(constructID)
     {
         this.constructID = constructID;
         this.setTitle(constructID);
+        this.fetchDesign(constructID);
+        this.fetchPerformance(constructID);
+    },
+
+    fetchData: function(constructID)
+    {
+        this.constructID = constructID;
         this.fetchDesign(constructID);
         this.fetchPerformance(constructID);
     },
@@ -90,20 +95,8 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         if(response.responseText.length > 0)
         {
             this.construct = Ext.util.JSON.decode(response.responseText);
-            panelConfig = {
-                xtype:'panel',
-                title: 'Bulk Gene Expression for ' + this.constructID,
-                layout: 'auto',
-                width: 400,
-                //height: 400,
-                ref: '../../bulkGeneExpressionPanelRef',
-                region: 'west',
-                split: true
-            }
-
-            this.performancePanelRef.add(panelConfig);
-            this.bulkGeneExpressionPanelRef.on('afterrender', this.bulkGeneExpressionPanelAfterRenderHandler, this);
-            this.performancePanelRef.doLayout();
+            this.displayTimeSeriesPlot(this.construct);
+            this.displayScatterPlot(this.construct, false);
         }
         else
         {
@@ -117,7 +110,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
        Ext.Msg.alert('Performance Fetch', 'There was an error while attempting to fetch the performance data.\n' + 'Error: ' + response.responseText);
     },
 
-    bulkGeneExpressionPanelAfterRenderHandler:function(component)
+    displayTimeSeriesPlot:function(construct)
     {
         var store;
         var chartConfig;
@@ -138,7 +131,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
             model: 'Measurement',
             data : measurements
         });
-        
+
         chartConfig = {
             flex: 1,
             xtype: 'chart',
@@ -208,8 +201,8 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
                 }
             }]
         };
-       
-        var element = component.getEl();
+
+        var element = this.bulkGeneExpressionPanelRef.getEl();
 
         newPanel = Ext4.ClassManager.instantiate('Ext.panel.Panel', {
             width: 400,
@@ -225,96 +218,135 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
             ]
         });
 
-        component.add(newPanel);
-        component.doLayout();
+        this.bulkGeneExpressionPanelRef.add(newPanel);
+        this.bulkGeneExpressionPanelRef.doLayout();
     },
 
-    geneExpressionPerCellPanelAfterRenderHandler: function(component)
+    displayScatterPlot: function(construct, displayAll)
     {
-        var chartConfig;
-        var newPanel;
+        var newStore;
+        var newChartConfig;
+        var anotherPanel;
+        var cytoMeasurements;
 
-        this.performancePanelTextRef.setVisible(true);
+        this.geneExpressionPerCellPanelRef.removeAll(true);
 
-        function generateData(n)
-        {
-            var data = [],
-            p = (Math.random() *  11) + 1,
-            i;
-            
-            for (i = 0; i < (n || 100); i++) {
-                data.push({
-                    data1: Math.floor(Math.max((Math.random() * 100), 20)),
-                    data2: Math.floor(Math.max((Math.random() * 100), 20))
-                });
-            }
-
-            return data;
-        }
-
-        var store1 = new Ext4.data.JsonStore({
-            fields: ['data1', 'data2'],
-            data: generateData()
-        });
-
-        store1.loadData(generateData());
-        var element = component.getEl();
-        
-        chartConfig = {
-            xtype: 'chart',
-            theme: 'Category1',
-            flex: 1,
-            animate: false,
-            store: store1,
-            axes: [
-                {
-                    type: 'Numeric',
-                    position: 'left',
-                    fields: ['data1'],
-                    title: 'Fluorescence',
-                    labelTitle: {font: '12px Arial'},
-                    label: {font: '11px Arial'}
-                },
-                {
-                    type: 'Numeric',
-                    position: 'bottom',
-                    fields: ['data2'],
-                    title: 'Side Scatter',
-                    grid: false,
-                    labelTitle: {font: '12px Arial'},
-                    label: {font: '11px Arial'}
-                }
-            ],
-            series: [{
-                type: 'scatter',
-                markerCfg: {
-                    radius: 1,
-                    size: 1
-                },
-                axis: 'left',
-                xField: 'data1',
-                yField: 'data2',
-                color: '#a00'
-            }]
-        };
-
-        newPanel = Ext4.ClassManager.instantiate('Ext.panel.Panel', {
-            width: 360,
-            height: 300,
-            renderTo: element.dom,
-            layout: 'fit',
-            items: [{
-                    flex: 1,
-                    xtype: 'container',
-                    layout: 'fit',
-                    items:[chartConfig]
-                }
+        Ext4.regModel('CytometerMeasurement', {
+            fields: [
+                {name: 'id', type: 'int'},
+                {name: 'fluorescence', type: 'float'},
+                {name: 'forwardScatter', type: 'float'},
+                {name: 'sideScatter', type: 'float'}
             ]
         });
 
-        component.add(newPanel);
-        component.doLayout();
-        this.performancePanelTextRef.setVisible(false);
+        if(this.construct !== null)
+        {
+            cytoMeasurements = construct.performance.cytometerReads[0].measurements;
+
+            var measurement = null;
+            var dataSet = [];
+            var dataCount = cytoMeasurements.length;
+            var randomIndex;
+            var shouldPush;
+
+            if(displayAll)
+            {
+                dataSet = cytoMeasurements;
+            }
+            else
+            {
+                for(var i = 0; i < 500; i += 1)
+                {
+                    shouldPush = true;
+                    randomIndex = Math.round((Math.random() * 1000000))%dataCount;
+                    measurement = cytoMeasurements[randomIndex];
+
+                    for(var j = 0; j < dataSet.length; j += 1)
+                    {
+                        if(dataSet[j] === randomIndex)
+                        {
+                           shouldPush = false;
+                        }
+                    }
+
+                    if(shouldPush)
+                    {
+                        dataSet.push(measurement);
+                    }
+                }
+            }
+
+            this.dataDisplayedTextRef.setText(dataSet.length + ' of ' + dataCount + ' Events Displayed');
+
+            newStore = new Ext4.data.Store({
+                model: 'CytometerMeasurement',
+                data : dataSet
+            });
+
+            var element = this.geneExpressionPerCellPanelRef.getEl();
+
+            newChartConfig = {
+                xtype: 'chart',
+                theme: 'Category1',
+                flex: 1,
+                animate: false,
+                store: newStore,
+                axes: [
+                    {
+                        type: 'Numeric',
+                        position: 'left',
+                        fields: ['forwardScatter'],
+                        title: 'Forward Scatter',
+                        labelTitle: {font: '12px Arial'},
+                        label: {font: '11px Arial'}
+                    },
+                    {
+                        type: 'Numeric',
+                        position: 'bottom',
+                        fields: ['fluorescence'],
+                        title: 'Fluorescence',
+                        grid: false,
+                        labelTitle: {font: '12px Arial'},
+                        label: {font: '11px Arial'}
+                    }
+                ],
+                series: [{
+                    type: 'scatter',
+                    markerCfg: {
+                        radius: 1,
+                        size: 1
+                    },
+                    axis: 'left',
+                    xField: 'fluorescence',
+                    yField: 'forwardScatter',
+                    color: '#a00'
+                }]
+            };
+
+            anotherPanel = Ext4.ClassManager.instantiate('Ext.panel.Panel', {
+                width: 360,
+                height: 300,
+                renderTo: element.dom,
+                layout: 'fit',
+                items: [{
+                        flex: 1,
+                        xtype: 'container',
+                        layout: 'fit',
+                        items:[newChartConfig]
+                    }
+                ]
+            });
+
+            this.geneExpressionPerCellPanelRef.add(anotherPanel);
+            this.geneExpressionPerCellPanelRef.doLayout();
+        }
+        else
+        {
+          Ext.Msg.alert('Performance Data', 'Data not available yet.');
+        }
+
+        this.displayAllEventsButtonRef.enable();
     },
 
     designPanelExportButtonClickHandler: function(button, event)
@@ -329,5 +361,16 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         var expWindow = window.open(WEB_SERVICE_BASE_URL + 'construct/performance' + "?id=" + this.constructID + "&format=json","JSON File for " + this.constructID,"width=640,height=480");
         expWindow.scrollbars.visible = true;
         expWindow.alert("Use File/Save As in the menu bar to save this document.");
+    },
+
+    displayAllEventsButtonClickHandler: function(button, event)
+    {
+//        if(this.displayWarning)
+//        {
+//            Ext.Msg.alert('Gene Expresssion per Cell', 'Displaying all the data can take upto 10 seconds.');
+//            this.displayWarning = false;
+//        }
+
+        this.displayScatterPlot(this.construct, true);
     }
 });

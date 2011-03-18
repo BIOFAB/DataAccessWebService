@@ -89,7 +89,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
         {
             this.constructsGridPanel.getStore().removeAll();
             this.constructsGridPanel.getStore().add(constructRecordsForDisplay);
-            this.constructsGridPanel.setTitle('Constructs with ' + description);
+            this.constructsGridPanel.setTitle('Constructs with ' + partID);
         }
         else
         {
@@ -212,10 +212,12 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 	showDatasheet: function(constructID)
 	{		
             var datasheetPanel = new DatasheetPanel();
-            datasheetPanel.setConstructID(constructID);
+            datasheetPanel.setTitle(constructID);
             var tab = this.infoTabPanel.add(datasheetPanel);
+            this.infoTabPanel.doLayout();
             this.infoTabPanel.setActiveTab(tab);
-            //tab.renderData();
+            tab.fetchData(constructID);
+            //datasheetPanel.setConstructID(constructID);
 	},
 
         showCollectionPanel: function( collectionRecord )
