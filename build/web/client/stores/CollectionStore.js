@@ -12,12 +12,17 @@ CollectionStore = Ext.extend(Ext.data.JsonStore, {
         cfg = cfg || {};
         CollectionStore.superclass.constructor.call(this, Ext.apply({
             storeId: 'aCollectionsStore',
-            root: 'collections',
+            //root: 'collections',
             url: '../collections?format=json',
             autoLoad: true,
             fields: [
                 {
                     name: 'id',
+                    allowBlank: false,
+                    type: 'int'
+                },
+                {
+                    name: 'biofabID',
                     allowBlank: false,
                     type: 'string'
                 },

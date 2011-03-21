@@ -15,7 +15,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
 
         this.designPanelExportButtonRef.setHandler(this.designPanelExportButtonClickHandler, this);
         this.performancePanelExportButtonRef.setHandler(this.performancePanelExportButtonClickHandler, this);
-        this.displayAllEventsButtonRef.setHandler(this.displayAllEventsButtonClickHandler, this);
+        this.showAllEventsButtonRef.setHandler(this.displayAllEventsButtonClickHandler, this);
     },
 
     setConstructID: function(constructID)
@@ -107,7 +107,10 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
     fetchPerformanceErrorHandler: function(response, opts)
     {
        this.performancePanelTextRef.setVisible(false);
-       Ext.Msg.alert('Performance Fetch', 'There was an error while attempting to fetch the performance data.\n' + 'Error: ' + response.responseText);
+       Ext.Msg.alert('Construct Performance', 'Construct Performance Data for ' + this.constructID + ' will be available in an upcoming release of the Data Access Client.');
+       this.performancePanelRef.hide();
+       this.performancePanelRef.disable();
+       this.datasheetTabPanel.setActiveTab(0);
     },
 
     displayTimeSeriesPlot:function(construct)
@@ -249,6 +252,12 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
             var dataCount = cytoMeasurements.length;
             var randomIndex;
             var shouldPush;
+            var sampleSize = Math.round(dataCount*.25);
+
+            if(sampleSize > 1000)
+            {
+                sampleSize = 1000;
+            }
 
             if(displayAll)
             {
@@ -256,7 +265,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
             }
             else
             {
-                for(var i = 0; i < 500; i += 1)
+                for(var i = 0; i < sampleSize; i += 1)
                 {
                     shouldPush = true;
                     randomIndex = Math.round((Math.random() * 1000000))%dataCount;
@@ -346,7 +355,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
           Ext.Msg.alert('Performance Data', 'Data not available yet.');
         }
 
-        this.displayAllEventsButtonRef.enable();
+        this.showAllEventsButtonRef.enable();
     },
 
     designPanelExportButtonClickHandler: function(button, event)

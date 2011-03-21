@@ -11,15 +11,20 @@ ConstructDisplayStore = Ext.extend(Ext.data.JsonStore, {
     constructor: function(cfg) {
         cfg = cfg || {};
         ConstructDisplayStore.superclass.constructor.call(this, Ext.apply({
-            root: 'constructs',
-            url: '../constructs?collectionid=1&format=json',
+            //root: 'constructs',
+            url: '../constructs?format=json',
             autoLoad: true,
             storeId: 'constructDisplayStore',
             fields: [
                 {
+                    name: 'collection_id',
+                    allowBlank: false,
+                    type: 'int'
+                },
+                {
                     name: 'id',
                     allowBlank: false,
-                    type: 'string'
+                    type: 'int'
                 },
                 {
                     name: 'biofab_id',
@@ -29,10 +34,6 @@ ConstructDisplayStore = Ext.extend(Ext.data.JsonStore, {
                 {
                     name: 'description',
                     allowBlank: false,
-                    type: 'string'
-                },
-                {
-                    name: 'reporter',
                     type: 'string'
                 },
                 {

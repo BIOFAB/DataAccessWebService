@@ -34,9 +34,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
         this.cdsButtonRef.setHandler(this.cdsButtonClickHandler, this);
 
 	this.constructsGridPanel.getStore().on('load', this.constructStoreForDisplayLoadHandler, this);
-        this.constructHasPartStore = new ConstructHasPartStore();
-
-        //this.performanceStore = new PerformanceStore();
+        this.constructPartStore = new ConstructPartStore();
 
         this.collectionsGridExportButtonRef.setHandler(this.collectionsGridExportButtonClickHandler, this);
         this.partsGridExportButton.setHandler(this.partsGridExportButtonClickHandler, this);
@@ -49,8 +47,25 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 
     collectionsGridRowSelectHandler: function(selectModel, rowIndex, record)
     {
-	var collectionName = record.get('name');
-        this.partsGridPanelRef.setTitle(collectionName + ' Parts');
+	var id = record.get('id');
+        
+        //var partStore = this.partsGridPanelRef.getStore();
+        //this.partsGridPanelRef.setTitle(collectionName + ' Parts');
+
+        this.constructsGridPanel.getStore().clearFilter();
+        this.repopulateConstructStore();
+        var constructStore = this.constructsGridPanel.getStore();
+
+        constructStore.filter([
+        {
+            property     : 'collection_id',
+            value        : id,
+            anyMatch     : true,
+            //caseSensitive: true,
+            exactMatch: true
+        }]);
+
+        var collectionName = record.get('name');
         this.constructsGridPanel.setTitle(collectionName + ' Constructs');
         this.showCollectionPanel(record);
     },
@@ -65,16 +80,16 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
         var constructRecords = null;
         var constructRecordsForDisplay = [];
         var relationPartID = null;
-        var relationsCount = this.constructHasPartStore.getCount();
+        var relationsCount = this.constructPartStore.getCount();
 
         for(var i = 0; i < relationsCount; i += 1)
         {
-            relationRecord = this.constructHasPartStore.getAt(i);
-            relationPartID = relationRecord.get("part");
+            relationRecord = this.constructPartStore.getAt(i);
+            relationPartID = relationRecord.get("partID");
 
             if(relationPartID.toUpperCase() === partID.toUpperCase())
             {
-                    constructID = relationRecord.get("construct");
+                    constructID = relationRecord.get("constructID");
                     constructRecords = this.constructStore.query('biofab_id', new RegExp(constructID), false, false, true);
                     constructRecord = constructRecords.itemAt(0);
 
@@ -101,8 +116,28 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 	
         constructsGridRowSelectHandler: function(selectModel, rowIndex, record)
 	{
-	    var id = record.get("biofab_id");
-	    this.showDatasheet(id);
+	    var biofabID = record.get("biofab_id");
+            var id = record.get('id');
+
+//            if(id === 2)
+//            {
+//                Ext.Msg.alert('Modular Promoter Library', 'At this time, only the promoter sequences are available for the constructs in the Modular Promoter Library.\n'+
+//                'The complete sequence with annotations will be available in an upcoming release of the Data Access Client.');
+//            }
+//
+//            if(id === 3)
+//            {
+//                Ext.Msg.alert('Random Promoter Library', 'At this time, only the promoter sequences are available for the constructs in the Random Promoter Library.\n'+
+//                'The complete sequence with annotations will be available in an upcoming release of the Data Access Client.');
+//            }
+//
+//            if(id === 4)
+//            {
+//                Ext.Msg.alert('Terminator Library', 'At this time, only the terminator sequences are available for the constructs in the Terminator Library.\n'+
+//                'The complete sequence with annotations will be available in an upcoming release of the Data Access Client.');
+//            }
+
+	    this.showDatasheet(biofabID);
 	},
 
         constructStoreForDisplayLoadHandler: function(store, records, options)
@@ -157,8 +192,13 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 
         showAllConstructsButtonClickHandler: function(button, event)
         {
-            //Refactor!!!
+            this.constructsGridPanel.getStore().clearFilter();
+            this.repopulateConstructStore();
+        },
 
+        //Refactor!!!
+        repopulateConstructStore:function()
+        {
             var record = null;
             var constructRecordsForDisplay = [];
             var count = this.constructStore.getCount();
@@ -222,9 +262,51 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 
         showCollectionPanel: function( collectionRecord )
         {
-            var collectionPanel = new PilotProjectPanel();
-            collectionPanel.setCollectionRecord(collectionRecord);
-            var newTab = this.infoTabPanel.add(collectionPanel);
-            this.infoTabPanel.setActiveTab(newTab);
+            var id = collectionRecord.get('id');
+            var collectionPanel;
+            var tab;
+
+            if(id === 1)
+            {
+                collectionPanel = new PilotProjectPanel();
+                collectionPanel.setCollectionRecord(collectionRecord);
+                tab = this.infoTabPanel.add(collectionPanel);
+                this.infoTabPanel.doLayout();
+                this.infoTabPanel.setActiveTab(tab);
+
+            }
+
+            if(id === 2)
+            {
+//                collectionPanel = new ModularPromoterPanel();
+//                tab = this.infoTabPanel.add(collectionPanel);
+//                this.infoTabPanel.setActiveTab(tab);
+//                collectionPanel.setCollectionRecord(collectionRecord);
+//                this.infoTabPanel.setActiveTab(tab);
+
+                Ext.Msg.alert('Modular Promoter Library', 'A collection performance panel for the Modular Promoter Library is under development and will be added to the Data Access Client in an upcoming release.');
+            }
+
+            if(id === 3)
+            {
+//                collectionPanel = new ModularPromoterPanel();
+//                tab = this.infoTabPanel.add(collectionPanel);
+//                this.infoTabPanel.setActiveTab(tab);
+//                collectionPanel.setCollectionRecord(collectionRecord);
+//                this.infoTabPanel.setActiveTab(tab);
+
+                Ext.Msg.alert('Random Promoter Library', 'A collection performance panel for the Random Promoter Library is under development and will be added to the Data Access Client in an upcoming release.');
+            }
+
+            if(id === 4)
+            {
+//                collectionPanel = new ModularPromoterPanel();
+//                tab = this.infoTabPanel.add(collectionPanel);
+//                this.infoTabPanel.setActiveTab(tab);
+//                collectionPanel.setCollectionRecord(collectionRecord);
+//                this.infoTabPanel.setActiveTab(tab);
+
+                Ext.Msg.alert('Terminator Library', 'A collection performance panel for the Terminator Library is under development and will be added to the Data Access Client in an upcoming release.');
+            }
         }
 });

@@ -75,7 +75,30 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                                     //height: 400,
                                     ref: '../../bulkGeneExpressionPanelRef',
                                     region: 'center',
-                                    split: true
+                                    split: true,
+                                    bbar: {
+                                            xtype: 'toolbar',
+                                            ref: '../../../bulkGeneExpressionPanelToolbar',
+                                            height: 30,
+                                            items: [
+//                                                {
+//                                                    xtype: 'tbtext',
+//                                                    text: 'Events Displayed',
+//                                                    hidden: false,
+//                                                    ref: '../../../../dataDisplayedTextRef'
+//                                                },
+//                                                {
+//                                                    xtype: 'tbfill'
+//                                                },
+//                                                {
+//                                                    xtype: 'button',
+//                                                    text: 'Display All',
+//                                                    disabled: true,
+//                                                    tooltip: 'Display all the events',
+//                                                    ref: '../../../../displayAllEventsButtonRef'
+//                                                }
+                                            ]
+                                    }
                                 },
                                 {
                                     xtype:'panel',
@@ -88,6 +111,7 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                                     bbar: {
                                             xtype: 'toolbar',
                                             ref: '../../../geneExpressionPerCellPanelToolbar',
+                                            height: 30,
                                             items: [
                                                 {
                                                     xtype: 'tbtext',
@@ -100,10 +124,10 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                                                 },
                                                 {
                                                     xtype: 'button',
-                                                    text: 'Display All',
+                                                    text: 'Show All',
                                                     disabled: true,
                                                     tooltip: 'Display all the events',
-                                                    ref: '../../../../displayAllEventsButtonRef'
+                                                    ref: '../../../../showAllEventsButtonRef'
                                                 }
                                             ]
                                     }
@@ -118,32 +142,34 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                                     items:[
                                     {
                                         xtype:'panel',
-                                        title: 'Data Acquisition Notes',
+                                        title: 'Data Acquisition Information',
                                         layout: 'fit',
-                                        width: 450,
+                                        //width: 450,
                                         ref: '../../notesPanelRef',
-                                        region: 'west',
+                                        region: 'center',
                                         split: true,
                                         items:[
                                             {
                                                 xtype: 'textarea',
-                                                value: 'Data acquisition notes are displayed here.',
+                                                value: 'Data acquisition information will be provided in this space in an upcoming release of the Data Access Client.\n'
+                                                        +'The data for replicate measurements will also be made available.\n'
+                                                        +'The optical density measured during bulk gene expression will be added today.',
                                                 hidden: false,
                                                 ref: '../../../notesTextAreaRef'
                                             }
                                         ]
 
-                                    },
-                                    {
-                                        xtype:'panel',
-                                        title: 'Data Acquisition Information List',
-                                        ref:'../../infoListPanelRef',
-                                        region: 'center',
-                                        split: true,
-                                        items:[
-                                            
-                                        ]
-                                    }
+                                    }//,
+//                                    {
+//                                        xtype:'panel',
+//                                        title: 'Data Acquisition Information List',
+//                                        ref:'../../infoListPanelRef',
+//                                        region: 'center',
+//                                        split: true,
+//                                        items:[
+//
+//                                        ]
+//                                    }
                                     ]
                                 }
                         ]
