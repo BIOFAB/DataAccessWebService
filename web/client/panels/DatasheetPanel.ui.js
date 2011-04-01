@@ -68,98 +68,108 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                         },
                         items:[
                                 {
-                                    xtype:'panel',
-                                    title: 'Bulk Gene Expression',
-                                    layout: 'auto',
-                                    width: 400,
-                                    //height: 500,
-                                    ref: '../../bulkGeneExpressionPanelRef',
+                                    xtype: 'tabpanel',
+                                    activeTab: 0,
                                     region: 'center',
+                                    layout: 'fit',
                                     split: true,
-                                    bbar: {
-                                            xtype: 'toolbar',
-                                            ref: '../../../bulkGeneExpressionPanelToolbar',
-                                            height: 30,
-                                            items: [
-//                                                {
-//                                                    xtype: 'tbtext',
-//                                                    text: 'Events Displayed',
-//                                                    hidden: false,
-//                                                    ref: '../../../../dataDisplayedTextRef'
-//                                                },
-//                                                {
-//                                                    xtype: 'tbfill'
-//                                                },
-//                                                {
-//                                                    xtype: 'button',
-//                                                    text: 'Display All',
-//                                                    disabled: true,
-//                                                    tooltip: 'Display all the events',
-//                                                    ref: '../../../../displayAllEventsButtonRef'
-//                                                }
-                                            ]
-                                    }
-                                },
-                                {
-                                    xtype:'panel',
-                                    title: 'Gene Expression per Cell',
-                                    width: 400,
-                                    //height: 500,
-                                    ref:'../../geneExpressionPerCellPanelRef',
-                                    region: 'east',
-                                    split: true,
-                                    bbar: {
-                                            xtype: 'toolbar',
-                                            ref: '../../../geneExpressionPerCellPanelToolbar',
-                                            height: 30,
-                                            items: [
-                                                {
-                                                    xtype: 'tbtext',
-                                                    text: 'Events Displayed',
-                                                    hidden: false,
-                                                    ref: '../../../../dataDisplayedTextRef'
-                                                },
-                                                {
-                                                    xtype: 'tbfill'
-                                                },
-                                                {
-                                                    xtype: 'button',
-                                                    text: 'Show All',
-                                                    disabled: true,
-                                                    tooltip: 'Display all the events',
-                                                    ref: '../../../../showAllEventsButtonRef'
-                                                }
-                                            ]
-                                    }
-                                },
-                                {
-                                    xtype:'panel',
-                                    title: '',
-                                    height: 300,
-                                    region: 'south',
-                                    split: true,
-                                    layout: 'border',
-                                    items:[
+                                    ref: 'performancePlotsTabPanelRef',
+                                    items: [
                                     {
                                         xtype:'panel',
-                                        title: 'Data Acquisition Information',
-                                        layout: 'fit',
-                                        //width: 450,
-                                        ref: '../../notesPanelRef',
-                                        region: 'center',
-                                        split: true,
-                                        items:[
-                                            {
-                                                xtype: 'textarea',
-                                                value: 'Data acquisition information will be provided in this space in an upcoming release of the Data Access Client.\n'
-                                                        +'The data for replicate measurements will also be made available.\n'
-                                                        +'The optical density measured during bulk gene expression will be added today.',
-                                                hidden: false,
-                                                ref: '../../../notesTextAreaRef'
-                                            }
-                                        ]
+                                        title: 'Bulk Gene Expression',
+                                        layout: 'auto',
+                                        //width: 400,
+                                        //height: 500,
+                                        ref: '../../bulkGeneExpressionPanelRef',
+                                        //region: 'center',
+                                        //split: true,
+                                        bbar: {
+                                                xtype: 'toolbar',
+                                                ref: '../../../bulkGeneExpressionPanelToolbar',
+                                                height: 30,
+                                                items: [
+    //                                                {
+    //                                                    xtype: 'tbtext',
+    //                                                    text: 'Events Displayed',
+    //                                                    hidden: false,
+    //                                                    ref: '../../../../dataDisplayedTextRef'
+    //                                                },
+    //                                                {
+    //                                                    xtype: 'tbfill'
+    //                                                },
+    //                                                {
+    //                                                    xtype: 'button',
+    //                                                    text: 'Display All',
+    //                                                    disabled: true,
+    //                                                    tooltip: 'Display all the events',
+    //                                                    ref: '../../../../displayAllEventsButtonRef'
+    //                                                }
+                                                ]
+                                        }
+                                    },
+                                    {
+                                        xtype:'panel',
+                                        title: 'Gene Expression per Cell',
+                                        //width: 400,
+                                        //height: 500,
+                                        ref:'../../geneExpressionPerCellPanelRef',
+                                        //region: 'east',
+                                        //split: true,
+                                        bbar: {
+                                                xtype: 'toolbar',
+                                                ref: '../../../geneExpressionPerCellPanelToolbar',
+                                                height: 30,
+                                                items: [
+                                                    {
+                                                        xtype: 'tbtext',
+                                                        text: 'Events Displayed',
+                                                        hidden: false,
+                                                        ref: '../../../../dataDisplayedTextRef'
+                                                    },
+                                                    {
+                                                        xtype: 'tbfill'
+                                                    },
+                                                    {
+                                                        xtype: 'button',
+                                                        text: 'Show All',
+                                                        disabled: true,
+                                                        tooltip: 'Display all the events',
+                                                        ref: '../../../../showAllEventsButtonRef'
+                                                    }
+                                                ]
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                xtype:'panel',
+                                title: '',
+                                height: 200,
+                                region: 'south',
+                                split: true,
+                                layout: 'border',
+                                items:[
+                                {
+                                    xtype:'panel',
+                                    title: 'Data Acquisition Information',
+                                    layout: 'fit',
+                                    //width: 450,
+                                    ref: '../../notesPanelRef',
+                                    region: 'center',
+                                    split: true,
+                                    items:[
+                                        {
+                                            xtype: 'textarea',
+                                            value: 'Data acquisition information will be provided in this space in an upcoming release of the Data Access Client.\n'
+                                                    +'The data for replicate measurements will also be made available.\n'
+                                                    +'The optical density measured during bulk gene expression will be displayed next week.  If you click on the "Export" button you can examine the optical density data in JSON format.',
+                                            hidden: false,
+                                            ref: '../../../notesTextAreaRef'
+                                        }
+                                    ]
 
-                                    }//,
+                                }//,
 //                                    {
 //                                        xtype:'panel',
 //                                        title: 'Data Acquisition Information List',
@@ -170,8 +180,8 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
 //
 //                                        ]
 //                                    }
-                                    ]
-                                }
+                                ]
+                            }
                         ]
                     }
                 ]

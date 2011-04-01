@@ -5,6 +5,8 @@
 
 package org.biofab.webservices.dataaccess;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.biofab.model.Construct;
 import org.biofab.model.ConstructPerformance;
 import org.biofab.model.Read;
@@ -26,8 +28,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gson.Gson;
-
 
 @WebServlet(name="ConstructPerformanceServlet", urlPatterns={"/construct/performance/*"})
 public class ConstructPerformanceServlet extends DataAccessServlet
@@ -48,10 +48,9 @@ public class ConstructPerformanceServlet extends DataAccessServlet
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         Statement               statement = null;
-        //Statement               secondStatement = null;
+        Statement               cytoStatement = null;
         String                  constructIDParam = request.getParameter("id");
         String                  format = request.getParameter("format");
-        String                  responseString = null;
         String                  queryString = null;
         Construct               construct = null;
         ConstructPerformance    performance = null;
@@ -78,9 +77,13 @@ public class ConstructPerformanceServlet extends DataAccessServlet
             {
                 _connection = DriverManager.getConnection(_jdbcDriver, _user, _password);
                 statement = _connection.createStatement();
+                cytoStatement = _connection.createStatement();
                 queryString = "SELECT * FROM construct_read_view WHERE UPPER(construct_read_view.construct_biofab_id) = '" + constructIDParam.toUpperCase() + "' ORDER BY construct_read_view.read_id ASC";
+                String cytoQueryString = "SELECT * FROM construct_cytometer_read_view WHERE UPPER(construct_cytometer_read_view.construct_biofab_id) = '" + constructIDParam.toUpperCase() + "' ORDER BY construct_cytometer_read_view.read_id ASC";
                 ResultSet resultSet = statement.executeQuery(queryString);
+                ResultSet cytoResultSet = cytoStatement.executeQuery(cytoQueryString);
                 reads = new ArrayList<Read>();
+                ArrayList<CytometerRead>cytoReads = new ArrayList<CytometerRead>();
 
                 while (resultSet.next())
                 {
@@ -109,11 +112,6 @@ public class ConstructPerformanceServlet extends DataAccessServlet
                     reads.add(read);
                 }
 
-                Statement cytoStatement = _connection.createStatement();
-                String cytoQueryString = "SELECT * FROM construct_cytometer_read_view WHERE UPPER(construct_cytometer_read_view.construct_biofab_id) = '" + constructIDParam.toUpperCase() + "' ORDER BY construct_cytometer_read_view.read_id ASC";
-                ResultSet cytoResultSet = statement.executeQuery(cytoQueryString);
-                ArrayList<CytometerRead>cytoReads = new ArrayList<CytometerRead>();
-
                 while (cytoResultSet.next())
                 {
                     if(construct == null)
@@ -134,7 +132,7 @@ public class ConstructPerformanceServlet extends DataAccessServlet
                     String cytoPlateWell = cytoResultSet.getString("plate_well");
 
                     cytoStatement = _connection.createStatement();
-                    cytoQueryString = "SELECT event.id, event.fluorescence,event.side_scatter,event.forward_scatter" + 
+                    cytoQueryString = "SELECT event.id, event.fluorescence,event.side_scatter,event.forward_scatter" +
                             " FROM event INNER JOIN cytometer_measurement ON event.cytometer_measurement_id = cytometer_measurement.id" +
                             " WHERE well = '" + cytoPlateWell.toLowerCase() + "' AND cytometer_read_id = " + String.valueOf(cytoReadID);
 
@@ -144,22 +142,39 @@ public class ConstructPerformanceServlet extends DataAccessServlet
                     cytoReads.add(cytoRead);
                 }
 
-                readArray = new Read[reads.size()];
-                CytometerRead[] cytoReadArray = new CytometerRead[cytoReads.size()];
-                performance = new ConstructPerformance(reads.toArray(readArray), cytoReads.toArray(cytoReadArray));
-                construct.setPerformance(performance);
-
-                if(format.equalsIgnoreCase("json"))
+                if(reads.size() > 0)
                 {
-                   responseString = generateJSON(construct);
-                   this.textSuccess(response, responseString);
+                    readArray = new Read[reads.size()];
+
+                    if(cytoReads.size() > 0)
+                    {
+                        CytometerRead[] cytoReadArray = new CytometerRead[cytoReads.size()];
+                        performance = new ConstructPerformance(reads.toArray(readArray), cytoReads.toArray(cytoReadArray));
+                        construct.setPerformance(performance);
+                        respond(response, construct, format);
+                    }
+                    else
+                    {
+                        performance = new ConstructPerformance(reads.toArray(readArray), null);
+                        construct.setPerformance(performance);
+                        respond(response, construct, format);
+                    }
                 }
                 else
                 {
-//                   responseString = generateCSV(resultSet);
-//                   this.textSuccess(response, responseString);
+                    if(cytoReads.size() > 0)
+                    {
+                        CytometerRead[] cytoReadArray = new CytometerRead[cytoReads.size()];
+                        performance = new ConstructPerformance(null, cytoReads.toArray(cytoReadArray));
+                        construct.setPerformance(performance);
+                        respond(response, construct, format);
+                    }
+                    else
+                    {
+                        this.textError(response, "Performance data is not available.");
+                    }
                 }
-
+                
             }
             catch (SQLException ex)
             {
@@ -309,19 +324,43 @@ public class ConstructPerformanceServlet extends DataAccessServlet
         return responseText.toString();
     }
 
-    protected String generateJSON(Construct construct)
+    protected void respond(HttpServletResponse response, Construct construct, String format)
     {
-        Gson    gson;
-        String  responseString;
-        
-        gson = new Gson();
-        responseString = gson.toJson(construct);
+        String responseString;
 
-        if(responseString == null || responseString.length() == 0)
+        try
         {
-            //Throw exception
-        }
+            if(format.equalsIgnoreCase("json"))
+            {
+               responseString = generateJSON(construct);
+               this.textSuccess(response, responseString);
 
-        return responseString;
+            }
+            else
+            {
+               responseString = generateJSON(construct);
+               this.textSuccess(response, responseString);
+            }
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(ConstructPerformanceServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
+
+//    protected String generateJSON(Construct construct)
+//    {
+//        Gson    gson;
+//        String  responseString;
+//
+//        gson = new Gson();
+//        responseString = gson.toJson(construct);
+//
+//        if(responseString == null || responseString.length() == 0)
+//        {
+//            //Throw exception
+//        }
+//
+//        return responseString;
+//    }
 }

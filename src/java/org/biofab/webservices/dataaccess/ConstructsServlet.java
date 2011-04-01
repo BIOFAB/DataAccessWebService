@@ -7,7 +7,6 @@ package org.biofab.webservices.dataaccess;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -37,16 +36,31 @@ public class ConstructsServlet extends DataAccessServlet
     throws ServletException, IOException
     {
         Statement statement = null;
-        //String collectionID = request.getParameter("collectionid");
+        String collectionID = request.getParameter("collectionid");
         String format = request.getParameter("format");
         String responseString = null;
+        String queryString = null;
 
-        
+        //TODO Do regex validation of collectionid
+
+        if(collectionID != null && collectionID.length() > 0)
+        {
+            queryString = "SELECT * FROM construct_performance_summary_view "
+                    + "WHERE construct_performance_summary_view.collection_id = " + collectionID
+                    + "ORDER BY construct_performance_summary_view.bulk_gene_expression DESC;";
+        }
+        else
+        {
+            queryString = "SELECT * FROM construct_performance_summary_view "
+                    + "ORDER BY construct_performance_summary_view.bulk_gene_expression DESC;";
+        }
+
+
         try
         {
             _connection = DriverManager.getConnection(_jdbcDriver, _user, _password);
             statement = _connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM construct_performance_summary_view ORDER BY construct_performance_summary_view.bulk_gene_expression DESC");
+            ResultSet resultSet = statement.executeQuery(queryString);
 
             if(format.equalsIgnoreCase("json"))
             {

@@ -23,10 +23,10 @@ import org.biojavax.SimpleNote;
 import org.biojavax.SimpleRichAnnotation;
 import org.biojavax.bio.seq.RichSequence;
 
-import org.sbolstandard.libSBOLj.SBOLutil;
-import org.sbolstandard.libSBOLj.DnaComponent;
-import org.sbolstandard.libSBOLj.Library;
-import org.sbolstandard.libSBOLj.SbolService;
+//import org.sbolstandard.libSBOLj.SBOLutil;
+//import org.sbolstandard.libSBOLj.DnaComponent;
+//import org.sbolstandard.libSBOLj.Library;
+//import org.sbolstandard.libSBOLj.SbolService;
 
 @SuppressWarnings("serial")
 @WebServlet(name="ConstructDesignServlet", urlPatterns={"/construct/design/*"})

@@ -159,7 +159,7 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                 {
                                     xtype: 'button',
                                     text: 'Export',
-                                    tooltip: 'Export all the parts in CSV format',
+                                    tooltip: 'Export all the parts in JSON format',
                                     ref: '../../../partsGridExportButton',
                                     id: 'partsGridExportButton'
                                 }
@@ -171,7 +171,7 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                         columns: [
                             {
                                 xtype: 'gridcolumn',
-                                dataIndex: 'id',
+                                dataIndex: 'biofabID',
                                 header: 'Identifier',
                                 sortable: true,
                                 width: 80,
@@ -183,7 +183,7 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                 sortable: true,
                                 width: 100,
                                 editable: false,
-                                dataIndex: 'type'
+                                dataIndex: 'biofabType'
                             },
                             {
                                 xtype: 'gridcolumn',

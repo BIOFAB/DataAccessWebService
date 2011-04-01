@@ -118,17 +118,47 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         var store;
         var chartConfig;
         var newPanel;
-        var measurements;
+        var measurements = [];
+        var measurementsCount = this.construct.performance.reads[1].measurements.length;
+        var measurement;
+        var fluorescenceID,
+            fluorescenceTime,
+            fluorescence,
+            odID,
+            odTime,
+            od;
 
         Ext4.regModel('Measurement', {
             fields: [
-                {name: 'id', type: 'int'},
-                {name: 'time', type: 'int'},
-                {name: 'value', type: 'float'}
+                {name: 'fluorescenceID', type: 'int'},
+                {name: 'fluorescenceTime', type: 'int'},
+                {name: 'fluorescence', type: 'float'},
+                {name: 'odID', type: 'int'},
+                {name: 'odTime', type: 'int'},
+                {name: 'od', type: 'float'}
             ]
         });
 
-        measurements = this.construct.performance.reads[1].measurements;
+        for(var i = 0; i < measurementsCount; i += 1)
+        {
+            fluorescenceID = this.construct.performance.reads[1].measurements[i].id;
+            fluorescenceTime = this.construct.performance.reads[1].measurements[i].time;
+            fluorescence = this.construct.performance.reads[1].measurements[i].value;
+            odID = this.construct.performance.reads[0].measurements[i].id;
+            odTime = this.construct.performance.reads[0].measurements[i].time;
+            od = this.construct.performance.reads[0].measurements[i].value;
+
+            measurement = {
+                fluorescenceID: fluorescenceID,
+                fluorescenceTime: fluorescenceTime,
+                fluorescence: fluorescence,
+                odID: odID,
+                odTime: odTime,
+                od: od
+            }
+
+            measurements.push(measurement);
+        }
 
         store = new Ext4.data.Store({
             model: 'Measurement',
@@ -148,26 +178,26 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
                 {
                     type: 'Numeric',
                     position: 'left',
-                    fields: ['value'],
+                    fields: ['fluorescence'],
                     title: 'Fluorescence (AU)',
                     grid: false,
-                    labelTitle: {font: '13px Arial'},
-                    label: {font: '11px Arial'},
-                    minimum: 10
+                    labelTitle: {font: '12px Arial'},
+                    label: {font: '11px Arial'}
+                    //minimum: 10
                 },
-//                {
-//                    type: 'Numeric',
-//                    position: 'right',
-//                    fields: ['value'],
-//                    title: 'Optical Density',
-//                    grid: false,
-//                    labelTitle: {font: '12px Arial'},
-//                    label: {font: '11px Arial'}
-//                },
+                {
+                    type: 'Numeric',
+                    position: 'right',
+                    fields: ['od'],
+                    title: 'Optical Density (Absorbance at 600 nm)',
+                    grid: false,
+                    labelTitle: {font: '12px Arial'},
+                    label: {font: '11px Arial'}
+                },
                 {
                     type: 'Numeric',
                     position: 'bottom',
-                    fields: ['time'],
+                    fields: ['fluorescenceTime','odTime'],
                     title: 'Time (minutes)',
                     //dateFormat: 'G:i',
                     grid: false,
@@ -177,21 +207,21 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
 
             ],
             series: [{
-                title: 'Read 1',
+                title: 'Replicate 1 - Fluorescence',
                 type: 'line',
                 lineWidth: 2,
                 showMarkers: true,
                 fill: true,
-                axis: 'right',
-                xField: 'time',
-                yField: 'value',
+                axis: 'left',
+                xField: 'fluorescenceTime',
+                yField: 'fluorescence',
 //                style: {
 //                    'stroke-width': 1
 //                },
                 markerCfg: {
                     type: 'circle',
-                    size: 3,
-                    radius: 3,
+                    size: 2,
+                    radius: 2,
                     'stroke-width': 0
                 },
                 tips: {
@@ -199,10 +229,38 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
                     width: 80,
                     height: 40,
                     renderer: function(storeItem, item) {
-                        this.setTitle(storeItem.get('value'));
+                        this.setTitle(storeItem.get('fluorescence'));
                     }
                 }
-            }]
+            },
+            {
+                title: 'Replicate 1 - OD',
+                type: 'line',
+                lineWidth: 2,
+                showMarkers: true,
+                fill: true,
+                axis: 'right',
+                xField: 'odTime',
+                yField: 'od',
+//                style: {
+//                    'stroke-width': 1
+//                },
+                markerCfg: {
+                    type: 'circle',
+                    size: 2,
+                    radius: 2,
+                    'stroke-width': 0
+                },
+                tips: {
+                    trackMouse: true,
+                    width: 80,
+                    height: 40,
+                    renderer: function(storeItem, item) {
+                        this.setTitle(storeItem.get('od'));
+                    }
+                }
+            }
+        ]
         };
 
         var element = this.bulkGeneExpressionPanelRef.getEl();

@@ -47,32 +47,45 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 
     collectionsGridRowSelectHandler: function(selectModel, rowIndex, record)
     {
-	var id = record.get('id');
+        var id = record.get('id');
         
-        //var partStore = this.partsGridPanelRef.getStore();
-        //this.partsGridPanelRef.setTitle(collectionName + ' Parts');
-
-        this.constructsGridPanel.getStore().clearFilter();
-        this.repopulateConstructStore();
-        var constructStore = this.constructsGridPanel.getStore();
-
-        constructStore.filter([
+        if(id !== 4)
         {
-            property     : 'collection_id',
-            value        : id,
-            anyMatch     : true,
-            //caseSensitive: true,
-            exactMatch: true
-        }]);
+            this.constructsGridPanel.getStore().clearFilter();
+            this.repopulateConstructStore();
+            var partStore = this.partsGridPanelRef.getStore();
+            var constructStore = this.constructsGridPanel.getStore();
 
-        var collectionName = record.get('name');
-        this.constructsGridPanel.setTitle(collectionName + ' Constructs');
-        this.showCollectionPanel(record);
+            partStore.filter([
+            {
+                property     : 'collectionID',
+                value        : id,
+                anyMatch     : true,
+                exactMatch   : true
+            }]);
+
+            constructStore.filter([
+            {
+                property     : 'collection_id',
+                value        : id,
+                anyMatch     : true,
+                exactMatch   : true
+            }]);
+
+            var collectionName = record.get('name');
+            this.partsGridPanelRef.setTitle(collectionName + ' Parts');
+            this.constructsGridPanel.setTitle(collectionName + ' Constructs');
+            this.showCollectionPanel(record);
+        }
+        else
+        {
+             this.showCollectionPanel(record);
+        }
     },
     
     partsGridRowSelectHandler: function(selectModel, rowIndex, record)
     {
-        var partID = record.get("id");
+        var partID = record.get("biofabID");
         var description = record.get('description');
         var relationRecord = null;
         var constructID = null;
@@ -172,16 +185,16 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 
         partsGridExportButtonClickHandler: function(button, event)
         {
-            var csvWindow = window.open(WEB_SERVICE_BASE_URL + 'annotatedparts' + "?projectid=1" + "&format=csv","Annotated Parts","width=640,height=480");
-            csvWindow.scrollbars.visible = true;
-            csvWindow.alert("Use File/Save As in the menu bar to save this document.");
+            var exportWindow = window.open(WEB_SERVICE_BASE_URL + 'annotatedparts?format=json',"Annotated Parts","width=640,height=480");
+            exportWindow.scrollbars.visible = true;
+            exportWindow.alert("Use File/Save As in the menu bar to save this document.");
         },
 
         constructsGridExportButtonClickHandler: function(button, event)
         {
-            var csvWindow = window.open(WEB_SERVICE_BASE_URL + 'constructs' + "?collectionid=1" + "&format=csv","Constructs","width=640,height=480");
-            csvWindow.scrollbars.visible = true;
-            csvWindow.alert("Use File/Save As in the menu bar to save this document.");
+            var exportWindow = window.open(WEB_SERVICE_BASE_URL + 'constructs' + "?collectionid=1" + "&format=csv","Constructs","width=640,height=480");
+            exportWindow.scrollbars.visible = true;
+            exportWindow.alert("Use File/Save As in the menu bar to save this document.");
         },
 
         showAllPartsButtonClickHandler:function(button, event)
@@ -300,13 +313,13 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 
             if(id === 4)
             {
-//                collectionPanel = new ModularPromoterPanel();
-//                tab = this.infoTabPanel.add(collectionPanel);
-//                this.infoTabPanel.setActiveTab(tab);
-//                collectionPanel.setCollectionRecord(collectionRecord);
-//                this.infoTabPanel.setActiveTab(tab);
+                collectionPanel = new TerminatorPanel();
+                tab = this.infoTabPanel.add(collectionPanel);
+                this.infoTabPanel.setActiveTab(tab);
+                collectionPanel.setCollectionRecord(collectionRecord);
+                this.infoTabPanel.setActiveTab(tab);
 
-                Ext.Msg.alert('Terminator Library', 'A collection performance panel for the Terminator Library is under development and will be added to the Data Access Client in an upcoming release.');
+//                Ext.Msg.alert('Terminator Library', 'A collection performance panel for the Terminator Library is under development and will be added to the Data Access Client in an upcoming release.');
             }
         }
 });
