@@ -16,6 +16,9 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         this.designPanelExportButtonRef.setHandler(this.designPanelExportButtonClickHandler, this);
         this.performancePanelExportButtonRef.setHandler(this.performancePanelExportButtonClickHandler, this);
         this.showAllEventsButtonRef.setHandler(this.displayAllEventsButtonClickHandler, this);
+
+        //this.performancePanelRef.setActiveTab(1);
+        //this.performancePanelRef.setActiveTab(0);
     },
 
     setConstructID: function(constructID)
@@ -172,7 +175,9 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
             animate: false,
             store: store,
 //            legend: {
-//                position: 'bottom'
+//                position: 'right',
+//                padding: 0,
+//                boxZIndex:0
 //            },
             axes: [
                 {
@@ -213,6 +218,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
                 showMarkers: true,
                 fill: true,
                 axis: 'left',
+                showInLegend: true,
                 xField: 'fluorescenceTime',
                 yField: 'fluorescence',
 //                style: {
@@ -233,40 +239,40 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
                     }
                 }
             },
-            {
-                title: 'Replicate 1 - OD',
-                type: 'line',
-                lineWidth: 2,
-                showMarkers: true,
-                fill: true,
-                axis: 'right',
-                xField: 'odTime',
-                yField: 'od',
-//                style: {
-//                    'stroke-width': 1
+//            {
+//                title: 'Replicate 1 - OD',
+//                type: 'line',
+//                lineWidth: 2,
+//                showMarkers: true,
+//                fill: true,
+//                axis: 'right',
+//                xField: 'odTime',
+//                yField: 'od',
+////                style: {
+////                    'stroke-width': 1
+////                },
+//                markerCfg: {
+//                    type: 'circle',
+//                    size: 2,
+//                    radius: 2,
+//                    'stroke-width': 0
 //                },
-                markerCfg: {
-                    type: 'circle',
-                    size: 2,
-                    radius: 2,
-                    'stroke-width': 0
-                },
-                tips: {
-                    trackMouse: true,
-                    width: 80,
-                    height: 40,
-                    renderer: function(storeItem, item) {
-                        this.setTitle(storeItem.get('od'));
-                    }
-                }
-            }
+//                tips: {
+//                    trackMouse: true,
+//                    width: 80,
+//                    height: 40,
+//                    renderer: function(storeItem, item) {
+//                        this.setTitle(storeItem.get('od'));
+//                    }
+//                }
+//            }
         ]
         };
 
         var element = this.bulkGeneExpressionPanelRef.getEl();
 
         newPanel = Ext4.ClassManager.instantiate('Ext.panel.Panel', {
-            width: 400,
+            width: 500,
             height: 300,
             renderTo: element.dom,
             layout: 'fit',
@@ -290,6 +296,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         var anotherPanel;
         var cytoMeasurements;
 
+        this.performancePanelRef.setActiveTab(1);
         this.geneExpressionPerCellPanelRef.removeAll(true);
 
         Ext4.regModel('CytometerMeasurement', {
@@ -359,6 +366,9 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
                 flex: 1,
                 animate: false,
                 store: newStore,
+//                legend: {
+//                    position: 'right'
+//                },
                 axes: [
                     {
                         type: 'Numeric',
@@ -379,6 +389,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
                     }
                 ],
                 series: [{
+                    title: 'Replicate 1',
                     type: 'scatter',
                     markerCfg: {
                         radius: 1,
@@ -414,6 +425,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         }
 
         this.showAllEventsButtonRef.enable();
+        //this.performancePanelRef.setActiveTab(0);
     },
 
     designPanelExportButtonClickHandler: function(button, event)

@@ -237,17 +237,17 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 
         promotersButtonClickHandler: function(button, event)
         {
-            this.partsGridPanelRef.getStore().filter([{property: 'type', value: "promoter", anyMatch: true, caseSensitive: false}]);
+            this.partsGridPanelRef.getStore().filter([{property: 'biofabType', value: "promoter", anyMatch: true, caseSensitive: false}]);
         },
 
         fiveUTRButtonClickHandler: function(button, event)
         {
-            this.partsGridPanelRef.getStore().filter([{property: 'type', value: "5' UTR", anyMatch: true, caseSensitive: false}]);
+            this.partsGridPanelRef.getStore().filter([{property: 'biofabType', value: "5' UTR", anyMatch: true, caseSensitive: false}]);
         },
 
         cdsButtonClickHandler: function(button, event)
         {
-            this.partsGridPanelRef.getStore().filter([{property: 'type', value: "CDS", anyMatch: true, caseSensitive: false}]);
+            this.partsGridPanelRef.getStore().filter([{property: 'biofabType', value: "CDS", anyMatch: true, caseSensitive: false}]);
         },
 
         helpButtonClickHandler: function(button, event)

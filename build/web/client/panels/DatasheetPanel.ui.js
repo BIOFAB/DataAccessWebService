@@ -41,9 +41,10 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                         }
                     },
                     {
-                        xtype: 'panel',
+                        xtype: 'tabpanel',
                         title: 'Performance',
-                        layout: 'border',
+                        //layout: 'border',
+                        activeTab: 0,
                         autoscroll: true,
                         ref: '../performancePanelRef',
                         tbar: {
@@ -67,65 +68,87 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                             ]
                         },
                         items:[
-                                {
-                                    xtype: 'tabpanel',
-                                    activeTab: 0,
-                                    region: 'center',
-                                    layout: 'fit',
-                                    split: true,
-                                    ref: 'performancePlotsTabPanelRef',
-                                    items: [
+                            {
+                                xtype:'panel',
+                                title: 'Bulk Gene Expression',
+                                layout: 'border',
+                                //width: 400,
+                                //height: 500,
+                                //ref: '../../bulkGeneExpressionPanelRef',
+                                //region: 'center',
+                                //split: true,
+                                items:[
                                     {
                                         xtype:'panel',
-                                        title: 'Bulk Gene Expression',
+                                        title: '',
                                         layout: 'auto',
                                         //width: 400,
                                         //height: 500,
-                                        ref: '../../bulkGeneExpressionPanelRef',
-                                        //region: 'center',
-                                        //split: true,
-                                        bbar: {
-                                                xtype: 'toolbar',
-                                                ref: '../../../bulkGeneExpressionPanelToolbar',
-                                                height: 30,
-                                                items: [
-    //                                                {
-    //                                                    xtype: 'tbtext',
-    //                                                    text: 'Events Displayed',
-    //                                                    hidden: false,
-    //                                                    ref: '../../../../dataDisplayedTextRef'
-    //                                                },
-    //                                                {
-    //                                                    xtype: 'tbfill'
-    //                                                },
-    //                                                {
-    //                                                    xtype: 'button',
-    //                                                    text: 'Display All',
-    //                                                    disabled: true,
-    //                                                    tooltip: 'Display all the events',
-    //                                                    ref: '../../../../displayAllEventsButtonRef'
-    //                                                }
-                                                ]
-                                        }
+                                        ref: '../../../bulkGeneExpressionPanelRef',
+                                        region: 'center',
+                                        split: true
                                     },
                                     {
                                         xtype:'panel',
-                                        title: 'Gene Expression per Cell',
+                                        title: '',
+                                        height: 300,
+                                        region: 'south',
+                                        split: true,
+                                        layout: 'border',
+                                        items:[
+                                        {
+                                            xtype:'panel',
+                                            title: 'Data Acquisition Information',
+                                            layout: 'fit',
+                                            //width: 450,
+                                            ref: '../../../bulkGeneExpressionInfoPanelRef',
+                                            region: 'center',
+                                            split: true,
+                                            items:[
+                                                {
+                                                    xtype: 'textarea',
+                                                    value: 'Data acquisition information will be provided in this space in an upcoming release of the Data Access Client.\n'
+                                                            +'Optical density and replicate measurements will also be made available.\n'
+                                                            +'If you click on the "Export" button you can examine the optical density data in JSON format.',
+                                                    hidden: false,
+                                                    ref: '../../../bulkGeneExpressionTextAreaRef'
+                                                }
+                                            ]
+
+                                        }
+                                        ]
+                                    }
+                                    
+                                ]
+                            },
+                            {
+                                xtype:'panel',
+                                title: 'Gene Expression per Cell',
+                                layout: 'border',
+                                //width: 400,
+                                //height: 500,
+                                //ref: '../../../bulkGeneExpressionPanelRef',
+                                //region: 'center',
+                                //split: true,
+                                items:[
+                                    {
+                                        xtype:'panel',
+                                        title: '',
                                         //width: 400,
                                         //height: 500,
-                                        ref:'../../geneExpressionPerCellPanelRef',
-                                        //region: 'east',
-                                        //split: true,
+                                        ref:'../../../geneExpressionPerCellPanelRef',
+                                        region: 'center',
+                                        split: true,
                                         bbar: {
                                                 xtype: 'toolbar',
-                                                ref: '../../../geneExpressionPerCellPanelToolbar',
+                                                ref: '../../../../geneExpressionPerCellPanelToolbar',
                                                 height: 30,
                                                 items: [
                                                     {
                                                         xtype: 'tbtext',
                                                         text: 'Events Displayed',
                                                         hidden: false,
-                                                        ref: '../../../../dataDisplayedTextRef'
+                                                        ref: '../../../../../dataDisplayedTextRef'
                                                     },
                                                     {
                                                         xtype: 'tbfill'
@@ -135,51 +158,41 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                                                         text: 'Show All',
                                                         disabled: true,
                                                         tooltip: 'Display all the events',
-                                                        ref: '../../../../showAllEventsButtonRef'
+                                                        ref: '../../../../../showAllEventsButtonRef'
                                                     }
                                                 ]
                                         }
-                                    }
-                                ]
-                            },
-                            {
-                                xtype:'panel',
-                                title: '',
-                                height: 200,
-                                region: 'south',
-                                split: true,
-                                layout: 'border',
-                                items:[
-                                {
-                                    xtype:'panel',
-                                    title: 'Data Acquisition Information',
-                                    layout: 'fit',
-                                    //width: 450,
-                                    ref: '../../notesPanelRef',
-                                    region: 'center',
-                                    split: true,
-                                    items:[
+                                    },
+                                    {
+                                        xtype:'panel',
+                                        title: '',
+                                        height: 300,
+                                        region: 'south',
+                                        split: true,
+                                        layout: 'border',
+                                        items:[
                                         {
-                                            xtype: 'textarea',
-                                            value: 'Data acquisition information will be provided in this space in an upcoming release of the Data Access Client.\n'
-                                                    +'The data for replicate measurements will also be made available.\n'
-                                                    +'The optical density measured during bulk gene expression will be displayed next week.  If you click on the "Export" button you can examine the optical density data in JSON format.',
-                                            hidden: false,
-                                            ref: '../../../notesTextAreaRef'
-                                        }
-                                    ]
+                                            xtype:'panel',
+                                            title: 'Data Acquisition Information',
+                                            layout: 'fit',
+                                            //width: 450,
+                                            ref: '../../geneExpressionPerCellInfoPanelRef',
+                                            region: 'center',
+                                            split: true,
+                                            items:[
+                                                {
+                                                    xtype: 'textarea',
+                                                    value: 'Data acquisition information will be provided in this space in an upcoming release of the Data Access Client.\n'
+                                                           +'Replicate measurements will also be made available.\n',
+                                                    hidden: false,
+                                                    ref: '../../../geneExpressionPerCellTextAreaRef'
+                                                }
+                                            ]
 
-                                }//,
-//                                    {
-//                                        xtype:'panel',
-//                                        title: 'Data Acquisition Information List',
-//                                        ref:'../../infoListPanelRef',
-//                                        region: 'center',
-//                                        split: true,
-//                                        items:[
-//
-//                                        ]
-//                                    }
+                                        }
+                                        ]
+                                    }
+
                                 ]
                             }
                         ]
