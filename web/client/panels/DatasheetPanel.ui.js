@@ -91,7 +91,7 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                                     {
                                         xtype:'panel',
                                         title: '',
-                                        height: 300,
+                                        height: 200,
                                         region: 'south',
                                         split: true,
                                         layout: 'border',
@@ -166,7 +166,7 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                                     {
                                         xtype:'panel',
                                         title: '',
-                                        height: 300,
+                                        height: 200,
                                         region: 'south',
                                         split: true,
                                         layout: 'border',

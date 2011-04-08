@@ -6,6 +6,10 @@ package org.biofab.model;
  *
  * @author cesarr
  */
+
+import java.util.Date;
+
+
 public class Construct
 {
     protected int                     id;

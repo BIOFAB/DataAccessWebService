@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.Date;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
@@ -47,36 +48,45 @@ public class CollectionsServlet extends DataAccessServlet
         ArrayList<Collection> arrayList;
         Collection[] collections;
         Collection collection;
+        int id;
+        String biofabID;
+        String name;
+        String description;
+        String version;
+        String release_status;
+        Date release_date;
 
         try
         {
             _connection = DriverManager.getConnection(_jdbcDriver, _user, _password);
             statement = _connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM collection ORDER BY collection.id ASC");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM collection ORDER BY collection.release_date DESC, collection.name ASC");
             arrayList = new ArrayList<Collection>();
 
             while (resultSet.next())
             {
-                int id = resultSet.getInt("id");
-                String biofabID = resultSet.getString("biofab_id");
-                String name = resultSet.getString("name");
-                String description = resultSet.getString("description");
-                String version = resultSet.getString("version");
-                collection = new Collection(id, biofabID, name, version, description);
+                id = resultSet.getInt("id");
+                biofabID = resultSet.getString("biofab_id");
+                name = resultSet.getString("name");
+                description = resultSet.getString("description");
+                version = resultSet.getString("version");
+                release_status = resultSet.getString("release_status");
+                release_date = resultSet.getDate("release_date");
+
+                collection = new Collection(id, biofabID, name, version, release_status, release_date, description);
                 arrayList.add(collection);
             }
 
-            if(format.equalsIgnoreCase("json"))
+            if(format != null && format.length() > 0 && format.equalsIgnoreCase("json"))
             {
-               responseString = this.generateJSON(arrayList.toArray());
-               this.textSuccess(response, responseString);
+                responseString = this.generateJSON(arrayList.toArray());
+                this.textSuccess(response, responseString);
             }
             else
             {
-               responseString = this.generateJSON(arrayList.toArray());
-               this.textSuccess(response, responseString);
+                responseString = this.generateJSON(arrayList.toArray());
+                this.textSuccess(response, responseString);
             }
-
         }
         catch (SQLException ex)
         {
