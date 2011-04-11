@@ -23,6 +23,11 @@ import org.biojavax.SimpleNote;
 import org.biojavax.SimpleRichAnnotation;
 import org.biojavax.bio.seq.RichSequence;
 
+//import org.sbolstandard.libSBOLj.SBOLutil;
+//import org.sbolstandard.libSBOLj.DnaComponent;
+//import org.sbolstandard.libSBOLj.Library;
+//import org.sbolstandard.libSBOLj.SbolService;
+
 @SuppressWarnings("serial")
 @WebServlet(name="ConstructDesignServlet", urlPatterns={"/construct/design/*"})
 public class ConstructDesignServlet extends DataAccessServlet
@@ -69,7 +74,7 @@ public class ConstructDesignServlet extends DataAccessServlet
                         features = featuresStatement.executeQuery("SELECT feature.description, feature.genbank_type, design_feature.start, design_feature.stop FROM design_feature, feature WHERE design_feature.design_id = '" + designID + "' AND feature.id = design_feature.feature_id AND feature.display_in_view = TRUE ORDER BY design_feature.start ASC");
                         richSequence = RichSequence.Tools.createRichSequence(constructID, DNATools.createDNA(dnaSequence));
                         addFeatures(richSequence, features);
-                        addComment(richSequence, "The genetic constructs used here are taken or composed from available, well known genetic elements.  At this time BIOFAB staff have not yet taken care to define the precise functional boundaries of these genetic elements.  Thus, for example, a part labeled as a \"promoter\" may include sequences encoding all or part of a 5' UTR downstream of a transcription start site. And so on. Part of the mission of the BIOFAB is to define compatible sets of genetic objects with precise and composable boundaries. Such well engineered parts will be noted once available.");
+                        //addComment(richSequence, "The genetic constructs used here are taken or composed from available, well known genetic elements.  At this time BIOFAB staff have not yet taken care to define the precise functional boundaries of these genetic elements.  Thus, for example, a part labeled as a \"promoter\" may include sequences encoding all or part of a 5' UTR downstream of a transcription start site. And so on. Part of the mission of the BIOFAB is to define compatible sets of genetic objects with precise and composable boundaries. Such well engineered parts will be noted once available.");
                         richSequence.setCircular(true);
 
                         if(format != null && format.equalsIgnoreCase("genbank"))
@@ -86,8 +91,56 @@ public class ConstructDesignServlet extends DataAccessServlet
                             }
                             else
                             {
-                                response.setContentType("text/plain");
-                                RichSequence.IOTools.writeGenbank(response.getOutputStream(), richSequence, ns);
+                                if(format.equalsIgnoreCase("json"))
+                                {
+//                                    SBOLservice service = new SBOLservice();
+//                                    Library library = service.createLibrary("cFAB1", "BIOFAB Pilot Project","Pilot Project");
+//
+//
+//                                    DnaComponent dnaComponent = SBOLutil.readRichSequence(rs);
+//                                    library = service.addDnaComponentToLibrary(dnaComponent, library);
+//                                    String jsonString = SBOLutil.toJson(library);
+//                                    String rdfString = SBOLutil.toRDF(library);
+//
+//                                    if(sbolString != null && sbolString.length() > 0)
+//                                    {
+//                                        response.setContentType("text/plain");
+//                                        response.getWriter().println(sbolString);
+//                                    }
+//                                    else
+//                                    {
+//                                      //TODO  Manage null case
+//                                    }
+                                }
+                                else
+                                {
+                                    if(format.equalsIgnoreCase("rdfxml"))
+                                    {
+//                                        DnaComponent dnaComponent;
+//                                        Sbolservice service = new Sbolservice();
+//                                        String sbolString;
+//
+//                                        dnaComponent = SBOLutil.readRichSequence(richSequence);
+//                                        Library library = service.createLibrary("libFAB1", "Pilot Project", "Pilot Project Description");
+//                                        library = service.addDnaComponentToLibrary(dnaComponent, library);
+//                                        sbolString = SBOLutil.toRDF(library);
+//
+//                                        if(sbolString != null && sbolString.length() > 0)
+//                                        {
+//                                            response.setContentType("text/plain");
+//                                            response.getWriter().println(sbolString);
+//                                        }
+//                                        else
+//                                        {
+//                                          //TODO  Manage null case
+//                                        }
+                                    }
+                                    else
+                                    {
+                                        response.setContentType("text/plain");
+                                        RichSequence.IOTools.writeGenbank(response.getOutputStream(), richSequence, ns);
+                                    }
+                                }
                             }
                         }
                     }

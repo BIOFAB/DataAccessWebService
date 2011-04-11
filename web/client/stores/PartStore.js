@@ -12,17 +12,26 @@ PartStore = Ext.extend(Ext.data.JsonStore, {
         cfg = cfg || {};
         PartStore.superclass.constructor.call(this, Ext.apply({
             storeId: 'partStore',
-            root: 'annotatedparts',
             url: '../annotatedparts?format=json',
             autoLoad: true,
             fields: [
                 {
+                    name: 'collectionID',
+                    allowBlank: false,
+                    type: 'int'
+                },
+                {
                     name: 'id',
+                    allowBlank: false,
+                    type: 'int'
+                },
+                {
+                    name: 'biofabID',
                     allowBlank: false,
                     type: 'string'
                 },
                 {
-                    name: 'type',
+                    name: 'biofabType',
                     allowBlank: false,
                     type: 'string'
                 },
@@ -32,7 +41,7 @@ PartStore = Ext.extend(Ext.data.JsonStore, {
                     type: 'string'
                 },
                 {
-                    name: 'sequence',
+                    name: 'dnaSequence',
                     type: 'string'
                 }
             ]

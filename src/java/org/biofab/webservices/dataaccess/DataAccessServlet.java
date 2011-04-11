@@ -21,13 +21,14 @@ import org.biofab.webservices.protocol.JSONResponse;
 
 public class DataAccessServlet extends HttpServlet
 {
-    String      _jdbcDriver = "jdbc:postgresql://localhost:5432/biofab";
+String      _jdbcDriver = "jdbc:postgresql://localhost:5432/biofab_internal";
     String      _user = "biofab";
     String      _password = "fiobab";
     Connection  _connection = null;
     String      _schema = "public";
 
 
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
     {
@@ -118,5 +119,21 @@ public class DataAccessServlet extends HttpServlet
         {
             out.close();
         }
+    }
+
+    protected String generateJSON(Object object)
+    {
+        Gson    gson;
+        String  responseString;
+
+        gson = new Gson();
+        responseString = gson.toJson(object);
+
+        if(responseString == null || responseString.length() == 0)
+        {
+            //Throw exception
+        }
+
+        return responseString;
     }
 }

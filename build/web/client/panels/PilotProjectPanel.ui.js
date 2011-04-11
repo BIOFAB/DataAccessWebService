@@ -20,24 +20,36 @@ PilotProjectPanelUi = Ext.extend(Ext.Panel, {
                 xtype: 'panel',
                 title: 'Pilot Project Collection',
                 height: 800,
-                layout: 'anchor',
                 width: 600,
+                layout: 'border',
                 itemId: 'centerPanel',
                 x: 25,
                 y: 25,
                 ref: 'centerPanelRef',
+                floating: true,
+                shadowOffset: 6,
                 items: [
                     {
-                        xtype: 'textarea',
-                        itemId: 'collectionTextArea',
-                        anchor: '100%, 25%',
-                        ref: '../collectionTextAreaRef'
+                        xtype: 'panel',
+                        layout: 'fit',
+                        region: 'center',
+                        split: true,
+                        height:200,
+                        items: [
+                            {
+                                xtype: 'textarea',
+                                itemId: 'collectionTextArea',
+                                ref: '../../collectionTextAreaRef'
+                            }
+                        ]
                     },
                     {
                         xtype: 'panel',
-                        title: 'Collection Performance',
+                        title: 'Performance',
                         layout: 'fit',
-                        anchor: '100%, 75%',
+                        region: 'south',
+                        height: 600,
+                        split: true,
                         id: 'collectionPerformancePanel',
                         items: [
                             {

@@ -1,20 +1,18 @@
 package org.biofab.webservices.dataaccess;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.biofab.model.Part;
 
 
 @WebServlet(name="AnnotatedPartsServlet", urlPatterns={"/annotatedparts/*"})
@@ -37,29 +35,34 @@ public class AnnotatedPartsServlet extends DataAccessServlet
     throws ServletException, IOException
     {
         Statement statement = null;
-        String collectionID = request.getParameter("collectionid");
-        String format = request.getParameter("format");
-        String responseString = null;
-        String queryString = null;
+        String          collectionID = request.getParameter("collectionid");
+        String          format = request.getParameter("format");
+        String          responseString = null;
+        String          queryString = null;
+        int             collectionIDFromDB;
+        int             id;
+        String          biofabID = null;
+        String          type = null;
+        String          description = null;
+        String          sequence = null;
+        ArrayList<Part> parts = null;
+        Part            part = null;
+
 
         //TODO Do stronger validation of collectionid
 
         if(collectionID != null && collectionID.length() > 0)
         {
-            queryString = "SELECT annotated_part.biofab_id, feature.biofab_type, feature.description, feature.dna_sequence "
-                    + "FROM collection_annotated_part "
-                    + "INNER JOIN collection ON collection_annotated_part.collection_id = collection.id "
-                    + "INNER JOIN annotated_part ON collection_annotated_part.part_id = annotated_part.id "
-                    + "INNER JOIN feature ON annotated_part.feature_id = feature.id "
-                    + "WHERE collection.id = " + collectionID + " "
-                    + "ORDER BY feature.biofab_type DESC, annotated_part.id ASC";
+            queryString = "SELECT *"
+                    + "FROM annotated_part_view "
+                    + "WHERE annotated_part_view.collection_id = " + collectionID
+                    + "ORDER BY biofab_type DESC, id ASC;";
         }
         else
         {
-            queryString = "SELECT annotated_part.biofab_id, feature.biofab_type, feature.description, feature.dna_sequence "
-                    + "FROM annotated_part "
-                    + "INNER JOIN feature ON annotated_part.feature_id = feature.id "
-                    + "ORDER BY feature.biofab_type DESC, annotated_part.id ASC;";
+            queryString = "SELECT *"
+                    + "FROM annotated_part_view "
+                    + "ORDER BY biofab_type DESC, id ASC;";
         }
 
         try
@@ -67,15 +70,29 @@ public class AnnotatedPartsServlet extends DataAccessServlet
             _connection = DriverManager.getConnection(_jdbcDriver, _user, _password);
             statement = _connection.createStatement();
             ResultSet resultSet = statement.executeQuery(queryString);
+            parts = new ArrayList<Part>();
+            
+            while (resultSet.next())
+            {
+                collectionIDFromDB = resultSet.getInt("collection_id");
+                id = resultSet.getInt("id");
+                biofabID = resultSet.getString("biofab_id");
+                type = resultSet.getString("biofab_type");
+                description = resultSet.getString("description");
+                sequence = resultSet.getString("dna_sequence");
+
+                part = new Part(collectionIDFromDB, id, biofabID, description, type, sequence);
+                parts.add(part);
+            }
 
             if(format.equalsIgnoreCase("json"))
             {
-               responseString = generateJSON(resultSet);
+               responseString = generateJSON(parts.toArray());
                this.textSuccess(response, responseString);
             }
             else
             {
-               responseString = generateCSV(resultSet);
+               responseString = generateJSON(parts.toArray());
                this.textSuccess(response, responseString);
             }
 
@@ -138,64 +155,64 @@ public class AnnotatedPartsServlet extends DataAccessServlet
 
     // Utility Functions
 
-    protected String generateCSV(ResultSet resultSet) throws SQLException
-    {
-        StringBuilder responseText = new StringBuilder("id,type,description,dna_sequence\n");
+//    protected String generateCSV(ResultSet resultSet) throws SQLException
+//    {
+//        StringBuilder responseText = new StringBuilder("id,type,description,dna_sequence\n");
+//
+//        while (resultSet.next())
+//        {
+//            String id = resultSet.getString("biofab_id");
+//            String type = resultSet.getString("biofab_type");
+//            String description = resultSet.getString("description");
+//            String sequence = resultSet.getString("dna_sequence");
+//
+//            responseText.append(id);
+//            responseText.append(",");
+//            responseText.append(type);
+//            responseText.append(",");
+//            responseText.append(description);
+//            responseText.append(",");
+//            responseText.append(sequence);
+//            responseText.append("\n");
+//        }
+//
+//        return responseText.toString();
+//    }
 
-        while (resultSet.next())
-        {
-            String id = resultSet.getString("biofab_id");
-            String type = resultSet.getString("biofab_type");
-            String description = resultSet.getString("description");
-            String sequence = resultSet.getString("dna_sequence");
-
-            responseText.append(id);
-            responseText.append(",");
-            responseText.append(type);
-            responseText.append(",");
-            responseText.append(description);
-            responseText.append(",");
-            responseText.append(sequence);
-            responseText.append("\n");
-        }
-
-        return responseText.toString();
-    }
-
-    protected String generateJSON(ResultSet resultSet) throws SQLException
-    {
-        StringBuilder responseText = new StringBuilder("{'annotatedparts':[\n");
-
-        while (resultSet.next())
-        {
-            String id = resultSet.getString("biofab_id");
-            String type = resultSet.getString("biofab_type");
-            String description = resultSet.getString("description");
-            String sequence = resultSet.getString("dna_sequence");
-
-            responseText.append("{'id':'");
-            responseText.append(id);
-            responseText.append("', ");
-            responseText.append("'type':\"");
-            responseText.append(type);
-            responseText.append("\", ");
-            responseText.append("'description':\"");
-            responseText.append(description);
-            responseText.append("\", ");
-            responseText.append("'sequence':'");
-            responseText.append(sequence);
-
-            if(resultSet.isLast() == false)
-            {
-                responseText.append("'},");
-                responseText.append("\n");
-            }
-            else
-            {
-                responseText.append("'}\n]}");
-            }
-        }
-
-        return responseText.toString();
-    }
+//    protected String generateJSON(ResultSet resultSet) throws SQLException
+//    {
+//        StringBuilder responseText = new StringBuilder("{'annotatedparts':[\n");
+//
+//        while (resultSet.next())
+//        {
+//            String id = resultSet.getString("biofab_id");
+//            String type = resultSet.getString("biofab_type");
+//            String description = resultSet.getString("description");
+//            String sequence = resultSet.getString("dna_sequence");
+//
+//            responseText.append("{'id':'");
+//            responseText.append(id);
+//            responseText.append("', ");
+//            responseText.append("'type':\"");
+//            responseText.append(type);
+//            responseText.append("\", ");
+//            responseText.append("'description':\"");
+//            responseText.append(description);
+//            responseText.append("\", ");
+//            responseText.append("'sequence':'");
+//            responseText.append(sequence);
+//
+//            if(resultSet.isLast() == false)
+//            {
+//                responseText.append("'},");
+//                responseText.append("\n");
+//            }
+//            else
+//            {
+//                responseText.append("'}\n]}");
+//            }
+//        }
+//
+//        return responseText.toString();
+//    }
 }

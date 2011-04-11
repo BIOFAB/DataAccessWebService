@@ -7,7 +7,6 @@ package org.biofab.webservices.dataaccess;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -40,26 +39,61 @@ public class ConstructsServlet extends DataAccessServlet
         String collectionID = request.getParameter("collectionid");
         String format = request.getParameter("format");
         String responseString = null;
+        String queryString = null;
+
+        //TODO Do regex validation of collectionid
 
         if(collectionID != null && collectionID.length() > 0)
         {
-            try
-            {
-                _connection = DriverManager.getConnection(_jdbcDriver, _user, _password);
-                statement = _connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT * FROM new_pilot_project_construct ORDER BY new_pilot_project_construct.bulk_gene_expression DESC, new_pilot_project_construct.reporter DESC");
+            queryString = "SELECT * FROM construct_performance_summary_view "
+                    + "WHERE construct_performance_summary_view.collection_id = " + collectionID
+                    + "ORDER BY construct_performance_summary_view.bulk_gene_expression DESC;";
+        }
+        else
+        {
+            queryString = "SELECT * FROM construct_performance_summary_view "
+                    + "ORDER BY construct_performance_summary_view.bulk_gene_expression DESC;";
+        }
 
+
+        try
+        {
+            _connection = DriverManager.getConnection(_jdbcDriver, _user, _password);
+            statement = _connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(queryString);
+
+            if(format.equalsIgnoreCase("json"))
+            {
+               responseString = generateJSON(resultSet);
+               this.textSuccess(response, responseString);
+            }
+            else
+            {
+               responseString = generateCSV(resultSet);
+               this.textSuccess(response, responseString);
+            }
+
+        }
+        catch (SQLException ex)
+        {
+            if(format != null && format.length() > 0)
+            {
                 if(format.equalsIgnoreCase("json"))
                 {
-                   responseString = generateJSON(resultSet);
-                   this.textSuccess(response, responseString);
+                    jsonError(response, "Error while fetching data: " + ex.getMessage());
+
                 }
                 else
                 {
-                   responseString = generateCSV(resultSet);
-                   this.textSuccess(response, responseString);
+                    textError(response, "Error while fetching data: " + ex.getMessage());
                 }
-
+            }
+        }
+        finally
+        {
+            try
+            {
+                _connection.close();
             }
             catch (SQLException ex)
             {
@@ -68,43 +102,17 @@ public class ConstructsServlet extends DataAccessServlet
                     if(format.equalsIgnoreCase("json"))
                     {
                         jsonError(response, "Error while fetching data: " + ex.getMessage());
-
                     }
                     else
                     {
                         textError(response, "Error while fetching data: " + ex.getMessage());
                     }
                 }
-            }
-            finally
-            {
-                try
+                else
                 {
-                    _connection.close();
-                }
-                catch (SQLException ex)
-                {
-                    if(format != null && format.length() > 0)
-                    {
-                        if(format.equalsIgnoreCase("json"))
-                        {
-                            jsonError(response, "Error while fetching data: " + ex.getMessage());
-                        }
-                        else
-                        {
-                            textError(response, "Error while fetching data: " + ex.getMessage());
-                        }
-                    }
-                    else
-                    {
-                        textError(response, "Error while fetching data: " + ex.getMessage());
-                    }
+                    textError(response, "Error while fetching data: " + ex.getMessage());
                 }
             }
-        }
-        else
-        {
-            textError(response, "The BIOFAB Data Access Web Service requires a collection ID to provide construct information. Please review the application interface documentation.");
         }
     }
 
@@ -125,14 +133,13 @@ public class ConstructsServlet extends DataAccessServlet
 
     protected String generateCSV(ResultSet resultSet) throws SQLException
     {
-        StringBuilder responseText = new StringBuilder("id,biofab_id,description,reporter,bulk_gene_expression,bulk_gene_expression_sd,gene_expression_per_cell,gene_expression_per_cell_sd\n");
+        StringBuilder responseText = new StringBuilder("id,biofab_id,description,bulk_gene_expression,bulk_gene_expression_sd,gene_expression_per_cell,gene_expression_per_cell_sd\n");
 
         while (resultSet.next())
         {
             String id = resultSet.getString("id");
             String biofab_id = resultSet.getString("biofab_id");
             String description = resultSet.getString("description");
-            String reporter = resultSet.getString("reporter");
             String bulkGeneExpression = resultSet.getString("bulk_gene_expression");
             String bulkGeneExpressionSD = resultSet.getString("bulk_gene_expression_sd");
             String geneExpressionPerCell = resultSet.getString("gene_expression_per_cell");
@@ -143,8 +150,6 @@ public class ConstructsServlet extends DataAccessServlet
             responseText.append(biofab_id);
             responseText.append(",");
             responseText.append(description);
-            responseText.append(",");
-            responseText.append(reporter);
             responseText.append(",");
             responseText.append(bulkGeneExpression);
             responseText.append(",");
@@ -161,14 +166,14 @@ public class ConstructsServlet extends DataAccessServlet
 
     protected String generateJSON(ResultSet resultSet) throws SQLException
     {
-        StringBuilder responseText = new StringBuilder("{'constructs':[\n");
+        StringBuilder responseText = new StringBuilder("[\n");
 
         while (resultSet.next())
         {
             String id = resultSet.getString("id");
-            String biofab_id = resultSet.getString("biofab_id");
+            String collectionID = resultSet.getString("collection_id");
+            String biofabID = resultSet.getString("biofab_id");
             String description = resultSet.getString("description");
-            String reporter = resultSet.getString("reporter");
             String bulkGeneExpression = resultSet.getString("bulk_gene_expression");
             String bulkGeneExpressionSD = resultSet.getString("bulk_gene_expression_sd");
             String geneExpressionPerCell = resultSet.getString("gene_expression_per_cell");
@@ -177,15 +182,15 @@ public class ConstructsServlet extends DataAccessServlet
             responseText.append("{'id':");
             responseText.append(id);
             responseText.append(", ");
+            responseText.append("'collection_id':'");
+            responseText.append(collectionID);
+            responseText.append("', ");
             responseText.append("'biofab_id':'");
-            responseText.append(biofab_id);
+            responseText.append(biofabID);
             responseText.append("', ");
             responseText.append("'description':\"");
             responseText.append(description);
             responseText.append("\", ");
-            responseText.append("'reporter':'");
-            responseText.append(reporter);
-            responseText.append("', ");
             responseText.append("'bulk_gene_expression':");
             responseText.append(bulkGeneExpression);
             responseText.append(", ");
@@ -205,7 +210,7 @@ public class ConstructsServlet extends DataAccessServlet
             }
             else
             {
-                responseText.append("}\n]}");
+                responseText.append("}\n]");
             }
         }
 

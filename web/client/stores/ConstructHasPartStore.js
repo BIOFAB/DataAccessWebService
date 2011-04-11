@@ -9,8 +9,11 @@ ConstructHasPartStore = Ext.extend(Ext.data.JsonStore, {
         cfg = cfg || {};
         ConstructHasPartStore.superclass.constructor.call(this, Ext.apply({
             storeId: 'constructHasPartStore',
-            root: 'constructhaspart',
-            url: 'data/constructhaspart.json',
+            //root: 'constructhaspart',
+            url: '../constructpart',
+            params: {
+                format: 'json'
+            },
             autoLoad: true,
             fields: [
                 {

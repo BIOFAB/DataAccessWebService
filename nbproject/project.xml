@@ -7,10 +7,6 @@
             <minimum-ant-version>1.6.5</minimum-ant-version>
             <web-module-libraries>
                 <library dirs="200">
-                    <file>${file.reference.gson-1.5.jar}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
-                </library>
-                <library dirs="200">
                     <file>${file.reference.libBIOFAB.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
@@ -26,10 +22,18 @@
                     <file>${file.reference.postgresql-9.0-801.jdbc4.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
+                <library dirs="200">
+                    <file>${file.reference.libSBOLj.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.gson-1.6.jar}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
             </web-module-libraries>
             <web-module-additional-libraries/>
             <source-roots>
-                <root id="src.dir" name="Source Packages"/>
+                <root id="src.dir"/>
             </source-roots>
             <test-roots>
                 <root id="test.test.dir" name="Test Packages"/>
