@@ -18,8 +18,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gson.Gson;
-
 import org.biofab.model.Collection;
 
 
@@ -55,6 +53,7 @@ public class CollectionsServlet extends DataAccessServlet
         String version;
         String release_status;
         Date release_date;
+        String chassis;
 
         try
         {
@@ -72,8 +71,9 @@ public class CollectionsServlet extends DataAccessServlet
                 version = resultSet.getString("version");
                 release_status = resultSet.getString("release_status");
                 release_date = resultSet.getDate("release_date");
+                chassis = resultSet.getString("chassis");
 
-                collection = new Collection(id, biofabID, name, version, release_status, release_date, description);
+                collection = new Collection(id, biofabID, chassis, name, version, release_status, release_date, description);
                 arrayList.add(collection);
             }
 

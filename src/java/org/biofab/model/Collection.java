@@ -16,16 +16,18 @@ public class Collection
 {
     protected int       id;
     protected String    biofabID;
+    protected String    chassis;
     protected String    name;
     protected String    version;
     protected String    releaseStatus;
     protected Date      releaseDate;
     protected String    description;
 
-    public Collection(int id, String biofabID, String name, String version, String releaseStatus, Date releaseDate, String description)
+    public Collection(int id, String biofabID, String chassis, String name, String version, String releaseStatus, Date releaseDate, String description)
     {
         this.id = id;
         this.biofabID = biofabID;
+        this.chassis = chassis;
         this.name = name;
         this.version = version;
         this.releaseStatus = releaseStatus;
@@ -41,6 +43,11 @@ public class Collection
     public String getBiofabID()
     {
         return biofabID;
+    }
+
+    public String getChassis()
+    {
+        return chassis;
     }
     
     public String getName()

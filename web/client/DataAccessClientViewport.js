@@ -282,44 +282,30 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
             if(id === 1)
             {
                 collectionPanel = new PilotProjectPanel();
-                collectionPanel.setCollectionRecord(collectionRecord);
-                tab = this.infoTabPanel.add(collectionPanel);
-                this.infoTabPanel.doLayout();
-                this.infoTabPanel.setActiveTab(tab);
 
             }
 
             if(id === 2)
             {
-//                collectionPanel = new ModularPromoterPanel();
-//                tab = this.infoTabPanel.add(collectionPanel);
-//                this.infoTabPanel.setActiveTab(tab);
-//                collectionPanel.setCollectionRecord(collectionRecord);
-//                this.infoTabPanel.setActiveTab(tab);
-
-                Ext.Msg.alert('Modular Promoter Library', 'A collection performance panel for the Modular Promoter Library is under development and will be added to the Data Access Client in an upcoming release.');
+                collectionPanel = new ModularPromoterPanel();
             }
 
             if(id === 3)
             {
-//                collectionPanel = new ModularPromoterPanel();
-//                tab = this.infoTabPanel.add(collectionPanel);
-//                this.infoTabPanel.setActiveTab(tab);
-//                collectionPanel.setCollectionRecord(collectionRecord);
-//                this.infoTabPanel.setActiveTab(tab);
-
-                Ext.Msg.alert('Random Promoter Library', 'A collection performance panel for the Random Promoter Library is under development and will be added to the Data Access Client in an upcoming release.');
+                collectionPanel = new RandomPromoterPanel();
             }
 
             if(id === 4)
             {
                 collectionPanel = new TerminatorPanel();
-                tab = this.infoTabPanel.add(collectionPanel);
-                this.infoTabPanel.setActiveTab(tab);
-                collectionPanel.setCollectionRecord(collectionRecord);
-                this.infoTabPanel.setActiveTab(tab);
+            }
 
-//                Ext.Msg.alert('Terminator Library', 'A collection performance panel for the Terminator Library is under development and will be added to the Data Access Client in an upcoming release.');
+            if(collectionPanel !== null)
+            {
+                collectionPanel.setCollectionRecord(collectionRecord);
+                tab = this.infoTabPanel.add(collectionPanel);
+                this.infoTabPanel.doLayout();
+                this.infoTabPanel.setActiveTab(tab);
             }
         }
 });
