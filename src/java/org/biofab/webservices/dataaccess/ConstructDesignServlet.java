@@ -23,10 +23,10 @@ import org.biojavax.SimpleNote;
 import org.biojavax.SimpleRichAnnotation;
 import org.biojavax.bio.seq.RichSequence;
 
-//import org.sbolstandard.libSBOLj.SBOLutil;
-//import org.sbolstandard.libSBOLj.DnaComponent;
-//import org.sbolstandard.libSBOLj.Library;
-//import org.sbolstandard.libSBOLj.SbolService;
+import org.sbolstandard.libSBOLj.SBOLutil;
+import org.sbolstandard.libSBOLj.DnaComponent;
+import org.sbolstandard.libSBOLj.Library;
+import org.sbolstandard.libSBOLj.SBOLservice;
 
 @SuppressWarnings("serial")
 @WebServlet(name="ConstructDesignServlet", urlPatterns={"/construct/design/*"})
@@ -91,49 +91,46 @@ public class ConstructDesignServlet extends DataAccessServlet
                             }
                             else
                             {
-                                if(format.equalsIgnoreCase("json"))
+                                if(format.equalsIgnoreCase("sboljson"))
                                 {
-//                                    SBOLservice service = new SBOLservice();
-//                                    Library library = service.createLibrary("cFAB1", "BIOFAB Pilot Project","Pilot Project");
-//
-//
-//                                    DnaComponent dnaComponent = SBOLutil.readRichSequence(rs);
-//                                    library = service.addDnaComponentToLibrary(dnaComponent, library);
-//                                    String jsonString = SBOLutil.toJson(library);
-//                                    String rdfString = SBOLutil.toRDF(library);
-//
-//                                    if(sbolString != null && sbolString.length() > 0)
-//                                    {
-//                                        response.setContentType("text/plain");
-//                                        response.getWriter().println(sbolString);
-//                                    }
-//                                    else
-//                                    {
-//                                      //TODO  Manage null case
-//                                    }
+                                    SBOLservice service = new SBOLservice();
+                                    Library library = service.createLibrary("Test", "Test","Test");
+
+                                    DnaComponent dnaComponent = SBOLutil.readRichSequence(richSequence);
+                                    library = service.addDnaComponentToLibrary(dnaComponent, library);
+                                    String sbolString = SBOLutil.toJson(library);
+
+                                    if(sbolString != null && sbolString.length() > 0)
+                                    {
+                                        response.setContentType("text/plain");
+                                        response.getWriter().println(sbolString);
+                                    }
+                                    else
+                                    {
+                                      //TODO  Manage null case
+                                    }
                                 }
                                 else
                                 {
-                                    if(format.equalsIgnoreCase("rdfxml"))
+                                    if(format.equalsIgnoreCase("sbolrdf"))
                                     {
-//                                        DnaComponent dnaComponent;
-//                                        Sbolservice service = new Sbolservice();
-//                                        String sbolString;
-//
-//                                        dnaComponent = SBOLutil.readRichSequence(richSequence);
-//                                        Library library = service.createLibrary("libFAB1", "Pilot Project", "Pilot Project Description");
-//                                        library = service.addDnaComponentToLibrary(dnaComponent, library);
-//                                        sbolString = SBOLutil.toRDF(library);
-//
-//                                        if(sbolString != null && sbolString.length() > 0)
-//                                        {
-//                                            response.setContentType("text/plain");
-//                                            response.getWriter().println(sbolString);
-//                                        }
-//                                        else
-//                                        {
-//                                          //TODO  Manage null case
-//                                        }
+                                        SBOLservice service = new SBOLservice();
+                                        Library library = service.createLibrary("Test", "Test","Test");
+
+
+                                        DnaComponent dnaComponent = SBOLutil.readRichSequence(richSequence);
+                                        library = service.addDnaComponentToLibrary(dnaComponent, library);
+                                        String sbolString = SBOLutil.toRDF(library);
+
+                                        if(sbolString != null && sbolString.length() > 0)
+                                        {
+                                            response.setContentType("text/plain");
+                                            response.getWriter().println(sbolString);
+                                        }
+                                    else
+                                    {
+                                      //TODO  Manage null case
+                                    }
                                     }
                                     else
                                     {
