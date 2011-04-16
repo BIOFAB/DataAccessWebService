@@ -109,11 +109,26 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
 
     fetchPerformanceErrorHandler: function(response, opts)
     {
-       this.performancePanelTextRef.setVisible(false);
-       Ext.Msg.alert('Construct Performance', 'Construct Performance Data for ' + this.constructID + ' will be available in an upcoming release of the Data Access Client.');
-       this.performancePanelRef.hide();
-       this.performancePanelRef.disable();
-       this.datasheetTabPanel.setActiveTab(0);
+        this.performancePanelTextRef.setVisible(false);
+//       Ext.Msg.alert('Construct Performance', 'Construct Performance Data for ' + this.constructID + ' will be available in an upcoming release of the Data Access Client.');
+//       this.performancePanelRef.hide();
+//       this.performancePanelRef.disable();
+//       this.datasheetTabPanel.setActiveTab(0);
+
+        this.performancePanelRef.removeAll();
+
+        this.performancePanelRef.add(
+            {
+                xtype:'panel',
+                title: 'Under Development',
+                layout: 'auto',
+                html: 'Performance Data for ' + this.constructID + ' will be available in an upcoming release of the Data Access Client.'
+            }
+        )
+
+        this.performancePanelRef.doLayout();
+        this.performancePanelRef.setActiveTab(0);
+        this.datasheetTabPanel.setActiveTab(0);
     },
 
     displayTimeSeriesPlot:function(construct)
