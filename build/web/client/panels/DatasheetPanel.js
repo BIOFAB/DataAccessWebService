@@ -122,11 +122,12 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
                 xtype:'panel',
                 title: 'Under Development',
                 layout: 'auto',
-                html: 'Performance Data for ' + this.constructID + ' will be available in an upcoming release of the Data Access Client.'
+                html: 'Performance data for ' + this.constructID + ' will be available in an upcoming release of the Data Access Client.'
             }
         )
 
         this.performancePanelRef.doLayout();
+        this.performancePanelExportButtonRef.setDisabled(true);
         this.performancePanelRef.setActiveTab(0);
         this.datasheetTabPanel.setActiveTab(0);
     },

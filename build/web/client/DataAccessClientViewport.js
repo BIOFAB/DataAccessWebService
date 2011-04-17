@@ -192,7 +192,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 
         constructsGridExportButtonClickHandler: function(button, event)
         {
-            var exportWindow = window.open(WEB_SERVICE_BASE_URL + 'constructs' + "?collectionid=1" + "&format=csv","Constructs","width=640,height=480");
+            var exportWindow = window.open(WEB_SERVICE_BASE_URL + 'constructs?format=csv',"Constructs","width=640,height=480");
             exportWindow.scrollbars.visible = true;
             exportWindow.alert("Use File/Save As in the menu bar to save this document.");
         },
