@@ -10,7 +10,7 @@ ConstructHasPartStore = Ext.extend(Ext.data.JsonStore, {
         ConstructHasPartStore.superclass.constructor.call(this, Ext.apply({
             storeId: 'constructHasPartStore',
             //root: 'constructhaspart',
-            url: '../constructpart',
+            url: '../constructparts',
             params: {
                 format: 'json'
             },

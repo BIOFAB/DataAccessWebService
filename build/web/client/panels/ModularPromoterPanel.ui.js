@@ -22,7 +22,7 @@ ModularPromoterPanelUi = Ext.extend(Ext.Panel, {
                 x: 25,
                 y: 25,
                 ref: 'centerPanelRef',
-                floating: true,
+                floating: false,
                 shadowOffset: 6,
                 autoShow: true,
                 draggable: false,

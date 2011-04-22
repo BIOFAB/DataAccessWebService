@@ -145,13 +145,35 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                                                 height: 30,
                                                 items: [
                                                     {
-                                                        xtype: 'tbtext',
-                                                        text: 'Events Displayed',
-                                                        hidden: false,
-                                                        ref: '../../../../../dataDisplayedTextRef'
+                                                        xtype: 'combo',
+                                                        ref: '../../../../../geneExpressionPerCellComboBox',
+                                                        store: [
+                                                            'Fluorescence Histogram',
+                                                            'Fluorescence vs. Forward Scatter',
+                                                            'Fluorescence vs. Side Scatter'
+                                                        ],
+                                                        autoSelect: true,
+                                                        typeAhead: false,
+                                                        triggerAction: 'all',
+                                                        selectOnFocus:true,
+                                                        width:250,
+                                                        forceSelection:true,
+                                                        allowBlank: false,
+                                                        editable: false
+                                                        //tooltip: 'Select a plot type to display'
                                                     },
                                                     {
-                                                        xtype: 'tbfill'
+                                                       xtype:'tbfill'
+                                                    },
+                                                    {
+                                                        xtype: 'tbtext',
+                                                        ref: '../../../../../dataDisplayedTextRef',
+                                                        text: 'Events',
+                                                        hidden: false,
+                                                        tooltip: 'The number of events displayed in the plot'
+                                                    },
+                                                    {
+                                                        xtype: 'tbseparator'
                                                     },
                                                     {
                                                         xtype: 'button',

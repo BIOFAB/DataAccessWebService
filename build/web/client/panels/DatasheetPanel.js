@@ -17,6 +17,8 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         this.performancePanelExportButtonRef.setHandler(this.performancePanelExportButtonClickHandler, this);
         this.showAllEventsButtonRef.setHandler(this.displayAllEventsButtonClickHandler, this);
 
+        //this.geneExpressionPerCellComboBox.select(0,true);
+
         //this.performancePanelRef.setActiveTab(1);
         //this.performancePanelRef.setActiveTab(0);
     },
