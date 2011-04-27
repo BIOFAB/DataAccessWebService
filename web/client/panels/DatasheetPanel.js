@@ -16,6 +16,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         this.designPanelExportButtonRef.setHandler(this.designPanelExportButtonClickHandler, this);
         this.performancePanelExportButtonRef.setHandler(this.performancePanelExportButtonClickHandler, this);
         this.showAllEventsButtonRef.setHandler(this.displayAllEventsButtonClickHandler, this);
+        //this.geneExpressionPerCellComboBox.on('select', this.geneExpressionPerCellComboBoxSelectHandler, this);
 
         //this.geneExpressionPerCellComboBox.select(0,true);
 
@@ -101,7 +102,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         {
             this.construct = Ext.util.JSON.decode(response.responseText);
             this.displayTimeSeriesPlot(this.construct);
-            this.displayScatterPlot(this.construct, false);
+            this.generateFluorescenceVsForwardScatterPlot(this.construct, false);
         }
         else
         {
@@ -132,6 +133,63 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         this.performancePanelExportButtonRef.setDisabled(true);
         this.performancePanelRef.setActiveTab(0);
         this.datasheetTabPanel.setActiveTab(0);
+    },
+
+    geneExpressionPerCellComboBoxSelectHandler: function(comboBox, record, index)
+    {
+        if(index === 0)
+        {
+            this.generateFluorescenceHistogram(this.construct, false);
+        }
+
+        if(index === 1)
+        {
+            this.generateFluorescenceVsForwardScatterPlot(this.construct, false);
+        }
+
+        if(index === 2)
+        {
+            this.generateFluorescenceVsSideScatterPlot(this.construct, false);
+        }
+    },
+
+    designPanelExportButtonClickHandler: function(button, event)
+    {
+        var genbankWindow = window.open(WEB_SERVICE_BASE_URL + 'construct/design' + "?id=" + this.constructID + "&format=genbank","Genbank File for " + this.constructID,"width=640,height=480");
+        genbankWindow.alert("Use File/Save As in the menu bar to save this document.");
+        genbankWindow.scrollbars.visible = true;
+    },
+
+    performancePanelExportButtonClickHandler: function(button, event)
+    {
+        var expWindow = window.open(WEB_SERVICE_BASE_URL + 'construct/performance' + "?id=" + this.constructID + "&format=json","JSON File for " + this.constructID,"width=640,height=480");
+        expWindow.scrollbars.visible = true;
+        expWindow.alert("Use File/Save As in the menu bar to save this document.");
+    },
+
+    displayAllEventsButtonClickHandler: function(button, event)
+    {
+//        if(this.displayWarning)
+//        {
+//            Ext.Msg.alert('Gene Expresssion per Cell', 'Displaying all the data can take upto 10 seconds.');
+//            this.displayWarning = false;
+//        }
+
+        // TODO Refactor!!!
+
+        this.generateFluorescenceVsForwardScatterPlot(this.construct, true);
+
+//        var value = this.geneExpressionPerCellComboBox.getValue();
+//
+//        if(value === 'Fluorescence vs. Forward Scatter')
+//        {
+//            this.generateFluorescenceVsForwardScatterPlot(this.construct, true);
+//        }
+//
+//        if(value === 'Fluorescence vs. Side Scatter')
+//        {
+//            this.generateFluorescenceVsSideScatterPlot(this.construct, true);
+//        }
     },
 
     displayTimeSeriesPlot:function(construct)
@@ -307,7 +365,113 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         this.bulkGeneExpressionPanelRef.doLayout();
     },
 
-    displayScatterPlot: function(construct, displayAll)
+    generateFluorescenceHistogram: function(construct)
+    {
+        var newStore;
+        var newChartConfig;
+        var anotherPanel;
+        var cytoMeasurements;
+
+        this.performancePanelRef.setActiveTab(1);
+        //this.geneExpressionPerCellPanelRef.removeAll(true);
+
+        Ext4.regModel('FluorescenceFrequency', {
+            fields: [
+                {name: 'bin', type: 'string'},
+                {name: 'frequency', type: 'int'}
+            ]
+        });
+
+        if(this.construct !== null)
+        {
+            cytoMeasurements = construct.performance.cytometerReads[0].measurements;
+            this.dataDisplayedTextRef.setHidden(true);
+
+            var measurement = null;
+            var fluorescenceValues = [];
+            var dataCount = cytoMeasurements.length;
+
+            for(var i = 0; i < dataCount; i += 1)
+            {
+                dataSet.push(cytoMeasurements[i].fluorescence);
+            }
+
+            newStore = new Ext4.data.Store({
+                model: 'FluorescenceFrequency',
+                data : dataSet
+            });
+
+            var element = this.geneExpressionPerCellPanelRef.getEl();
+
+            newChartConfig = {
+                xtype: 'chart',
+                theme: 'Category1',
+                flex: 1,
+                animate: false,
+                store: newStore,
+//                legend: {
+//                    position: 'right'
+//                },
+                axes: [
+                    {
+                        type: 'Numeric',
+                        position: 'left',
+                        fields: ['forwardScatter'],
+                        title: 'Forward Scatter',
+                        labelTitle: {font: '12px Arial'},
+                        label: {font: '11px Arial'}
+                    },
+                    {
+                        type: 'Numeric',
+                        position: 'bottom',
+                        fields: ['fluorescence'],
+                        title: 'Fluorescence',
+                        grid: false,
+                        labelTitle: {font: '12px Arial'},
+                        label: {font: '11px Arial'}
+                    }
+                ],
+                series: [{
+                    title: 'Replicate 1',
+                    type: 'scatter',
+                    markerCfg: {
+                        radius: 1,
+                        size: 1
+                    },
+                    axis: 'left',
+                    xField: 'fluorescence',
+                    yField: 'forwardScatter',
+                    color: '#a00'
+                }]
+            };
+
+            anotherPanel = Ext4.ClassManager.instantiate('Ext.panel.Panel', {
+                width: 360,
+                height: 300,
+                renderTo: element.dom,
+                layout: 'fit',
+                items: [{
+                        flex: 1,
+                        xtype: 'container',
+                        layout: 'fit',
+                        items:[newChartConfig]
+                    }
+                ]
+            });
+
+            this.geneExpressionPerCellPanelRef.removeAll(true);
+            this.geneExpressionPerCellPanelRef.add(anotherPanel);
+            this.geneExpressionPerCellPanelRef.doLayout();
+            this.showAllEventsButtonRef.enable();
+            //this.geneExpressionPerCellComboBox.select(1,true);
+        }
+        else
+        {
+          Ext.Msg.alert('Gene Expression per Cell', 'There is an error. Gene Expression per Cell plot can not be generated.');
+        }
+    },
+
+    generateFluorescenceVsForwardScatterPlot: function(construct, displayAll)
     {
         var newStore;
         var newChartConfig;
@@ -369,7 +533,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
                 }
             }
 
-            this.dataDisplayedTextRef.setText(dataSet.length + ' of ' + dataCount + ' Events Displayed');
+            this.dataDisplayedTextRef.setText(dataSet.length + ' of ' + dataCount + ' Events');
 
             newStore = new Ext4.data.Store({
                 model: 'CytometerMeasurement',
@@ -434,40 +598,154 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
                 ]
             });
 
+            this.geneExpressionPerCellPanelRef.removeAll(true);
             this.geneExpressionPerCellPanelRef.add(anotherPanel);
             this.geneExpressionPerCellPanelRef.doLayout();
+            this.showAllEventsButtonRef.enable();
+            //this.geneExpressionPerCellComboBox.select(1,true);
         }
         else
         {
-          Ext.Msg.alert('Performance Data', 'Data not available yet.');
+          Ext.Msg.alert('Gene Expression per Cell', 'There is an error. Gene Expression per Cell plot can not be generated.');
         }
-
-        this.showAllEventsButtonRef.enable();
-        //this.performancePanelRef.setActiveTab(0);
     },
 
-    designPanelExportButtonClickHandler: function(button, event)
+    generateFluorescenceVsSideScatterPlot: function(construct, displayAll)
     {
-        var genbankWindow = window.open(WEB_SERVICE_BASE_URL + 'construct/design' + "?id=" + this.constructID + "&format=genbank","Genbank File for " + this.constructID,"width=640,height=480");
-        genbankWindow.alert("Use File/Save As in the menu bar to save this document.");
-        genbankWindow.scrollbars.visible = true;
-    },
+        var newStore;
+        var newChartConfig;
+        var anotherPanel;
+        var cytoMeasurements;
 
-    performancePanelExportButtonClickHandler: function(button, event)
-    {
-        var expWindow = window.open(WEB_SERVICE_BASE_URL + 'construct/performance' + "?id=" + this.constructID + "&format=json","JSON File for " + this.constructID,"width=640,height=480");
-        expWindow.scrollbars.visible = true;
-        expWindow.alert("Use File/Save As in the menu bar to save this document.");
-    },
+        this.performancePanelRef.setActiveTab(1);
+        this.geneExpressionPerCellPanelRef.removeAll(true);
 
-    displayAllEventsButtonClickHandler: function(button, event)
-    {
-//        if(this.displayWarning)
-//        {
-//            Ext.Msg.alert('Gene Expresssion per Cell', 'Displaying all the data can take upto 10 seconds.');
-//            this.displayWarning = false;
-//        }
+        Ext4.regModel('CytometerMeasurement', {
+            fields: [
+                {name: 'id', type: 'int'},
+                {name: 'fluorescence', type: 'float'},
+                {name: 'forwardScatter', type: 'float'},
+                {name: 'sideScatter', type: 'float'}
+            ]
+        });
 
-        this.displayScatterPlot(this.construct, true);
+        if(this.construct !== null)
+        {
+            cytoMeasurements = construct.performance.cytometerReads[0].measurements;
+
+            var measurement = null;
+            var dataSet = [];
+            var dataCount = cytoMeasurements.length;
+            var randomIndex;
+            var shouldPush;
+            var sampleSize = Math.round(dataCount*.25);
+
+            if(sampleSize > 1000)
+            {
+                sampleSize = 1000;
+            }
+
+            if(displayAll)
+            {
+                dataSet = cytoMeasurements;
+            }
+            else
+            {
+                for(var i = 0; i < sampleSize; i += 1)
+                {
+                    shouldPush = true;
+                    randomIndex = Math.round((Math.random() * 1000000))%dataCount;
+                    measurement = cytoMeasurements[randomIndex];
+
+                    for(var j = 0; j < dataSet.length; j += 1)
+                    {
+                        if(dataSet[j] === randomIndex)
+                        {
+                           shouldPush = false;
+                        }
+                    }
+
+                    if(shouldPush)
+                    {
+                        dataSet.push(measurement);
+                    }
+                }
+            }
+
+            this.dataDisplayedTextRef.setText(dataSet.length + ' of ' + dataCount + ' Events');
+
+            newStore = new Ext4.data.Store({
+                model: 'CytometerMeasurement',
+                data : dataSet
+            });
+
+            var element = this.geneExpressionPerCellPanelRef.getEl();
+
+            newChartConfig = {
+                xtype: 'chart',
+                theme: 'Category1',
+                flex: 1,
+                animate: false,
+                store: newStore,
+//                legend: {
+//                    position: 'right'
+//                },
+                axes: [
+                    {
+                        type: 'Numeric',
+                        position: 'left',
+                        fields: ['sideScatter'],
+                        title: 'Side Scatter',
+                        labelTitle: {font: '12px Arial'},
+                        label: {font: '11px Arial'}
+                    },
+                    {
+                        type: 'Numeric',
+                        position: 'bottom',
+                        fields: ['fluorescence'],
+                        title: 'Fluorescence',
+                        grid: false,
+                        labelTitle: {font: '12px Arial'},
+                        label: {font: '11px Arial'}
+                    }
+                ],
+                series: [{
+                    title: 'Replicate 1',
+                    type: 'scatter',
+                    markerCfg: {
+                        radius: 1,
+                        size: 1
+                    },
+                    axis: 'left',
+                    xField: 'fluorescence',
+                    yField: 'sideScatter',
+                    color: '#a00'
+                }]
+            };
+
+            anotherPanel = Ext4.ClassManager.instantiate('Ext.panel.Panel', {
+                width: 360,
+                height: 300,
+                renderTo: element.dom,
+                layout: 'fit',
+                items: [{
+                        flex: 1,
+                        xtype: 'container',
+                        layout: 'fit',
+                        items:[newChartConfig]
+                    }
+                ]
+            });
+
+            this.geneExpressionPerCellPanelRef.removeAll(true);
+            this.geneExpressionPerCellPanelRef.add(anotherPanel);
+            this.geneExpressionPerCellPanelRef.doLayout();
+            this.showAllEventsButtonRef.enable();
+            //this.geneExpressionPerCellComboBox.select(1,true);
+        }
+        else
+        {
+          Ext.Msg.alert('Gene Expression per Cell', 'There is an error. Gene Expression per Cell plot can not be generated.');
+        }
     }
 });
