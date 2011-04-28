@@ -16,7 +16,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         this.designPanelExportButtonRef.setHandler(this.designPanelExportButtonClickHandler, this);
         this.performancePanelExportButtonRef.setHandler(this.performancePanelExportButtonClickHandler, this);
         this.showAllEventsButtonRef.setHandler(this.displayAllEventsButtonClickHandler, this);
-        //this.geneExpressionPerCellComboBox.on('select', this.geneExpressionPerCellComboBoxSelectHandler, this);
+        this.geneExpressionPerCellComboBox.on('select', this.geneExpressionPerCellComboBoxSelectHandler, this);
 
         //this.geneExpressionPerCellComboBox.select(0,true);
 
@@ -102,7 +102,8 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         {
             this.construct = Ext.util.JSON.decode(response.responseText);
             this.displayTimeSeriesPlot(this.construct);
-            this.generateFluorescenceVsForwardScatterPlot(this.construct, false);
+            this.generateFluorescenceHistogram(this.construct);
+            //this.generateFluorescenceVsForwardScatterPlot(this.construct, false);
         }
         else
         {
@@ -139,7 +140,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
     {
         if(index === 0)
         {
-            this.generateFluorescenceHistogram(this.construct, false);
+            this.generateFluorescenceHistogram(this.construct);
         }
 
         if(index === 1)
@@ -177,19 +178,24 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
 
         // TODO Refactor!!!
 
-        this.generateFluorescenceVsForwardScatterPlot(this.construct, true);
+//        this.generateFluorescenceVsForwardScatterPlot(this.construct, true);
 
-//        var value = this.geneExpressionPerCellComboBox.getValue();
-//
-//        if(value === 'Fluorescence vs. Forward Scatter')
-//        {
-//            this.generateFluorescenceVsForwardScatterPlot(this.construct, true);
-//        }
-//
-//        if(value === 'Fluorescence vs. Side Scatter')
-//        {
-//            this.generateFluorescenceVsSideScatterPlot(this.construct, true);
-//        }
+        var value = this.geneExpressionPerCellComboBox.getValue();
+
+        if(value === 'Fluorescence Histogram')
+        {
+            this.generateFluorescenceHistogram(this.construct);
+        }
+        
+        if(value === 'Fluorescence vs. Forward Scatter')
+        {
+            this.generateFluorescenceVsForwardScatterPlot(this.construct, true);
+        }
+
+        if(value === 'Fluorescence vs. Side Scatter')
+        {
+            this.generateFluorescenceVsSideScatterPlot(this.construct, true);
+        }
     },
 
     displayTimeSeriesPlot:function(construct)
@@ -371,9 +377,14 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         var newChartConfig;
         var anotherPanel;
         var cytoMeasurements;
+        var dataSet = [];
+        var testDataSet = [
+          {bin:"One", frequency:10},
+          {bin:"Two", frequency:20},
+          {bin:"Three", frequency:10},
+        ];
 
         this.performancePanelRef.setActiveTab(1);
-        //this.geneExpressionPerCellPanelRef.removeAll(true);
 
         Ext4.regModel('FluorescenceFrequency', {
             fields: [
@@ -385,7 +396,9 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         if(this.construct !== null)
         {
             cytoMeasurements = construct.performance.cytometerReads[0].measurements;
-            this.dataDisplayedTextRef.setHidden(true);
+            this.dataDisplayedTextRef.setVisible(false);
+            this.geneExpPerCellSeparator.setVisible(false);
+            this.showAllEventsButtonRef.setVisible(false);
 
             var measurement = null;
             var fluorescenceValues = [];
@@ -398,7 +411,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
 
             newStore = new Ext4.data.Store({
                 model: 'FluorescenceFrequency',
-                data : dataSet
+                data : testDataSet
             });
 
             var element = this.geneExpressionPerCellPanelRef.getEl();
@@ -415,34 +428,50 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
                 axes: [
                     {
                         type: 'Numeric',
+//                        grid: true,
                         position: 'left',
-                        fields: ['forwardScatter'],
-                        title: 'Forward Scatter',
-                        labelTitle: {font: '12px Arial'},
-                        label: {font: '11px Arial'}
+                        fields: ['frequency'],
+                        title: 'Number of Cells',
+//                        grid: {
+//                            odd: {
+//                                opacity: 1,
+//                                fill: '#ddd',
+//                                stroke: '#bbb',
+//                                'stroke-width': 1
+//                            }
+//                        },
+                        minimum: 0,
+                        adjustMinimumByMajorUnit: 0
                     },
                     {
-                        type: 'Numeric',
+                        type: 'Category',
                         position: 'bottom',
-                        fields: ['fluorescence'],
+                        fields: ['bin'],
                         title: 'Fluorescence',
-                        grid: false,
-                        labelTitle: {font: '12px Arial'},
-                        label: {font: '11px Arial'}
+                        grid: true,
+                        label:
+                        {
+                            rotate: {degrees: 315}
+                        }
                     }
                 ],
-                series: [{
-                    title: 'Replicate 1',
-                    type: 'scatter',
-                    markerCfg: {
-                        radius: 1,
-                        size: 1
-                    },
-                    axis: 'left',
-                    xField: 'fluorescence',
-                    yField: 'forwardScatter',
-                    color: '#a00'
-                }]
+                series: [
+                    {
+                        type: 'column',
+                        axis: 'bottom',
+                        xField: 'bin',
+                        yField: 'frequency',
+                        highlight: true,
+                        label: {
+                            display: 'insideEnd',
+                            field: 'frequency',
+                            renderer: Ext.util.Format.numberRenderer('0'),
+                            orientation: 'horizontal',
+                            color: '#333',
+                           'text-anchor': 'middle'
+                        }
+                    }
+                ]
             };
 
             anotherPanel = Ext4.ClassManager.instantiate('Ext.panel.Panel', {
@@ -479,7 +508,6 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         var cytoMeasurements;
 
         this.performancePanelRef.setActiveTab(1);
-        this.geneExpressionPerCellPanelRef.removeAll(true);
 
         Ext4.regModel('CytometerMeasurement', {
             fields: [
@@ -492,6 +520,9 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
 
         if(this.construct !== null)
         {
+            this.dataDisplayedTextRef.setVisible(true);
+            this.geneExpPerCellSeparator.setVisible(true);
+            this.showAllEventsButtonRef.setVisible(true);
             cytoMeasurements = construct.performance.cytometerReads[0].measurements;
 
             var measurement = null;
@@ -631,6 +662,9 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
 
         if(this.construct !== null)
         {
+            this.dataDisplayedTextRef.setVisible(true);
+            this.geneExpPerCellSeparator.setVisible(true);
+            this.showAllEventsButtonRef.setVisible(true);
             cytoMeasurements = construct.performance.cytometerReads[0].measurements;
 
             var measurement = null;

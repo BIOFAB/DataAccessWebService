@@ -144,24 +144,24 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                                                 ref: '../../../../geneExpressionPerCellPanelToolbar',
                                                 height: 30,
                                                 items: [
-//                                                    {
-//                                                        xtype: 'combo',
-//                                                        ref: '../../../../../geneExpressionPerCellComboBox',
-//                                                        store: [
-//                                                            'Fluorescence Histogram',
-//                                                            'Fluorescence vs. Forward Scatter',
-//                                                            'Fluorescence vs. Side Scatter'
-//                                                        ],
-//                                                        //autoSelect: true,
-//                                                        typeAhead: true,
-//                                                        triggerAction: 'all',
-//                                                        selectOnFocus:true,
-//                                                        width:250,
-//                                                        forceSelection:true,
-//                                                        allowBlank: false,
-//                                                        editable: false
-//                                                        //tooltip: 'Select a plot type to display'
-//                                                    },
+                                                    {
+                                                        xtype: 'combo',
+                                                        ref: '../../../../../geneExpressionPerCellComboBox',
+                                                        store: [
+                                                            'Fluorescence Histogram',
+                                                            'Fluorescence vs. Forward Scatter',
+                                                            'Fluorescence vs. Side Scatter'
+                                                        ],
+                                                        //autoSelect: true,
+                                                        typeAhead: true,
+                                                        triggerAction: 'all',
+                                                        selectOnFocus:true,
+                                                        width:250,
+                                                        forceSelection:true,
+                                                        allowBlank: false,
+                                                        editable: false
+                                                        //tooltip: 'Select a plot type to display'
+                                                    },
                                                     {
                                                        xtype:'tbfill'
                                                     },
@@ -173,7 +173,8 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                                                         tooltip: 'The number of events displayed in the plot'
                                                     },
                                                     {
-                                                        xtype: 'tbseparator'
+                                                        xtype: 'tbseparator',
+                                                        ref: '../../../../../geneExpPerCellSeparator'
                                                     },
                                                     {
                                                         xtype: 'button',
