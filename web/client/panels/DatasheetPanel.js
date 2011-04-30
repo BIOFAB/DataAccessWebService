@@ -377,12 +377,8 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         var newChartConfig;
         var anotherPanel;
         var cytoMeasurements;
-        var dataSet = [];
-        var testDataSet = [
-          {bin:"One", frequency:10},
-          {bin:"Two", frequency:20},
-          {bin:"Three", frequency:10},
-        ];
+        var fluorescenceValues = [];
+        var histogramData;
 
         this.performancePanelRef.setActiveTab(1);
 
@@ -401,17 +397,19 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
             this.showAllEventsButtonRef.setVisible(false);
 
             var measurement = null;
-            var fluorescenceValues = [];
+            
             var dataCount = cytoMeasurements.length;
 
             for(var i = 0; i < dataCount; i += 1)
             {
-                dataSet.push(cytoMeasurements[i].fluorescence);
+                fluorescenceValues.push(cytoMeasurements[i].fluorescence);
             }
+
+            histogramData = this.generateHistogramData(fluorescenceValues, 20);
 
             newStore = new Ext4.data.Store({
                 model: 'FluorescenceFrequency',
-                data : testDataSet
+                data : histogramData
             });
 
             var element = this.geneExpressionPerCellPanelRef.getEl();
@@ -422,33 +420,21 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
                 flex: 1,
                 animate: false,
                 store: newStore,
-//                legend: {
-//                    position: 'right'
-//                },
                 axes: [
                     {
                         type: 'Numeric',
-//                        grid: true,
                         position: 'left',
                         fields: ['frequency'],
-                        title: 'Number of Cells',
-//                        grid: {
-//                            odd: {
-//                                opacity: 1,
-//                                fill: '#ddd',
-//                                stroke: '#bbb',
-//                                'stroke-width': 1
-//                            }
-//                        },
-                        minimum: 0,
-                        adjustMinimumByMajorUnit: 0
+                        title: 'Number of Cells'
+                        //minimum: 0,
+                        //adjustMinimumByMajorUnit: 0
                     },
                     {
                         type: 'Category',
                         position: 'bottom',
                         fields: ['bin'],
                         title: 'Fluorescence',
-                        grid: true,
+                        grid: false,
                         label:
                         {
                             rotate: {degrees: 315}
@@ -466,7 +452,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
                             display: 'insideEnd',
                             field: 'frequency',
                             renderer: Ext.util.Format.numberRenderer('0'),
-                            orientation: 'horizontal',
+                            orientation: 'vertical',
                             color: '#333',
                            'text-anchor': 'middle'
                         }
@@ -781,5 +767,32 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         {
           Ext.Msg.alert('Gene Expression per Cell', 'There is an error. Gene Expression per Cell plot can not be generated.');
         }
+    },
+
+    generateHistogramData: function(values, binCount)
+    {
+        var histogramData = [];
+        var histogramDatum;
+        var globalMin;
+        var globalMax;
+        var valuesCount;
+
+        values.sort(function(a,b){return a - b;});
+
+        valuesCount = values.length;
+        globalMin = values[0];
+        globalMax = values[valuesCount - 1];
+
+        for(var i = 0; i < binCount; i += 1)
+        {
+            histogramDatum = {
+                bin: i +1,
+                frequency: 10
+            }
+
+            histogramData.push(histogramDatum);
+        }
+
+        return histogramData;
     }
 });

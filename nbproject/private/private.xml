@@ -2,12 +2,8 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
-        <file>file:/Users/cesarr/Documents/Workspaces/Netbeans/ElectronicDatasheets/web/client/DataAccessClientViewport.ui.js</file>
-        <file>file:/Users/cesarr/Documents/Workspaces/Netbeans/ElectronicDatasheets/web/client/DataAccessClientViewport.js</file>
-        <file>file:/Users/cesarr/Documents/Workspaces/Netbeans/ElectronicDatasheets/web/client/stores/ConstructStore.js</file>
-        <file>file:/Users/cesarr/Documents/Workspaces/Netbeans/ElectronicDatasheets/web/client/stores/ConstructDisplayStore.js</file>
-        <file>file:/Users/cesarr/Documents/Workspaces/Netbeans/ElectronicDatasheets/web/client/panels/DatasheetPanel.ui.js</file>
-        <file>file:/Users/cesarr/Documents/Workspaces/Netbeans/ElectronicDatasheets/web/client/panels/DatasheetPanel.js</file>
         <file>file:/Users/cesarr/Documents/Workspaces/Netbeans/ElectronicDatasheets/src/java/org/biofab/webservices/dataaccess/DataAccessServlet.java</file>
+        <file>file:/Users/cesarr/Documents/Workspaces/Netbeans/ElectronicDatasheets/web/client/panels/DatasheetPanel.js</file>
+        <file>file:/Users/cesarr/Documents/Workspaces/Netbeans/ElectronicDatasheets/web/client/panels/DatasheetPanel.ui.js</file>
     </open-files>
 </project-private>

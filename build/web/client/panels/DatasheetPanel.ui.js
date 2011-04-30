@@ -159,7 +159,8 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                                                         width:250,
                                                         forceSelection:true,
                                                         allowBlank: false,
-                                                        editable: false
+                                                        editable: false,
+                                                        emptyText: 'Select a plot type...'
                                                         //tooltip: 'Select a plot type to display'
                                                     },
                                                     {
