@@ -76,7 +76,7 @@ public class ConstructDesignServlet extends DataAccessServlet
                         addFeatures(richSequence, features);
                         //addComment(richSequence, "The genetic constructs used here are taken or composed from available, well known genetic elements.  At this time BIOFAB staff have not yet taken care to define the precise functional boundaries of these genetic elements.  Thus, for example, a part labeled as a \"promoter\" may include sequences encoding all or part of a 5' UTR downstream of a transcription start site. And so on. Part of the mission of the BIOFAB is to define compatible sets of genetic objects with precise and composable boundaries. Such well engineered parts will be noted once available.");
                         richSequence.setCircular(true);
-
+                        
                         if(format != null && format.equalsIgnoreCase("genbank"))
                         {
                             response.setContentType("text/plain");
@@ -93,44 +93,48 @@ public class ConstructDesignServlet extends DataAccessServlet
                             {
                                 if(format.equalsIgnoreCase("sboljson"))
                                 {
-                                    SBOLservice service = new SBOLservice();
-                                    Library library = service.createLibrary("Test", "Test","Test");
+//                                    SBOLservice service = new SBOLservice();
+//                                    Library library = service.createLibrary("Test", "Test","Test");
+//
+//                                    DnaComponent dnaComponent = SBOLutil.readRichSequence(richSequence);
+//                                    library = service.addDnaComponentToLibrary(dnaComponent, library);
+//                                    String sbolString = SBOLutil.toJson(library);
+//
+//                                    if(sbolString != null && sbolString.length() > 0)
+//                                    {
+//                                        response.setContentType("text/plain");
+//                                        response.getWriter().println(sbolString);
+//                                    }
+//                                    else
+//                                    {
+//                                      //TODO  Manage null case
+//                                    }
 
-                                    DnaComponent dnaComponent = SBOLutil.readRichSequence(richSequence);
-                                    library = service.addDnaComponentToLibrary(dnaComponent, library);
-                                    String sbolString = SBOLutil.toJson(library);
-
-                                    if(sbolString != null && sbolString.length() > 0)
-                                    {
-                                        response.setContentType("text/plain");
-                                        response.getWriter().println(sbolString);
-                                    }
-                                    else
-                                    {
-                                      //TODO  Manage null case
-                                    }
+                                    this.textError(response, "SBOL JSON is under development.");
                                 }
                                 else
                                 {
                                     if(format.equalsIgnoreCase("sbolrdf"))
                                     {
-                                        SBOLservice service = new SBOLservice();
-                                        Library library = service.createLibrary("Test", "Test","Test");
+//                                        SBOLservice service = new SBOLservice();
+//                                        Library library = service.createLibrary("Test", "Test","Test");
+//
+//
+//                                        DnaComponent dnaComponent = SBOLutil.readRichSequence(richSequence);
+//                                        library = service.addDnaComponentToLibrary(dnaComponent, library);
+//                                        String sbolString = SBOLutil.toRDF(library);
+//
+//                                        if(sbolString != null && sbolString.length() > 0)
+//                                        {
+//                                            response.setContentType("text/plain");
+//                                            response.getWriter().println(sbolString);
+//                                        }
+//                                        else
+//                                        {
+//                                          //TODO  Manage null case
+//                                        }
 
-
-                                        DnaComponent dnaComponent = SBOLutil.readRichSequence(richSequence);
-                                        library = service.addDnaComponentToLibrary(dnaComponent, library);
-                                        String sbolString = SBOLutil.toRDF(library);
-
-                                        if(sbolString != null && sbolString.length() > 0)
-                                        {
-                                            response.setContentType("text/plain");
-                                            response.getWriter().println(sbolString);
-                                        }
-                                    else
-                                    {
-                                      //TODO  Manage null case
-                                    }
+                                        this.textError(response, "SBOL RDF is under development.");
                                     }
                                     else
                                     {
