@@ -240,11 +240,11 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
             theme: 'Category1',
             animate: false,
             store: store,
-//            legend: {
-//                position: 'right',
-//                padding: 0,
-//                boxZIndex:0
-//            },
+            legend: {
+                position: 'right',
+                padding: 0,
+                boxZIndex:0
+            },
             axes: [
                 {
                     type: 'Numeric',
@@ -305,40 +305,40 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
                     }
                 }
             },
-//            {
-//                title: 'Replicate 1 - OD',
-//                type: 'line',
-//                lineWidth: 2,
-//                showMarkers: true,
-//                fill: true,
-//                axis: 'right',
-//                xField: 'odTime',
-//                yField: 'od',
-////                style: {
-////                    'stroke-width': 1
-////                },
-//                markerCfg: {
-//                    type: 'circle',
-//                    size: 2,
-//                    radius: 2,
-//                    'stroke-width': 0
+            {
+                title: 'Replicate 1 - OD',
+                type: 'line',
+                lineWidth: 2,
+                showMarkers: true,
+                fill: true,
+                axis: 'right',
+                xField: 'odTime',
+                yField: 'od',
+//                style: {
+//                    'stroke-width': 1
 //                },
-//                tips: {
-//                    trackMouse: true,
-//                    width: 80,
-//                    height: 40,
-//                    renderer: function(storeItem, item) {
-//                        this.setTitle(storeItem.get('od'));
-//                    }
-//                }
-//            }
+                markerCfg: {
+                    type: 'circle',
+                    size: 2,
+                    radius: 2,
+                    'stroke-width': 0
+                },
+                tips: {
+                    trackMouse: true,
+                    width: 80,
+                    height: 40,
+                    renderer: function(storeItem, item) {
+                        this.setTitle(storeItem.get('od'));
+                    }
+                }
+            }
         ]
         };
 
         var element = this.bulkGeneExpressionPanelRef.getEl();
 
         newPanel = Ext4.ClassManager.instantiate('Ext.panel.Panel', {
-            width: 500,
+            width: 600,
             height: 300,
             renderTo: element.dom,
             layout: 'fit',
@@ -355,160 +355,161 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         this.bulkGeneExpressionPanelRef.doLayout();
     },
 
-//    generateFluorescenceHistogram: function(construct)
-//    {
-//        var newStore;
-//        var newChartConfig;
-//        var anotherPanel;
-//        var cytoMeasurements;
-//        var fluorescenceValues = [];
-//        var histogramData;
-//
-//        this.performancePanelRef.setActiveTab(1);
-//
-//        Ext4.regModel('FluorescenceFrequency', {
-//            fields: [
-//                {name: 'bin', type: 'string'},
-//                {name: 'frequency', type: 'int'}
-//            ]
-//        });
-//
-//        if(this.construct !== null)
-//        {
-//            cytoMeasurements = construct.performance.cytometerReads[0].measurements;
-//            this.dataDisplayedTextRef.setVisible(false);
-//            this.geneExpPerCellSeparator.setVisible(false);
-//            this.showAllEventsButtonRef.setVisible(false);
-//
-//            var measurement = null;
-//
-//            var dataCount = cytoMeasurements.length;
-//
-//            for(var i = 0; i < dataCount; i += 1)
-//            {
-//                fluorescenceValues.push(cytoMeasurements[i].fluorescence);
-//            }
-//
-//            histogramData = this.generateHistogramData(fluorescenceValues, 20);
-//
-//            newStore = new Ext4.data.Store({
-//                model: 'FluorescenceFrequency',
-//                data : histogramData
-//            });
-//
-//            var element = this.geneExpressionPerCellPanelRef.getEl();
-//
-//            newChartConfig = {
-//                xtype: 'chart',
-//                theme: 'Category1',
-//                flex: 1,
-//                animate: false,
-//                store: newStore,
-//                axes: [
-//                    {
-//                        type: 'Numeric',
-//                        position: 'left',
-//                        fields: ['frequency'],
-//                        title: 'Number of Cells'
-//                        //minimum: 0,
-//                        //adjustMinimumByMajorUnit: 0
-//                    },
-//                    {
-//                        type: 'Category',
-//                        position: 'bottom',
-//                        fields: ['bin'],
-//                        title: 'Fluorescence',
-//                        grid: false,
-//                        label:
-//                        {
-//                            rotate: {degrees: 315}
-//                        }
-//                    }
-//                ],
-//                series: [
-//                    {
-//                        type: 'column',
-//                        axis: 'bottom',
-//                        xField: 'bin',
-//                        yField: 'frequency',
-//                        highlight: true,
-//                        label: {
-//                            display: 'insideEnd',
-//                            field: 'frequency',
-//                            renderer: Ext.util.Format.numberRenderer('0'),
-//                            orientation: 'vertical',
-//                            color: '#333',
-//                           'text-anchor': 'middle'
-//                        }
-//                    }
-//                ]
-//            };
-//
-//            anotherPanel = Ext4.ClassManager.instantiate('Ext.panel.Panel', {
-//                width: 360,
-//                height: 300,
-//                renderTo: element.dom,
-//                layout: 'fit',
-//                items: [{
-//                        flex: 1,
-//                        xtype: 'container',
-//                        layout: 'fit',
-//                        items:[newChartConfig]
-//                    }
-//                ]
-//            });
-//
-//            this.geneExpressionPerCellPanelRef.removeAll(true);
-//            this.geneExpressionPerCellPanelRef.add(anotherPanel);
-//            this.geneExpressionPerCellPanelRef.doLayout();
-//            this.geneExpPerCellPlotDisplayed = 0;
-//            //this.geneExpressionPerCellComboBox.select(1,true);
-//        }
-//        else
-//        {
-//          Ext.Msg.alert('Gene Expression per Cell', 'There is an error. Gene Expression per Cell plot can not be generated.');
-//        }
-//    },
-
     generateFluorescenceHistogram: function(construct)
-    {
-        var anotherPanel;
-        var element = this.geneExpressionPerCellPanelRef.getEl();
-        
-        this.dataDisplayedTextRef.setVisible(false);
-        this.geneExpPerCellSeparator.setVisible(false);
-        this.showAllEventsButtonRef.setVisible(false);
-
-        anotherPanel = Ext4.ClassManager.instantiate('Ext.panel.Panel', {
-            width: 360,
-            height: 300,
-            renderTo: element.dom,
-            layout: 'fit',
-            items: [
-                {
-                    xtype:'panel',
-                    layout: 'auto',
-                    html: 'Fluorescence histogram for ' + this.constructID + ' will be available in an upcoming release of the Data Access Client.'
-                }
-            ]
-        });
-
-        this.geneExpressionPerCellPanelRef.removeAll(true);
-        this.geneExpressionPerCellPanelRef.add(anotherPanel);
-        this.geneExpressionPerCellPanelRef.doLayout();
-        this.geneExpPerCellPlotDisplayed = 0;
-    },
-
-    generateFluorescenceVsForwardScatterPlot: function(construct, displayAll)
     {
         var newStore;
         var newChartConfig;
         var anotherPanel;
         var cytoMeasurements;
+        var fluorescenceValues = [];
+        var histogramData;
 
         this.performancePanelRef.setActiveTab(1);
 
-        Ext4.regModel('CytometerMeasurement', {
+        Ext4.regModel('FluorescenceFrequency', {
+            fields: [
+                {name: 'bin', type: 'string'},
+                {name: 'frequency', type: 'int'}
+            ]
+        });
+
+        if(this.construct !== null)
+        {
+            cytoMeasurements = construct.performance.cytometerReads[0].measurements;
+            this.dataDisplayedTextRef.setVisible(false);
+            this.geneExpPerCellSeparator.setVisible(false);
+            this.showAllEventsButtonRef.setVisible(false);
+
+            var measurement = null;
+
+            var dataCount = cytoMeasurements.length;
+
+            for(var i = 0; i < dataCount; i += 1)
+            {
+                fluorescenceValues.push(cytoMeasurements[i].fluorescence);
+            }
+
+            histogramData = this.generateHistogramData(fluorescenceValues, 20);
+
+            newStore = new Ext4.data.Store({
+                model: 'FluorescenceFrequency',
+                data : histogramData
+            });
+
+            var element = this.geneExpressionPerCellPanelRef.getEl();
+
+            newChartConfig = {
+                xtype: 'chart',
+                theme: 'Category1',
+                flex: 1,
+                animate: false,
+                store: newStore,
+                axes: [
+                    {
+                        type: 'Numeric',
+                        position: 'left',
+                        fields: ['frequency'],
+                        title: 'Number of Cells'
+                        //minimum: 0,
+                        //adjustMinimumByMajorUnit: 0
+                    },
+                    {
+                        type: 'Category',
+                        position: 'bottom',
+                        fields: ['bin'],
+                        title: 'Fluorescence',
+                        grid: false,
+                        label:
+                        {
+                            rotate: {degrees: 315}
+                        }
+                    }
+                ],
+                series: [
+                    {
+                        type: 'column',
+                        axis: 'bottom',
+                        xField: 'bin',
+                        yField: 'frequency',
+                        highlight: true,
+                        label: {
+                            display: 'insideEnd',
+                            field: 'frequency',
+                            renderer: Ext.util.Format.numberRenderer('0'),
+                            orientation: 'vertical',
+                            color: '#333',
+                           'text-anchor': 'middle'
+                        }
+                    }
+                ]
+            };
+
+            anotherPanel = Ext4.ClassManager.instantiate('Ext.panel.Panel', {
+                width: 360,
+                height: 300,
+                renderTo: element.dom,
+                layout: 'fit',
+                items: [{
+                        flex: 1,
+                        xtype: 'container',
+                        layout: 'fit',
+                        items:[newChartConfig]
+                    }
+                ]
+            });
+
+            this.geneExpressionPerCellPanelRef.removeAll(true);
+            this.geneExpressionPerCellPanelRef.add(anotherPanel);
+            this.geneExpressionPerCellPanelRef.doLayout();
+            this.geneExpPerCellPlotDisplayed = 0;
+            //this.geneExpressionPerCellComboBox.select(1,true);
+        }
+        else
+        {
+          Ext.Msg.alert('Gene Expression per Cell', 'There is an error. Gene Expression per Cell plot can not be generated.');
+        }
+    },
+
+//    generateFluorescenceHistogram: function(construct)
+//    {
+//        var anotherPanel;
+//        var element = this.geneExpressionPerCellPanelRef.getEl();
+//
+//        this.dataDisplayedTextRef.setVisible(false);
+//        this.geneExpPerCellSeparator.setVisible(false);
+//        this.showAllEventsButtonRef.setVisible(false);
+//
+//        anotherPanel = Ext4.ClassManager.instantiate('Ext.panel.Panel', {
+//            width: 360,
+//            height: 300,
+//            renderTo: element.dom,
+//            layout: 'fit',
+//            items: [
+//                {
+//                    xtype:'panel',
+//                    layout: 'auto',
+//                    html: 'Fluorescence histogram for ' + this.constructID + ' will be available in an upcoming release of the Data Access Client.'
+//                }
+//            ]
+//        });
+//
+//        this.geneExpressionPerCellPanelRef.removeAll(true);
+//        this.geneExpressionPerCellPanelRef.add(anotherPanel);
+//        this.geneExpressionPerCellPanelRef.doLayout();
+//        this.geneExpPerCellPlotDisplayed = 0;
+//    },
+
+    generateFluorescenceVsForwardScatterPlot: function(construct, displayAll)
+    {
+        var newStore;
+        var scatterplot;
+        var scatterplotPanel;
+        var cytoMeasurements;
+
+        this.performancePanelRef.setActiveTab(1);
+
+        Ext4.define('CytometerMeasurement', {
+            extend: 'Ext4.data.Model',
             fields: [
                 {name: 'id', type: 'int'},
                 {name: 'fluorescence', type: 'float'},
@@ -516,6 +517,15 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
                 {name: 'sideScatter', type: 'float'}
             ]
         });
+
+//        Ext4.regModel('CytometerMeasurement', {
+//            fields: [
+//                {name: 'id', type: 'int'},
+//                {name: 'fluorescence', type: 'float'},
+//                {name: 'forwardScatter', type: 'float'},
+//                {name: 'sideScatter', type: 'float'}
+//            ]
+//        });
 
         if(this.construct !== null)
         {
@@ -529,7 +539,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
             var dataCount = cytoMeasurements.length;
             var randomIndex;
             var shouldPush;
-            var sampleSize = Math.round(dataCount*.25);
+            var sampleSize = Math.round(dataCount*.1);
 
             if(sampleSize > 1000)
             {
@@ -565,75 +575,69 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
 
             this.dataDisplayedTextRef.setText(dataSet.length + ' of ' + dataCount + ' Events');
 
-            newStore = new Ext4.data.Store({
-                model: 'CytometerMeasurement',
-                data : dataSet
-            });
+            newStore = new Ext4.data.Store(
+                {
+                    model: 'CytometerMeasurement',
+                    data : dataSet
+                }
+            );
 
             var element = this.geneExpressionPerCellPanelRef.getEl();
 
-            newChartConfig = {
-                xtype: 'chart',
-                theme: 'Category1',
-                flex: 1,
-                animate: false,
-                store: newStore,
-//                legend: {
-//                    position: 'right'
-//                },
-                axes: [
-                    {
-                        type: 'Numeric',
-                        position: 'left',
-                        fields: ['forwardScatter'],
-                        title: 'Forward Scatter',
-                        labelTitle: {font: '12px Arial'},
-                        label: {font: '11px Arial'}
-                    },
-                    {
-                        type: 'Numeric',
-                        position: 'bottom',
-                        fields: ['fluorescence'],
-                        title: 'Fluorescence',
-                        grid: false,
-                        labelTitle: {font: '12px Arial'},
-                        label: {font: '11px Arial'}
-                    }
-                ],
-                series: [{
-                    title: 'Replicate 1',
-                    type: 'scatter',
-                    markerCfg: {
-                        radius: 1,
-                        size: 1
-                    },
-                    axis: 'left',
-                    xField: 'fluorescence',
-                    yField: 'forwardScatter',
-                    color: '#a00'
-                }]
-            };
 
-            anotherPanel = Ext4.ClassManager.instantiate('Ext.panel.Panel', {
-                width: 360,
-                height: 300,
-                renderTo: element.dom,
-                layout: 'fit',
-                items: [{
-                        flex: 1,
-                        xtype: 'container',
-                        layout: 'fit',
-                        items:[newChartConfig]
-                    }
-                ]
-            });
+            scatterplot = Ext4.create('Ext.chart.Chart',
+                {
+                    xtype: 'chart',
+                    theme: 'Category1',
+                    animate: false,
+                    width: 360,
+                    height: 300,
+                    renderTo: element.dom,
+                    store: newStore,
+    //                legend: {
+    //                    position: 'right'
+    //                },
+                    axes: [
+                        {
+                            type: 'Numeric',
+                            position: 'left',
+                            fields: ['forwardScatter'],
+                            title: 'Forward Scatter',
+                            labelTitle: {font: '12px Arial'},
+                            label: {font: '11px Arial'}
+                        },
+                        {
+                            type: 'Numeric',
+                            position: 'bottom',
+                            fields: ['fluorescence'],
+                            title: 'Fluorescence',
+                            grid: false,
+                            labelTitle: {font: '12px Arial'},
+                            label: {font: '11px Arial'}
+                        }
+                    ],
+                    series: [
+                        {
+                            title: 'Replicate 1',
+                            type: 'scatter',
+                            axis: 'left',
+                            xField: 'fluorescence',
+                            yField: 'forwardScatter',
+                            markerCfg:
+                                {
+                                    radius: 1,
+                                    size: 1
+                                }
+                        }
+                    ]
+                }
+            );
 
             this.geneExpressionPerCellPanelRef.removeAll(true);
-            this.geneExpressionPerCellPanelRef.add(anotherPanel);
+            this.geneExpressionPerCellPanelRef.add(scatterplot);
             this.geneExpressionPerCellPanelRef.doLayout();
             this.showAllEventsButtonRef.enable();
             this.geneExpPerCellPlotDisplayed = 1;
-            //this.geneExpressionPerCellComboBox.select(1,true);
         }
         else
         {
