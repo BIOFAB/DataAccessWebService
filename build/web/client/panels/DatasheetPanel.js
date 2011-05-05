@@ -399,7 +399,6 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
 
             var histogram = Ext4.create('Ext.chart.Chart',
                 {
-                    xtype: 'chart',
                     theme: 'Category1',
                     width: 600,
                     height: 300,
@@ -413,9 +412,11 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
                           fields: ['frequency'],
                           label: {
                               renderer: Ext.util.Format.numberRenderer('0,0')
+                              //font: '11px Arial'
                           },
                           title: 'Number of Events',
                           grid: true
+                          //labelTitle: {font: '12px Arial'}
                           //minimum: 0
                         }
 //                        {
@@ -531,7 +532,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
             var dataCount = cytoMeasurements.length;
             var randomIndex;
             var shouldPush;
-            var sampleSize = Math.round(dataCount*.1);
+            var sampleSize = Math.round(dataCount * .1);
 
             if(sampleSize > 1000)
             {
@@ -579,10 +580,9 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
 
             scatterplot = Ext4.create('Ext.chart.Chart',
                 {
-                    xtype: 'chart',
                     theme: 'Category1',
                     animate: false,
-                    width: 360,
+                    width: 400,
                     height: 300,
                     renderTo: element.dom,
                     store: newStore,
@@ -592,34 +592,31 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
                     axes: [
                         {
                             type: 'Numeric',
-                            position: 'left',
-                            fields: ['forwardScatter'],
-                            title: 'Forward Scatter',
-                            labelTitle: {font: '12px Arial'},
-                            label: {font: '11px Arial'}
-                        },
-                        {
-                            type: 'Numeric',
                             position: 'bottom',
                             fields: ['fluorescence'],
                             title: 'Fluorescence',
-                            grid: false,
-                            labelTitle: {font: '12px Arial'},
-                            label: {font: '11px Arial'}
+                            grid: false
+                            //minimum: 0
+                        },
+                        {
+                            type: 'Numeric',
+                            position: 'left',
+                            fields: ['forwardScatter'],
+                            title: 'Forward Scatter',
+                            grid: false
+                            //minimum: 0
                         }
                     ],
                     series: [
                         {
-                            title: 'Replicate 1',
                             type: 'scatter',
+                            markerConfig: {
+                                radius: 2,
+                                size: 2
+                            },
                             axis: 'left',
                             xField: 'fluorescence',
-                            yField: 'forwardScatter',
-                            markerCfg:
-                                {
-                                    radius: 1,
-                                    size: 1
-                                }
+                            yField: 'forwardScatter'
                         }
                     ]
                 }
@@ -711,68 +708,56 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
 
             var element = this.geneExpressionPerCellPanelRef.getEl();
 
-            newChartConfig = {
-                xtype: 'chart',
-                theme: 'Category1',
-                flex: 1,
-                animate: false,
-                store: newStore,
-//                legend: {
-//                    position: 'right'
-//                },
-                axes: [
-                    {
-                        type: 'Numeric',
-                        position: 'left',
-                        fields: ['sideScatter'],
-                        title: 'Side Scatter',
-                        labelTitle: {font: '12px Arial'},
-                        label: {font: '11px Arial'}
-                    },
-                    {
-                        type: 'Numeric',
-                        position: 'bottom',
-                        fields: ['fluorescence'],
-                        title: 'Fluorescence',
-                        grid: false,
-                        labelTitle: {font: '12px Arial'},
-                        label: {font: '11px Arial'}
-                    }
-                ],
-                series: [{
-                    title: 'Replicate 1',
-                    type: 'scatter',
-                    markerCfg: {
-                        radius: 1,
-                        size: 1
-                    },
-                    axis: 'left',
-                    xField: 'fluorescence',
-                    yField: 'sideScatter',
-                    color: '#a00'
-                }]
-            };
-
-            anotherPanel = Ext4.ClassManager.instantiate('Ext.panel.Panel', {
-                width: 360,
-                height: 300,
-                renderTo: element.dom,
-                layout: 'fit',
-                items: [{
-                        flex: 1,
-                        xtype: 'container',
-                        layout: 'fit',
-                        items:[newChartConfig]
-                    }
-                ]
-            });
+            var scatterplot = Ext4.create('Ext.chart.Chart',
+                {
+                    theme: 'Category1',
+                    width: 400,
+                    height: 300,
+                    renderTo: element.dom,
+                    animate: false,
+                    store: newStore,
+    //                legend: {
+    //                    position: 'right'
+    //                },
+                    axes: [
+                        {
+                            type: 'Numeric',
+                            position: 'left',
+                            fields: ['sideScatter'],
+                            title: 'Side Scatter'
+                            //labelTitle: {font: '12px Arial'},
+                            //label: {font: '11px Arial'}
+                        },
+                        {
+                            type: 'Numeric',
+                            position: 'bottom',
+                            fields: ['fluorescence'],
+                            title: 'Fluorescence',
+                            grid: false
+                            //labelTitle: {font: '12px Arial'},
+                            //label: {font: '11px Arial'}
+                        }
+                    ],
+                    series: [{
+                        title: 'Replicate 1',
+                        type: 'scatter',
+                        markerConfig: {
+                            radius: 1,
+                            size: 1
+                        },
+                        axis: 'left',
+                        xField: 'fluorescence',
+                        yField: 'sideScatter'
+                        //color: '#a00'
+                    }]
+                }
+            );
 
             this.geneExpressionPerCellPanelRef.removeAll(true);
-            this.geneExpressionPerCellPanelRef.add(anotherPanel);
+            this.geneExpressionPerCellPanelRef.add(scatterplot);
             this.geneExpressionPerCellPanelRef.doLayout();
             this.showAllEventsButtonRef.enable();
             this.geneExpPerCellPlotDisplayed = 2;
-            //this.geneExpressionPerCellComboBox.select(1,true);
         }
         else
         {
