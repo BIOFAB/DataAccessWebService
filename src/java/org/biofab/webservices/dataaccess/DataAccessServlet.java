@@ -10,6 +10,8 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -46,54 +48,66 @@ public class DataAccessServlet extends HttpServlet
     // Utility Methods
     //
     
-    protected void textError(HttpServletResponse response, String msg) throws IOException
+    protected void textError(HttpServletResponse response, String msg)
     {
         response.setContentType("text/plain;charset=UTF-8");
         response.setStatus(400);
-
-        PrintWriter out = response.getWriter();
+        PrintWriter out = null;
 
         try
         {
+            out = response.getWriter();
             out.println(msg);
-        } 
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(DataAccessServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
         finally
         {
             out.close();
         }
     }
 
-    protected void jsonError(HttpServletResponse response, String msg) throws IOException
+    protected void jsonError(HttpServletResponse response, String msg)
     {
-
         Gson gson = new Gson();
         JSONResponse jsonResponse = new JSONResponse("error", msg);
 
         response.setContentType("text/plain;charset=UTF-8");
         response.setStatus(400);
-
-        PrintWriter out = response.getWriter();
+        PrintWriter out = null;
 
         try
         {
+            out = response.getWriter();
             out.println(gson.toJson(jsonResponse));
-        } 
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(DataAccessServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
         finally
         {
             out.close();
         }
     }
 
-    protected void textSuccess(HttpServletResponse response, String msg) throws IOException
+    protected void textSuccess(HttpServletResponse response, String msg)
     {
         response.setContentType("text/plain;charset=UTF-8");
         response.setStatus(200);
-
-        PrintWriter out = response.getWriter();
+        PrintWriter out = null;
 
         try
         {
+            out = response.getWriter();
             out.println(msg);
+        }
+        catch (IOException ex)
+        {
+
+            Logger.getLogger(DataAccessServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
         finally
         {
@@ -101,20 +115,24 @@ public class DataAccessServlet extends HttpServlet
         }
     }
 
-    protected void jsonSuccess(HttpServletResponse response, String msg) throws IOException
+    protected void jsonSuccess(HttpServletResponse response, String msg)
     {
         Gson gson = new Gson();
         JSONResponse jsonReponse = new JSONResponse("success", msg);
-
         response.setContentType("text/plain;charset=UTF-8");
         response.setStatus(200);
+        PrintWriter out = null;
 
-        PrintWriter out = response.getWriter();
-        
         try
         {
+            out = response.getWriter();
             out.println(gson.toJson(jsonReponse));
-        } 
+        }
+        catch (IOException ex)
+        {
+            
+            Logger.getLogger(DataAccessServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
         finally
         {
             out.close();

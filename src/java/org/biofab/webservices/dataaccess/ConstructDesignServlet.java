@@ -93,24 +93,24 @@ public class ConstructDesignServlet extends DataAccessServlet
                             {
                                 if(format.equalsIgnoreCase("sboljson"))
                                 {
-//                                    SBOLservice service = new SBOLservice();
-//                                    Library library = service.createLibrary("Test", "Test","Test");
-//
-//                                    DnaComponent dnaComponent = SBOLutil.readRichSequence(richSequence);
-//                                    library = service.addDnaComponentToLibrary(dnaComponent, library);
-//                                    String sbolString = SBOLutil.toJson(library);
-//
-//                                    if(sbolString != null && sbolString.length() > 0)
-//                                    {
-//                                        response.setContentType("text/plain");
-//                                        response.getWriter().println(sbolString);
-//                                    }
-//                                    else
-//                                    {
-//                                      //TODO  Manage null case
-//                                    }
+                                    SBOLservice service = new SBOLservice();
+                                    Library library = service.createLibrary("Test", "Test","Test");
 
-                                    this.textError(response, "SBOL JSON is under development.");
+                                    DnaComponent dnaComponent = SBOLutil.readRichSequence(richSequence);
+                                    library = service.addDnaComponentToLibrary(dnaComponent, library);
+                                    String sbolString = SBOLutil.toJson(library);
+
+                                    if(sbolString != null && sbolString.length() > 0)
+                                    {
+                                        response.setContentType("text/plain");
+                                        response.getWriter().println(sbolString);
+                                    }
+                                    else
+                                    {
+                                      //TODO  Manage null case
+                                    }
+
+                                    //this.textError(response, "SBOL JSON is under development.");
                                 }
                                 else
                                 {
@@ -138,8 +138,16 @@ public class ConstructDesignServlet extends DataAccessServlet
                                     }
                                     else
                                     {
-                                        response.setContentType("text/plain");
-                                        RichSequence.IOTools.writeGenbank(response.getOutputStream(), richSequence, ns);
+                                        if(format != null && format.equalsIgnoreCase("seq"))
+                                        {
+                                            response.setContentType("text/plain");
+                                            response.getWriter().println(richSequence.seqString());
+                                        }
+                                        else
+                                        {
+                                            response.setContentType("text/plain");
+                                            RichSequence.IOTools.writeGenbank(response.getOutputStream(), richSequence, ns);
+                                        }
                                     }
                                 }
                             }

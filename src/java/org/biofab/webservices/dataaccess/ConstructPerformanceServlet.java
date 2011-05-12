@@ -5,17 +5,6 @@
 
 package org.biofab.webservices.dataaccess;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.biofab.model.Construct;
-import org.biofab.model.ConstructPerformance;
-import org.biofab.model.Read;
-import org.biofab.model.CytometerRead;
-import org.biofab.model.Instrument;
-import org.biofab.model.Measurement;
-import org.biofab.model.CytometerMeasurement;
-
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -27,6 +16,14 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.biofab.model.Construct;
+import org.biofab.model.ConstructPerformance;
+import org.biofab.model.Read;
+import org.biofab.model.CytometerRead;
+import org.biofab.model.Instrument;
+import org.biofab.model.Measurement;
+import org.biofab.model.CytometerMeasurement;
 
 
 @WebServlet(name="ConstructPerformanceServlet", urlPatterns={"/construct/performance/*"})
@@ -328,23 +325,16 @@ public class ConstructPerformanceServlet extends DataAccessServlet
     {
         String responseString;
 
-        try
+        if(format.equalsIgnoreCase("json"))
         {
-            if(format.equalsIgnoreCase("json"))
-            {
-               responseString = generateJSON(construct);
-               this.textSuccess(response, responseString);
+           responseString = generateJSON(construct);
+           this.textSuccess(response, responseString);
 
-            }
-            else
-            {
-               responseString = generateJSON(construct);
-               this.textSuccess(response, responseString);
-            }
         }
-        catch (IOException ex)
+        else
         {
-            Logger.getLogger(ConstructPerformanceServlet.class.getName()).log(Level.SEVERE, null, ex);
+           responseString = generateJSON(construct);
+           this.textSuccess(response, responseString);
         }
     }
 
