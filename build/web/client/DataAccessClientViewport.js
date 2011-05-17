@@ -42,7 +42,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
         this.showAllPartsButtonRef.setHandler(this.showAllPartsButtonClickHandler, this);
         this.showAllConstructsButtonRef.setHandler(this.showAllConstructsButtonClickHandler, this);
 
-        this.helpButtonRef.setHandler(this.helpButtonClickHandler, this);
+        //this.helpButtonRef.setHandler(this.helpButtonClickHandler, this);
     },
 
     collectionsGridRowSelectHandler: function(selectModel, rowIndex, record)
@@ -73,8 +73,8 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
             }]);
 
             var collectionName = record.get('name');
-            this.partsGridPanelRef.setTitle(collectionName + ' Parts');
-            this.constructsGridPanel.setTitle(collectionName + ' Constructs');
+            this.partsLabel.setText(collectionName + ' Parts');
+            this.constructsLabel.setText(collectionName + ' Constructs');
             this.showCollectionPanel(record);
         }
         else
@@ -117,12 +117,14 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
         {
             this.constructsGridPanel.getStore().removeAll();
             this.constructsGridPanel.getStore().add(constructRecordsForDisplay);
-            this.constructsGridPanel.setTitle('Constructs with ' + partID);
+            this.constructsLabel.setText('Constructs with ' + partID);
         }
         else
         {
             Ext.Msg.alert('Data Access Client', 'No construct has ' + description);
         }
+
+        this.showPartPanel(record);
 
         
     },
@@ -178,14 +180,14 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 
         collectionsGridExportButtonClickHandler: function(button, event)
         {
-            var exportWindow = window.open(WEB_SERVICE_BASE_URL + 'collections?format=csv',"Collections","width=640,height=480");
+            var exportWindow = window.open(WEB_SERVICE_BASE_URL + 'collections?format=json',"Collections","width=640,height=480");
             exportWindow.scrollbars.visible = true;
             exportWindow.alert("Use File/Save As in the menu bar to save this document.");
         },
 
         partsGridExportButtonClickHandler: function(button, event)
         {
-            var exportWindow = window.open(WEB_SERVICE_BASE_URL + 'annotatedparts?format=json',"Annotated Parts","width=640,height=480");
+            var exportWindow = window.open(WEB_SERVICE_BASE_URL + 'parts?format=json',"Parts","width=640,height=480");
             exportWindow.scrollbars.visible = true;
             exportWindow.alert("Use File/Save As in the menu bar to save this document.");
         },
@@ -199,7 +201,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 
         showAllPartsButtonClickHandler:function(button, event)
         {
-            this.partsGridPanelRef.setTitle('Parts');
+            this.partsLabel.setText('Parts', false);
             this.partsGridPanelRef.getStore().clearFilter(false);
         },
 
@@ -224,7 +226,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 
             this.constructsGridPanel.getStore().removeAll();
             this.constructsGridPanel.getStore().add(constructRecordsForDisplay);
-            this.constructsGridPanel.setTitle('Constructs');
+            this.constructsLabel.setText('Constructs');
         },
 
         collectionStoreLoadHandler: function(store, records, options)
@@ -250,11 +252,11 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
             this.partsGridPanelRef.getStore().filter([{property: 'biofabType', value: "CDS", anyMatch: true, caseSensitive: false}]);
         },
 
-        helpButtonClickHandler: function(button, event)
-        {
-            var helpWindow = window.open(HELP_PAGE);
-            helpWindow.scrollbars.visible = true;
-        },
+//        helpButtonClickHandler: function(button, event)
+//        {
+//            var helpWindow = window.open(HELP_PAGE);
+//            helpWindow.scrollbars.visible = true;
+//        },
 	
 /*
  * 
@@ -273,7 +275,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
             //datasheetPanel.setConstructID(constructID);
 	},
 
-        showCollectionPanel: function( collectionRecord )
+        showCollectionPanel: function(collectionRecord)
         {
             var id = collectionRecord.get('id');
             var collectionPanel;
@@ -304,6 +306,22 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
             {
                 collectionPanel.setCollectionRecord(collectionRecord);
                 tab = this.infoTabPanel.add(collectionPanel);
+                this.infoTabPanel.doLayout();
+                this.infoTabPanel.setActiveTab(tab);
+            }
+        },
+
+        showPartPanel: function(partRecord)
+        {
+            var partPanel;
+            var tab;
+
+            partPanel = new PartPanel();
+
+            if(partPanel !== null)
+            {
+                partPanel.setPartRecord(partRecord);
+                tab = this.infoTabPanel.add(partPanel);
                 this.infoTabPanel.doLayout();
                 this.infoTabPanel.setActiveTab(tab);
             }

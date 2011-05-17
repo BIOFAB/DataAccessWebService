@@ -83,7 +83,7 @@ TerminatorPanelUi = Ext.extend(Ext.Panel, {
                     },
                     {
                         xtype: 'panel',
-                        title: 'Sequences and Performance',
+                        //title: 'Sequences and Performance',
                         region: 'south',
                         layout: 'fit',
                         height: 450,
@@ -91,16 +91,10 @@ TerminatorPanelUi = Ext.extend(Ext.Panel, {
                         items: [
                             {
                                 xtype: 'grid',
-                                //title: 'Terminator Sequences and Performance Summary',
-                                //store: 'terminatorStore',
                                 store: store,
                                 height: 300,
                                 stripeRows: true,
                                 columnLines: true,
-                                //region: 'south',
-                                //split: true,
-                                //anchor: '100%, 33%',
-                                //flex: 0.4,
                                 ref: '../terminatorsGridPanelRef',
                                 selModel: new Ext.grid.RowSelectionModel({
                                     singleSelect: true
@@ -157,6 +151,13 @@ TerminatorPanelUi = Ext.extend(Ext.Panel, {
                                     ref: '../../../terminatorsGridToolbarRef',
                                     id: 'terminatorsGridToolbar',
                                     items: [
+                                        {
+                                            xtype: 'label',
+                                            id: "terminatorTableLabel",
+                                            ref: "../../../terminatorTableLabel",
+                                            style: {fontWeight:'bold'},
+                                            text: 'Sequences and Performance'
+                                        },
                                         {
                                             xtype: 'tbfill'
                                         },

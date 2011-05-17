@@ -8,30 +8,30 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
     id: 'dataAccessClientViewport',
     initComponent: function() {
         this.items = [
-            {
-                xtype: 'container',
-                region: 'north',
-                width: 100,
-                layout: 'fit',
-                height: 30,
-                id: 'northContainer',
-                items: [
-                    {
-                        xtype: 'toolbar',
-                        items: [
-                            {
-                                xtype: 'tbfill'
-                            },
-                            {
-                                xtype: 'button',
-                                text: 'Help',
-                                ref: '../../helpButtonRef',
-                                id: 'helpButton'
-                            }
-                        ]
-                    }
-                ]
-            },
+//            {
+//                xtype: 'container',
+//                region: 'north',
+//                width: 100,
+//                layout: 'fit',
+//                height: 30,
+//                id: 'northContainer',
+//                items: [
+//                    {
+//                        xtype: 'toolbar',
+//                        items: [
+//                            {
+//                                xtype: 'tbfill'
+//                            },
+//                            {
+//                                xtype: 'button',
+//                                text: 'Help',
+//                                ref: '../../helpButtonRef',
+//                                id: 'helpButton'
+//                            }
+//                        ]
+//                    }
+//                ]
+//            },
             {
                 xtype: 'container',
                 region: 'west',
@@ -42,14 +42,14 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                 items: [
                     {
                         xtype: 'grid',
-                        title: 'Collections',
+                        //title: 'Collections',
                         store: 'aCollectionsStore',
                         region: 'north',
                         split: true,
-                        height: 200,
-                        autoExpandColumn: 5,
-                        anchor: '100%,33%',
-                        flex: 0.2,
+                        height: 150,
+                        //autoExpandColumn: 5,
+                        //anchor: '100%,33%',
+                        //flex: 0.2,
                         ref: '../collectionsGridPanel',
                         id: 'collectionsGridPanel',
                         selModel: new Ext.grid.RowSelectionModel({
@@ -111,12 +111,16 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                             id: 'collectionsToolbar',
                             items: [
                                 {
+                                    xtype: 'label',
+                                    html: '<b>Collections</b>'
+                                },
+                                {
                                     xtype: 'tbfill'
                                 },
                                 {
                                     xtype: 'button',
                                     text: 'Export',
-                                    tooltip: 'Export collection information in CSV format.',
+                                    tooltip: 'Export collection information in JSON format.',
                                     ref: '../../../collectionsGridExportButtonRef',
                                     id: 'collectionsGridExportButton'
                                 }
@@ -125,9 +129,8 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                     },
                     {
                         xtype: 'grid',
-                        title: 'Parts',
                         store: 'partStore',
-                        height: 300,
+                        height: 400,
                         columnLines: true,
                         stripeRows: true,
                         autoExpandColumn: 2,
@@ -138,6 +141,16 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                         tbar: {
                             xtype: 'toolbar',
                             items: [
+                                {
+                                    xtype: 'label',
+                                    id: "partsLabel",
+                                    ref: "../../../partsLabel",
+                                    style: {fontWeight:'bold'},
+                                    text: 'Parts'
+                                },
+                                {
+                                    xtype: 'tbfill'
+                                },
                                 {
                                     xtype: 'button',
                                     text: 'Promoters',
@@ -166,7 +179,7 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                     id: 'cdsButton'
                                 },
                                 {
-                                    xtype: 'tbfill'
+                                    xtype: 'tbseparator'
                                 },
                                 {
                                     xtype: 'button',
@@ -211,22 +224,29 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                 xtype: 'gridcolumn',
                                 header: 'Description',
                                 sortable: true,
-                                width: 175,
+                                width: 150,
                                 dataIndex: 'description'
                             }
+//                            {
+//                                xtype: 'gridcolumn',
+//                                header: 'DNA Sequence',
+//                                sortable: true,
+//                                width: 500,
+//                                dataIndex: 'dnaSequence'
+//                            }
                         ]
                     },
                     {
                         xtype: 'grid',
-                        title: 'Constructs',
+                        //title: 'Constructs',
                         store: 'constructDisplayStore',
-                        height: 300,
+                        height: 200,
                         stripeRows: true,
                         columnLines: true,
                         region: 'south',
                         split: true,
-                        anchor: '100%, 33%',
-                        flex: 0.4,
+                        //anchor: '100%, 33%',
+                        //flex: 0.4,
                         ref: '../constructsGridPanel',
                         id: 'constructsGridPanel',
                         selModel: new Ext.grid.RowSelectionModel({
@@ -295,6 +315,13 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                             ref: '../../constructsGridToolbar',
                             id: 'constructsGridToollbar',
                             items: [
+                                {
+                                    xtype: 'label',
+                                    id: "constructsLabel",
+                                    ref: "../../../constructsLabel",
+                                    style: {fontWeight:'bold'},
+                                    text: 'Constructs'
+                                },
                                 {
                                     xtype: 'tbfill'
                                 },

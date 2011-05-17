@@ -12,7 +12,7 @@ PartStore = Ext.extend(Ext.data.JsonStore, {
         cfg = cfg || {};
         PartStore.superclass.constructor.call(this, Ext.apply({
             storeId: 'partStore',
-            url: '../annotatedparts?format=json',
+            url: '../parts?format=json',
             autoLoad: true,
             fields: [
                 {
