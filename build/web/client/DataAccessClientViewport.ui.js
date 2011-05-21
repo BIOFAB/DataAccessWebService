@@ -42,14 +42,12 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                 items: [
                     {
                         xtype: 'grid',
-                        //title: 'Collections',
                         store: 'aCollectionsStore',
                         region: 'north',
                         split: true,
                         height: 150,
                         //autoExpandColumn: 5,
-                        //anchor: '100%,33%',
-                        //flex: 0.2,
+                        minColumnWidth: 60,
                         ref: '../collectionsGridPanel',
                         id: 'collectionsGridPanel',
                         selModel: new Ext.grid.RowSelectionModel({
@@ -133,10 +131,10 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                         height: 400,
                         columnLines: true,
                         stripeRows: true,
-                        autoExpandColumn: 2,
+                        //autoExpandColumn: 2,
                         split: true,
                         region: 'center',
-                        ref: '../partsGridPanelRef',
+                        ref: '../partsGridPanel',
                         id: 'partsGridPanel',
                         tbar: {
                             xtype: 'toolbar',
@@ -206,7 +204,7 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                         columns: [
                             {
                                 xtype: 'gridcolumn',
-                                dataIndex: 'biofabID',
+                                dataIndex: 'displayId',
                                 header: 'Identifier',
                                 sortable: true,
                                 width: 80,
@@ -218,7 +216,7 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                 sortable: true,
                                 width: 100,
                                 editable: false,
-                                dataIndex: 'biofabType'
+                                dataIndex: 'type'
                             },
                             {
                                 xtype: 'gridcolumn',
@@ -226,14 +224,27 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                 sortable: true,
                                 width: 150,
                                 dataIndex: 'description'
+                            },
+                            {
+                                xtype: 'numbercolumn',
+                                header: 'Bulk Gene Expression Max',
+                                sortable: true,
+                                width: 150,
+                                align: 'left',
+                                editable: false,
+                                dataIndex: 'bulkGeneExpressionMax',
+                                format: '0,000'
+                            },
+                            {
+                                xtype: 'numbercolumn',
+                                header: 'Bulk Gene Expression Min',
+                                sortable: true,
+                                width: 150,
+                                align: 'left',
+                                editable: false,
+                                dataIndex: 'bulkGeneExpressionMin',
+                                format: '0,000'
                             }
-//                            {
-//                                xtype: 'gridcolumn',
-//                                header: 'DNA Sequence',
-//                                sortable: true,
-//                                width: 500,
-//                                dataIndex: 'dnaSequence'
-//                            }
                         ]
                     },
                     {

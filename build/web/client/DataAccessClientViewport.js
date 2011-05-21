@@ -11,6 +11,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
     constructHasPartStore: null,
     performanceStore: null,
     constructLoadCount: 0,
+    parts: null,
 	
     initComponent: function()
     {
@@ -23,11 +24,10 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
         var constructsGridSelectionModel = this.constructsGridPanel.getSelectionModel();
 	constructsGridSelectionModel.on('rowselect', this.constructsGridRowSelectHandler, this);
 		
-	var partsGridSelectionModel = this.partsGridPanelRef.getSelectionModel();
+	var partsGridSelectionModel = this.partsGridPanel.getSelectionModel();
 	partsGridSelectionModel.on('rowselect', this.partsGridRowSelectHandler, this);
-
-//      var partsGridSelectionModel = this.partsGridPanel.getSelectionModel();
-//	partsGridSelectionModel.on('rowselect', this.partsGridRowSelectHandler, this);
+        this.fetchParts();
+        //this.partsGridPanel.getStore().on('load', this.partStoreLoadHandler, this);
 
         this.promotersButtonRef.setHandler(this.promotersButtonClickHandler, this);
         this.fiveUTRButtonRef.setHandler(this.fiveUTRButtonClickHandler, this);
@@ -41,8 +41,6 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
         this.constructsGridExportButton.setHandler(this.constructsGridExportButtonClickHandler, this);
         this.showAllPartsButtonRef.setHandler(this.showAllPartsButtonClickHandler, this);
         this.showAllConstructsButtonRef.setHandler(this.showAllConstructsButtonClickHandler, this);
-
-        //this.helpButtonRef.setHandler(this.helpButtonClickHandler, this);
     },
 
     collectionsGridRowSelectHandler: function(selectModel, rowIndex, record)
@@ -53,7 +51,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
         {
             this.constructsGridPanel.getStore().clearFilter();
             this.repopulateConstructStore();
-            var partStore = this.partsGridPanelRef.getStore();
+            var partStore = this.partsGridPanel.getStore();
             var constructStore = this.constructsGridPanel.getStore();
 
             partStore.filter([
@@ -85,7 +83,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
     
     partsGridRowSelectHandler: function(selectModel, rowIndex, record)
     {
-        var partID = record.get("biofabID");
+        var partID = record.get("displayId");
         var description = record.get('description');
         var relationRecord = null;
         var constructID = null;
@@ -202,7 +200,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
         showAllPartsButtonClickHandler:function(button, event)
         {
             this.partsLabel.setText('Parts', false);
-            this.partsGridPanelRef.getStore().clearFilter(false);
+            this.partsGridPanel.getStore().clearFilter(false);
         },
 
         showAllConstructsButtonClickHandler: function(button, event)
@@ -239,30 +237,96 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 
         promotersButtonClickHandler: function(button, event)
         {
-            this.partsGridPanelRef.getStore().filter([{property: 'biofabType', value: "promoter", anyMatch: true, caseSensitive: false}]);
+            this.partsGridPanel.getStore().filter([{property: 'type', value: "promoter", anyMatch: true, caseSensitive: false}]);
+            this.partsLabel.setText('Parts: Promoters');
         },
 
         fiveUTRButtonClickHandler: function(button, event)
         {
-            this.partsGridPanelRef.getStore().filter([{property: 'biofabType', value: "5' UTR", anyMatch: true, caseSensitive: false}]);
+            this.partsGridPanel.getStore().filter([{property: 'type', value: "5' UTR", anyMatch: true, caseSensitive: false}]);
+            this.partsLabel.setText('Parts: 5\' UTR');
         },
 
         cdsButtonClickHandler: function(button, event)
         {
-            this.partsGridPanelRef.getStore().filter([{property: 'biofabType', value: "CDS", anyMatch: true, caseSensitive: false}]);
+            this.partsGridPanel.getStore().filter([{property: 'type', value: "CDS", anyMatch: true, caseSensitive: false}]);
+            this.partsLabel.setText('Parts: CDS');
         },
 
+        fetchPartsResultHandler: function(response, opts)
+        {
+            var partsForStore = [];
+            var part;
+            var partForStore;
+            var partsCount;
+            
+            if(response.responseText.length > 0)
+            {
+                this.parts = Ext.util.JSON.decode(response.responseText);
+                partsCount = this.parts.length;
+
+                for(var i = 0; i < partsCount; i += 1)
+                {
+                    part = this.parts[i];
+                    partForStore = {
+                        collectionID: part.collectionID,
+                        displayId: part.displayId,
+                        type: part.type,
+                        description: part.description,
+                        dnaSequence: part.dnaSequence.nucleotides,
+                        bulkGeneExpressionMax: this.generateBulkGeneExpressionMax(part),
+                        bulkGeneExpressionMin: this.generateBulkGeneExpressionMin(part)
+                    }
+                    partsForStore.push(partForStore);
+                }
+
+                this.partsGridPanel.getStore().loadData(partsForStore, false);
+                this.partsGridPanel.getStore().filter([{property: 'type', value: "promoter", anyMatch: true, caseSensitive: false}]);
+                this.partsLabel.setText('Parts: Promoters');
+            }
+            else
+            {
+                  Ext.Msg.alert('Fetch Parts', 'There was an error while attempting to fetch the parts. Please reload the Data Access Client.\n' + 'Error: ' + response.responseText);
+            }
+        },
+
+        fetchPartsErrorHandler: function(response, opts)
+        {
+            Ext.Msg.alert('Fetch Parts', 'There was an error while attempting to fetch the parts. Please reload the Data Access Client.\n' + 'Error: ' + response.responseText);
+        },
+
+//        partStoreLoadHandler: function(store, records, options)
+//        {
+//            this.partsGridPanel.getStore().filter([{property: 'type', value: "promoter", anyMatch: true, caseSensitive: false}]);
+//            this.partsLabel.setText('Parts: Promoters');
+//        },
+        
 //        helpButtonClickHandler: function(button, event)
 //        {
 //            var helpWindow = window.open(HELP_PAGE);
 //            helpWindow.scrollbars.visible = true;
 //        },
+
 	
 /*
  * 
  * 	Protected Methods
  * 
- */	
+ */
+        fetchParts:function()
+        {
+            Ext.Ajax.request({
+                       url: WEB_SERVICE_BASE_URL + 'parts?format=json',
+                       method: "GET",
+                       success: this.fetchPartsResultHandler,
+                       failure: this.fetchPartsErrorHandler,
+//                       params: {
+//                                    id: constructID,
+//                                    format: 'json'
+//                                },
+                       scope: this
+            });
+        },
 	
 	showDatasheet: function(constructID)
 	{		
@@ -325,5 +389,16 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
                 this.infoTabPanel.doLayout();
                 this.infoTabPanel.setActiveTab(tab);
             }
+        },
+        
+        generateBulkGeneExpressionMax: function(part)
+        {
+            return 100;
+        },
+
+        generateBulkGeneExpressionMin: function(part)
+        {
+            return 10;
         }
+
 });

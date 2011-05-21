@@ -23,7 +23,7 @@ import org.biofab.webservices.protocol.JSONResponse;
 
 public class DataAccessServlet extends HttpServlet
 {
-    String      _jdbcDriver = "jdbc:postgresql://localhost:5432/biofab_internal";
+    String      _jdbcDriver = "jdbc:postgresql://localhost:5432/biofab";
     String      _user = "biofab";
     String      _password = "fiobab";
     Connection  _connection = null;

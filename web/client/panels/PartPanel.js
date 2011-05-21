@@ -55,7 +55,7 @@ PartPanel = Ext.extend(Ext.Panel, {
             var biofabID = null;
 
             this.partRecord = partRecord;
-            biofabID = partRecord.get('biofabID');
+            biofabID = partRecord.get('displayId');
             this.setTitle(biofabID);
             this.sequencePanel.setTitle('DNA Sequence of ' + biofabID);
             this.performancePanel.setTitle('Performance of ' + biofabID);
