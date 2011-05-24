@@ -83,7 +83,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
     
     partsGridRowSelectHandler: function(selectModel, rowIndex, record)
     {
-        var partID = record.get("displayId");
+        var partID = record.get("displayID");
         var description = record.get('description');
         var relationRecord = null;
         var constructID = null;
@@ -270,12 +270,12 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
                     part = this.parts[i];
                     partForStore = {
                         collectionID: part.collectionID,
-                        displayId: part.displayId,
+                        displayID: part.displayID,
                         type: part.type,
                         description: part.description,
                         dnaSequence: part.dnaSequence.nucleotides,
-                        bulkGeneExpressionMax: this.generateBulkGeneExpressionMax(part),
-                        bulkGeneExpressionMin: this.generateBulkGeneExpressionMin(part)
+                        measurementType: this.retrieveMeasurementType(part),
+                        measurementValue: this.retrieveMeasurementValue(part)
                     }
                     partsForStore.push(partForStore);
                 }
@@ -391,12 +391,12 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
             }
         },
         
-        generateBulkGeneExpressionMax: function(part)
+        retrieveMeasurementType: function(part)
         {
-            return 100;
+            return "Test Type";
         },
 
-        generateBulkGeneExpressionMin: function(part)
+        retrieveMeasurementValue: function(part)
         {
             return 10;
         }

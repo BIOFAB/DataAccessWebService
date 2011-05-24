@@ -131,7 +131,7 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                         height: 400,
                         columnLines: true,
                         stripeRows: true,
-                        //autoExpandColumn: 2,
+                        autoExpandColumn: 2,
                         split: true,
                         region: 'center',
                         ref: '../partsGridPanel',
@@ -204,7 +204,7 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                         columns: [
                             {
                                 xtype: 'gridcolumn',
-                                dataIndex: 'displayId',
+                                dataIndex: 'displayID',
                                 header: 'Identifier',
                                 sortable: true,
                                 width: 80,
@@ -212,39 +212,39 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                             },
                             {
                                 xtype: 'gridcolumn',
-                                header: 'Type',
+                                dataIndex: 'type',
+                                header: 'Part Type',
                                 sortable: true,
                                 width: 100,
-                                editable: false,
-                                dataIndex: 'type'
+                                editable: false
+                                
                             },
                             {
                                 xtype: 'gridcolumn',
+                                dataIndex: 'description',
                                 header: 'Description',
                                 sortable: true,
-                                width: 150,
-                                dataIndex: 'description'
-                            },
-                            {
-                                xtype: 'numbercolumn',
-                                header: 'Bulk Gene Expression Max',
-                                sortable: true,
-                                width: 150,
-                                align: 'left',
-                                editable: false,
-                                dataIndex: 'bulkGeneExpressionMax',
-                                format: '0,000'
-                            },
-                            {
-                                xtype: 'numbercolumn',
-                                header: 'Bulk Gene Expression Min',
-                                sortable: true,
-                                width: 150,
-                                align: 'left',
-                                editable: false,
-                                dataIndex: 'bulkGeneExpressionMin',
-                                format: '0,000'
+                                width: 150
                             }
+//                            {
+//                                xtype: 'gridcolumn',
+//                                dataIndex: 'measurementType',
+//                                header: 'Measurement Type',
+//                                sortable: true,
+//                                width: 150,
+//                                align: 'left',
+//                                editable: false
+//                            },
+//                            {
+//                                xtype: 'numbercolumn',
+//                                dataIndex: 'measurementValue',
+//                                header: 'Measurement Value',
+//                                sortable: true,
+//                                width: 150,
+//                                align: 'left',
+//                                editable: false,
+//                                format: '0,000'
+//                            }
                         ]
                     },
                     {

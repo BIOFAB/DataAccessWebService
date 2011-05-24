@@ -21,7 +21,7 @@ PartStore = Ext.extend(Ext.data.JsonStore, {
                     type: 'int'
                 },
                 {
-                    name: 'displayId',
+                    name: 'displayID',
                     allowBlank: false,
                     type: 'string'
                 },
@@ -40,11 +40,11 @@ PartStore = Ext.extend(Ext.data.JsonStore, {
                     type: 'string'
                 },
                 {
-                    name: 'bulkGeneExpressionMax',
-                    type: 'float'
+                    name: 'measurementType',
+                    type: 'string'
                 },
                 {
-                    name: 'bulkGeneExpressionMin',
+                    name: 'measurementValue',
                     type: 'float'
                 }
             ]

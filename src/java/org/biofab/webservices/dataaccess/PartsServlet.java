@@ -120,7 +120,7 @@ public class PartsServlet extends DataAccessServlet
 
                 for(DnaComponent component:dnaComponents)
                 {
-                    if(biofabID.equalsIgnoreCase(component.getDisplayId()))
+                    if(biofabID.equalsIgnoreCase(component.getDisplayID()))
                     {
                         bulkGeneExpression = performanceResultSet.getFloat("bulk_gene_expression");
                         bulkGeneExpressionSD = performanceResultSet.getFloat("bulk_gene_expression_sd");
