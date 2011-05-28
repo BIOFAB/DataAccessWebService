@@ -259,7 +259,8 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
             var part;
             var partForStore;
             var partsCount;
-            
+            var measurement;
+ 
             if(response.responseText.length > 0)
             {
                 this.parts = Ext.util.JSON.decode(response.responseText);
@@ -268,14 +269,15 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
                 for(var i = 0; i < partsCount; i += 1)
                 {
                     part = this.parts[i];
+                    measurement = this.retrieveMeasurement(part);
                     partForStore = {
                         collectionID: part.collectionID,
                         displayID: part.displayID,
                         type: part.type,
                         description: part.description,
                         dnaSequence: part.dnaSequence.nucleotides,
-                        measurementType: this.retrieveMeasurementType(part),
-                        measurementValue: this.retrieveMeasurementValue(part)
+                        measurementLabel: measurement.label,
+                        measurementValue: measurement.value
                     }
                     partsForStore.push(partForStore);
                 }
@@ -391,14 +393,58 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
             }
         },
         
-        retrieveMeasurementType: function(part)
+        retrieveMeasurement: function(part)
         {
-            return "Test Type";
-        },
+            var measurement;
+            var performance = part.performance;
+            var measurements;
+            var measurementsCount;
+            var bgeMeasurements = [];
+            var maxMeasurement;
 
-        retrieveMeasurementValue: function(part)
-        {
-            return 10;
+            if(performance != undefined)
+            {
+                measurements = performance.measurements;
+                measurementsCount = measurements.length;
+                
+                for(var i = 0; i < measurementsCount; i += 1)
+                {
+                    if(measurements[i].type === 'GEC')
+                    {
+                        //measurement = measurements[i];
+                        bgeMeasurements.push(measurements[i]);
+                    }
+                }
+
+                if(bgeMeasurements.length > 1)
+                {
+                    bgeMeasurements.sort(
+                        function(a,b)
+                        {
+                            return a.value - b.value;
+                        }
+                    );
+
+                    maxMeasurement = bgeMeasurements.pop();
+                    measurement = {label: 'Maximum ' + maxMeasurement.label, value: maxMeasurement.value};
+                }
+                else
+                {
+                    if(bgeMeasurements.length === 1)
+                    {
+                        measurement = bgeMeasurements[0];
+                    }
+                    else
+                    {
+                        measurement = {label: 'Unavailable', value: 0};
+                    }
+                }
+            }
+            else
+            {
+                measurement = {label: 'Unavailable', value: 0};
+            }
+            
+            return measurement;
         }
-
 });

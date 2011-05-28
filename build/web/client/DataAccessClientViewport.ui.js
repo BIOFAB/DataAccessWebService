@@ -131,7 +131,7 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                         height: 400,
                         columnLines: true,
                         stripeRows: true,
-                        autoExpandColumn: 2,
+                        //autoExpandColumn: 2,
                         split: true,
                         region: 'center',
                         ref: '../partsGridPanel',
@@ -225,26 +225,26 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                 header: 'Description',
                                 sortable: true,
                                 width: 150
+                            },
+                            {
+                                xtype: 'gridcolumn',
+                                dataIndex: 'measurementLabel',
+                                header: 'Measurement Type',
+                                sortable: true,
+                                width: 150,
+                                align: 'left',
+                                editable: false
+                            },
+                            {
+                                xtype: 'numbercolumn',
+                                dataIndex: 'measurementValue',
+                                header: 'Measurement Value',
+                                sortable: true,
+                                width: 150,
+                                align: 'left',
+                                editable: false,
+                                format: '0,000'
                             }
-//                            {
-//                                xtype: 'gridcolumn',
-//                                dataIndex: 'measurementType',
-//                                header: 'Measurement Type',
-//                                sortable: true,
-//                                width: 150,
-//                                align: 'left',
-//                                editable: false
-//                            },
-//                            {
-//                                xtype: 'numbercolumn',
-//                                dataIndex: 'measurementValue',
-//                                header: 'Measurement Value',
-//                                sortable: true,
-//                                width: 150,
-//                                align: 'left',
-//                                editable: false,
-//                                format: '0,000'
-//                            }
                         ]
                     },
                     {

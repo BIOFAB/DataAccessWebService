@@ -40,7 +40,7 @@ PartStore = Ext.extend(Ext.data.JsonStore, {
                     type: 'string'
                 },
                 {
-                    name: 'measurementType',
+                    name: 'measurementLabel',
                     type: 'string'
                 },
                 {
