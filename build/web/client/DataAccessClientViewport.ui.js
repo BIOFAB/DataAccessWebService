@@ -33,11 +33,12 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
 //                ]
 //            },
             {
-                xtype: 'container',
+                xtype: 'panel',
                 region: 'west',
                 width: 500,
                 layout: 'border',
                 split: true,
+                collapsible: false,
                 id: 'inventoryContainer',
                 items: [
                     {
@@ -227,15 +228,6 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                 width: 150
                             },
                             {
-                                xtype: 'gridcolumn',
-                                dataIndex: 'measurementLabel',
-                                header: 'Measurement Type',
-                                sortable: true,
-                                width: 150,
-                                align: 'left',
-                                editable: false
-                            },
-                            {
                                 xtype: 'numbercolumn',
                                 dataIndex: 'measurementValue',
                                 header: 'Measurement Value',
@@ -244,6 +236,24 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                 align: 'left',
                                 editable: false,
                                 format: '0,000'
+                            },
+                            {
+                                xtype: 'gridcolumn',
+                                dataIndex: 'measurementUnit',
+                                header: 'Unit',
+                                sortable: true,
+                                width: 50,
+                                align: 'left',
+                                editable: false
+                            },
+                            {
+                                xtype: 'gridcolumn',
+                                dataIndex: 'measurementLabel',
+                                header: 'Measurement Type',
+                                sortable: true,
+                                width: 200,
+                                align: 'left',
+                                editable: false
                             }
                         ]
                     },

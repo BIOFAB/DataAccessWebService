@@ -44,6 +44,10 @@ PartStore = Ext.extend(Ext.data.JsonStore, {
                     type: 'string'
                 },
                 {
+                    name: 'measurementUnit',
+                    type: 'string'
+                },
+                {
                     name: 'measurementValue',
                     type: 'float'
                 }

@@ -277,7 +277,8 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
                         description: part.description,
                         dnaSequence: part.dnaSequence.nucleotides,
                         measurementLabel: measurement.label,
-                        measurementValue: measurement.value
+                        measurementValue: measurement.value,
+                        measurementUnit: measurement.unit
                     }
                     partsForStore.push(partForStore);
                 }
@@ -426,7 +427,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
                     );
 
                     maxMeasurement = bgeMeasurements.pop();
-                    measurement = {label: 'Maximum ' + maxMeasurement.label, value: maxMeasurement.value};
+                    measurement = {label: 'Maximum ' + maxMeasurement.label, unit: maxMeasurement.unit, value: maxMeasurement.value};
                 }
                 else
                 {
@@ -436,13 +437,13 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
                     }
                     else
                     {
-                        measurement = {label: 'Unavailable', value: 0};
+                        measurement = {label: 'Unavailable', unit: 'None', value: 0};
                     }
                 }
             }
             else
             {
-                measurement = {label: 'Unavailable', value: 0};
+                measurement = {label: 'Unavailable', unit: 'None', value: 0};
             }
             
             return measurement;

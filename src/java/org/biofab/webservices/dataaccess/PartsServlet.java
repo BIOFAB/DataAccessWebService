@@ -127,9 +127,9 @@ public class PartsServlet extends DataAccessServlet
                         geneExpressionPerCell = performanceResultSet.getFloat("gene_expression_per_cell");
                         geneExpressionPerCellSD = performanceResultSet.getFloat("gene_expression_per_cell_sd");
                         
-                        measurement = new Measurement("BGE", "Bulk Gene Expression", "Pending", bulkGeneExpression, bulkGeneExpressionSD);
+                        measurement = new Measurement("BGE", "Bulk Gene Expression", "AU/OD", "Pending", bulkGeneExpression, bulkGeneExpressionSD);
                         component.getPerformance().getMeasurements().add(measurement);
-                        measurement = new Measurement("GEC", "Gene Expression per Cell", "Pending", geneExpressionPerCell, geneExpressionPerCellSD);
+                        measurement = new Measurement("GEC", "Gene Expression per Cell", "AU", "Pending", geneExpressionPerCell, geneExpressionPerCellSD);
                         component.getPerformance().getMeasurements().add(measurement);
 
                         break;
