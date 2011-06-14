@@ -205,7 +205,7 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                         columns: [
                             {
                                 xtype: 'gridcolumn',
-                                dataIndex: 'displayID',
+                                dataIndex: 'displayId',
                                 header: 'Identifier',
                                 sortable: true,
                                 width: 80,

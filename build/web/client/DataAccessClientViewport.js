@@ -83,7 +83,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
     
     partsGridRowSelectHandler: function(selectModel, rowIndex, record)
     {
-        var partID = record.get("displayID");
+        var partID = record.get("displayId");
         var description = record.get('description');
         var relationRecord = null;
         var constructID = null;
@@ -271,8 +271,8 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
                     part = this.parts[i];
                     measurement = this.retrieveMeasurement(part);
                     partForStore = {
-                        collectionID: part.collectionID,
-                        displayID: part.displayID,
+                        collectionId: part.collectionID,
+                        displayId: part.displayID,
                         type: part.type,
                         description: part.description,
                         dnaSequence: part.dnaSequence.nucleotides,
@@ -387,13 +387,14 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 
             if(partPanel !== null)
             {
-                partPanel.setPartRecord(partRecord);
                 tab = this.infoTabPanel.add(partPanel);
                 this.infoTabPanel.doLayout();
                 this.infoTabPanel.setActiveTab(tab);
+                partPanel.displayInfo(partRecord, this.parts);
             }
         },
         
+        // REFACTOR: Place this function in a utility class
         retrieveMeasurement: function(part)
         {
             var measurement;

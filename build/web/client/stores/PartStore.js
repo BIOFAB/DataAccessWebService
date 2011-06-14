@@ -16,12 +16,12 @@ PartStore = Ext.extend(Ext.data.JsonStore, {
             autoLoad: false,
             fields: [
                 {
-                    name: 'collectionID',
+                    name: 'collectionId',
                     allowBlank: false,
                     type: 'int'
                 },
                 {
-                    name: 'displayID',
+                    name: 'displayId',
                     allowBlank: false,
                     type: 'string'
                 },
