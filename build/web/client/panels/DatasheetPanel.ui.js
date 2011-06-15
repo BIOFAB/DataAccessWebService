@@ -46,7 +46,7 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                         //layout: 'border',
                         activeTab: 0,
                         autoscroll: true,
-                        ref: '../performancePanelRef',
+                        ref: '../performancePanel',
                         tbar: {
                             xtype: 'toolbar',
                             ref: '../../performancePanelToolbar',

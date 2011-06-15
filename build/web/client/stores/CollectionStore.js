@@ -10,7 +10,7 @@ CollectionStore = Ext.extend(Ext.data.JsonStore, {
         CollectionStore.superclass.constructor.call(this, Ext.apply({
             storeId: 'aCollectionsStore',
             url: '../collections?format=json',
-            autoLoad: true,
+            autoLoad: false,
             fields: [
                 {
                     name: 'id',

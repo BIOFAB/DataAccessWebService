@@ -14,8 +14,8 @@ ModularPromoterPanelUi = Ext.extend(Ext.Panel, {
         this.items = [
             {
                 xtype: 'panel',
-                title: 'Modular Promoter Library',
-                height: 300,
+                title: '',
+                height: 800,
                 layout: 'border',
                 width: 600,
                 itemId: 'centerPanel',
@@ -26,64 +26,52 @@ ModularPromoterPanelUi = Ext.extend(Ext.Panel, {
                 shadowOffset: 6,
                 autoShow: true,
                 draggable: false,
+                region:'center',
                 items: [
                     {
                         xtype: 'panel',
-                        //title: 'Design',
+                        title: 'Design',
                         layout: 'fit',
-                        region: 'center',
+                        region: 'north',
                         split: true,
+                        height:250,
                         items: [
                             {
                                 xtype: 'textarea',
                                 itemId: 'collectionTextArea',
-                                //height: '300',
                                 ref: '../../collectionTextAreaRef'
+                            },
+                            
+                        ]
+                    },
+                    {
+                        xtype: 'panel',
+                        title: 'Performance',
+                        layout: 'auto',
+                        height: 450,
+                        ref: '../performancePanel',
+                        region:'center',
+                        split: true
+                    },
+                    {
+                        xtype:'panel',
+                        title: 'Notes',
+                        layout: 'fit',
+                        height: 100,
+                        ref: '../notesPanel',
+                        region: 'south',
+                        split: true,
+                        items:[
+                            {
+                                xtype: 'textarea',
+                                value: 'Each bar indicates the performance of a part in the library.\n' +
+                                       'Hover the mouse over a bar to see the identifier of a part.\n',
+                                hidden: false,
+                                ref: '../../notesPanelTextArea'
                             }
                         ]
+
                     }
-//                    {
-//                        xtype: 'tabpanel',
-//                        activeTab: 0,
-//                        region: 'south',
-//                        height: 500,
-//                        split: true,
-//                        items:[
-//                            {
-//                                xtype: 'panel',
-//                                title: 'Design',
-//                                layout: 'table',
-//                                layoutConfig:{
-//                                    columns: 6
-//                                },
-//                                defaults:{
-//                                    height: 50,
-//                                    width: 100
-//                                },
-//                                items: [
-//                                    {
-//                                       colspan: 6,
-//                                       width: 595,
-//                                       height: 150,
-//                                       html: '<img width=210 height=112 src="data/modular_promoter_library_design.png">'
-//
-//                                    },
-//                                    {
-//                                       colspan: 6,
-//                                       width: 595,
-//                                       height: 300,
-//                                       html: '<p>In the third column of the table, the -35 motifs, -10 motifs and transcription start sites are highlighted in the original 5 promoters. Module 1 contains -35 motifs and UP elements, where applicable. Module 2 is the spacer region between -10 and -35 motifs. Module 3 contains -10 regions and spacers between -10 and +1. The recombination of the 3 modules from the 5 original promoters yields a total of 125 new promoters. The Modular Promoters were characterized in a construct with the BIOFAB’s Expression Operating Unit (EOU) .  The EOU is a standard gene expression cassette under development at the BIOFAB.  The host plasmids contain a p15A origin of replication (medium copy), Bujard 5’ UTR (5 Prime Untranslated Region), and Super Folder GFP (sfGFP) as a reporter.  The constructs are assayed in the BW25113 strain in EZ rich MOPS media (Technova) at 37 degrees Celcius.  GFP fluorescence is measured with a Biotek plate reader and Guava flow cytometer.  Bulk gene expression is the slope of the linear portion of a rate plot of background-subtracted OD versus RFU (OD600, 0.2 to 0.55; roughly corresponds to the promoter activity).  Gene expression per cell is the mean fluorescence value of approximately 2000 events in the flow cytometer. The standard deviations are derived from three or more replicate experiments.</p>'
-//                                    }
-//                                ]
-//
-//                            },
-//                            {
-//                                xtype: 'panel',
-//                                title: 'Performance',
-//                                layout: 'auto'
-//                            }
-//                        ]
-//                    }
                 ]
             }
         ];

@@ -56,36 +56,39 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         });
     },
 
-//    fetchPerformance:function(constructID)
-//    {
-//        this.performancePanelRef.add(
-//            {
-//                xtype:'panel',
-//                title: 'Under Development',
-//                layout: 'auto',
-//                html: '<p>Performance data and data acquisition information for <b>' + constructID + '</b> will be available in an upcoming release of the Data Access Client.</p>'
-//            }
-//        )
-//
-//        this.performancePanelRef.doLayout();
-//    },
-
     fetchPerformance:function(constructID)
     {
-        this.performancePanelTextRef.setVisible(true);
+        this.performancePanel.removeAll(true);
+        this.performancePanel.add(
+            {
+                xtype:'panel',
+                title: 'Under Development',
+                layout: 'auto',
+                html: '<p>Performance data for <b>' + constructID + '</b> will be available in an upcoming release of the Data Access Client.</p>'
+            }
+        )
 
-        Ext.Ajax.request({
-                   url: WEB_SERVICE_BASE_URL + 'construct/performance',
-                   method: "GET",
-                   success: this.fetchPerformanceResultHandler,
-                   failure: this.fetchPerformanceErrorHandler,
-                   params: {
-                                id: constructID,
-                                format: 'json'
-                            },
-                   scope: this
-        });
+        this.performancePanel.doLayout();
+        this.performancePanel.setActiveTab(0);
+        this.datasheetTabPanel.setActiveTab(0);
     },
+
+//    fetchPerformance:function(constructID)
+//    {
+//        this.performancePanelTextRef.setVisible(true);
+//
+//        Ext.Ajax.request({
+//                   url: WEB_SERVICE_BASE_URL + 'construct/performance',
+//                   method: "GET",
+//                   success: this.fetchPerformanceResultHandler,
+//                   failure: this.fetchPerformanceErrorHandler,
+//                   params: {
+//                                id: constructID,
+//                                format: 'json'
+//                            },
+//                   scope: this
+//        });
+//    },
 
     fetchDesignResultHandler: function(response, opts)
     {

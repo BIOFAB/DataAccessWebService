@@ -17,6 +17,8 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
     {
         DataAccessClientViewport.superclass.initComponent.call(this);
 
+        this.fetchParts();
+
         var collectionsGridSelectionModel = this.collectionsGridPanel.getSelectionModel();
 	collectionsGridSelectionModel.on('rowselect', this.collectionsGridRowSelectHandler, this);
         this.collectionsGridPanel.getStore().on('load', this.collectionStoreLoadHandler, this);
@@ -26,7 +28,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 		
 	var partsGridSelectionModel = this.partsGridPanel.getSelectionModel();
 	partsGridSelectionModel.on('rowselect', this.partsGridRowSelectHandler, this);
-        this.fetchParts();
+        
         //this.partsGridPanel.getStore().on('load', this.partStoreLoadHandler, this);
 
         this.promotersButtonRef.setHandler(this.promotersButtonClickHandler, this);
@@ -56,7 +58,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 
             partStore.filter([
             {
-                property     : 'collectionID',
+                property     : 'collectionId',
                 value        : id,
                 anyMatch     : true,
                 exactMatch   : true
@@ -286,6 +288,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
                 this.partsGridPanel.getStore().loadData(partsForStore, false);
                 this.partsGridPanel.getStore().filter([{property: 'type', value: "promoter", anyMatch: true, caseSensitive: false}]);
                 this.partsLabel.setText('Parts: Promoters');
+                this.collectionsGridPanel.getStore().load();
             }
             else
             {
@@ -351,26 +354,34 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
             if(id === 1)
             {
                 collectionPanel = new PilotProjectPanel();
+                collectionPanel.setCollectionRecord(collectionRecord);
+                tab = this.infoTabPanel.add(collectionPanel);
+                this.infoTabPanel.doLayout();
+                this.infoTabPanel.setActiveTab(tab);
 
             }
 
             if(id === 2)
             {
                 collectionPanel = new ModularPromoterPanel();
+                tab = this.infoTabPanel.add(collectionPanel);
+                this.infoTabPanel.doLayout();
+                this.infoTabPanel.setActiveTab(tab);
+                collectionPanel.displayInfo(collectionRecord, this.parts);
             }
 
             if(id === 3)
             {
                 collectionPanel = new RandomPromoterPanel();
+                collectionPanel.setCollectionRecord(collectionRecord);
+                tab = this.infoTabPanel.add(collectionPanel);
+                this.infoTabPanel.doLayout();
+                this.infoTabPanel.setActiveTab(tab);
             }
 
             if(id === 4)
             {
                 collectionPanel = new TerminatorPanel();
-            }
-
-            if(collectionPanel !== null)
-            {
                 collectionPanel.setCollectionRecord(collectionRecord);
                 tab = this.infoTabPanel.add(collectionPanel);
                 this.infoTabPanel.doLayout();

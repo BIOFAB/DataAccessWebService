@@ -10,6 +10,7 @@ PartPanel = Ext.extend(Ext.Panel, {
     tpl: '',
     closable: true,
     autoScroll: false,
+    //itemId: 'partPanel',
 
     //Data Members
     partRecord: null,
@@ -21,7 +22,7 @@ PartPanel = Ext.extend(Ext.Panel, {
             {
                 xtype: 'panel',
                 title: 'DNA Sequence',
-                height: 150,
+                height: 100,
                 layout: 'fit',
                 ref: 'sequencePanel',
                 region: 'north',
@@ -39,11 +40,25 @@ PartPanel = Ext.extend(Ext.Panel, {
                 title: 'Performance',
                 layout: 'auto',
                 region: 'center',
-                //height: 400,
                 split: true,
                 ref: 'performancePanel'
-                //html: '<p>Performance data will be available in an upcoming release of the Data Access Client.</p>'
-//              items: []
+            },
+            {
+                xtype:'panel',
+                title: 'Notes',
+                layout: 'fit',
+                height: 125,
+                ref: 'notesPanel',
+                region: 'south',
+                split: true,
+                items:[
+                    {
+                        xtype: 'textarea',
+                        hidden: false,
+                        ref: '../notesPanelTextArea'
+                    }
+                ]
+
             }
         ];
 
@@ -63,7 +78,23 @@ PartPanel = Ext.extend(Ext.Panel, {
             this.performancePanel.setTitle('Performance of ' + biofabID);
             dnaSequence = partRecord.get('dnaSequence');
             this.sequenceTextArea.setValue(dnaSequence);
-            this.generateBarChart();
+            var collectionId = this.partRecord.get('collectionId');
+
+            //Temporary patch till I fix the problem with the Pilot Project
+            if(collectionId !== 1)
+            {
+                this.generateBarChart();
+            }
+            else
+            {
+                this.performancePanel.add(
+                    {
+                        xtype: 'label',
+                        text: 'Performance data for Pilot Project parts will be available in an upcoming release of the Data Access Client.'
+                    }
+                );
+                this.performancePanel.doLayout();
+            }
     },
 
     generateBarChart: function()
@@ -137,7 +168,7 @@ PartPanel = Ext.extend(Ext.Panel, {
                             //gutter: 5,
                             tips: {
                               trackMouse: true,
-                              width: 140,
+                              width: 120,
                               height: 28,
                               renderer: function(storeItem, item) {
                                 this.setTitle('Part: ' + storeItem.get('biofabId'));
@@ -145,19 +176,11 @@ PartPanel = Ext.extend(Ext.Panel, {
                             },
                             renderer: function(sprite, record, attr, index, store)
                                 {
-                                    var biofabId = record.get('biofabId');
+                                    //var biofabId = record.get('biofabId');
+                                    //var partPanel = Ext.Container.getComponent('partPanel');
+                                    var isSelectedPart = record.get('isSelectedPart');
 
-//                                    if(biofabId === this.partRecord.get('displayId'))
-//                                    {
-//                                        var color = 'rgb(255, 0, 0)';
-//                                        return Ext.apply(attr, {fill: color});
-//                                    }
-//                                    else
-//                                    {
-//                                        return null;
-//                                    }
-
-                                    if(index === 10)
+                                    if(isSelectedPart)
                                     {
                                         var color = 'rgb(255, 0, 0)';
                                         return Ext.apply(attr, {fill: color});
@@ -166,6 +189,16 @@ PartPanel = Ext.extend(Ext.Panel, {
                                     {
                                         return Ext.apply(attr);
                                     }
+
+//                                    if(index === 10)
+//                                    {
+//                                        var color = 'rgb(255, 0, 0)';
+//                                        return Ext.apply(attr, {fill: color});
+//                                    }
+//                                    else
+//                                    {
+//                                        return Ext.apply(attr);
+//                                    }
                                 }
 
 //                            label: {
@@ -184,6 +217,7 @@ PartPanel = Ext.extend(Ext.Panel, {
             this.performancePanel.removeAll(true);
             this.performancePanel.add(barChart);
             this.performancePanel.doLayout();
+            this.displayNotes();
         }
         else
         {
@@ -205,7 +239,10 @@ PartPanel = Ext.extend(Ext.Panel, {
         var maxMeasurement;
         var collectionId;
         var selectedMeasurement;
+        var selectedPartBiofabId;
+        var isSelected;
 
+        selectedPartBiofabId = partRecord.get('displayId')
         partCount = this.parts.length;
         collectionId = partRecord.get('collectionId');
 
@@ -229,9 +266,19 @@ PartPanel = Ext.extend(Ext.Panel, {
         
                             if(measurement.type === 'GEC')
                             {
+                                if(part.displayID === selectedPartBiofabId)
+                                {
+                                    isSelected = true;
+                                }
+                                else
+                                {
+                                    isSelected = false
+                                }
+
                                 selectedMeasurements.push(
                                     {
                                         biofabId: part.displayID,
+                                        isSelectedPart: isSelected ,
                                         value: measurement.value
                                     }
                                 );
@@ -270,5 +317,12 @@ PartPanel = Ext.extend(Ext.Panel, {
         );
         
         return partPerformances;
+    },
+
+    displayNotes: function()
+    {
+        this.notesPanelTextArea.setValue('Each bar indicates the performance of a part in the library.\n' +
+                               'Hover the mouse over a bar to see the identifier of a part.\n' +
+                               'The red bar indicates the performance of the selected part.');
     }
 });
