@@ -56,39 +56,39 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         });
     },
 
-    fetchPerformance:function(constructID)
-    {
-        this.performancePanel.removeAll(true);
-        this.performancePanel.add(
-            {
-                xtype:'panel',
-                title: 'Under Development',
-                layout: 'auto',
-                html: '<p>Performance data for <b>' + constructID + '</b> will be available in an upcoming release of the Data Access Client.</p>'
-            }
-        )
-
-        this.performancePanel.doLayout();
-        this.performancePanel.setActiveTab(0);
-        this.datasheetTabPanel.setActiveTab(0);
-    },
-
 //    fetchPerformance:function(constructID)
 //    {
-//        this.performancePanelTextRef.setVisible(true);
+//        this.performancePanel.removeAll(true);
+//        this.performancePanel.add(
+//            {
+//                xtype:'panel',
+//                title: 'Under Development',
+//                layout: 'auto',
+//                html: '<p>Performance data for <b>' + constructID + '</b> will be available in an upcoming release of the Data Access Client.</p>'
+//            }
+//        )
 //
-//        Ext.Ajax.request({
-//                   url: WEB_SERVICE_BASE_URL + 'construct/performance',
-//                   method: "GET",
-//                   success: this.fetchPerformanceResultHandler,
-//                   failure: this.fetchPerformanceErrorHandler,
-//                   params: {
-//                                id: constructID,
-//                                format: 'json'
-//                            },
-//                   scope: this
-//        });
+//        this.performancePanel.doLayout();
+//        this.performancePanel.setActiveTab(0);
+//        this.datasheetTabPanel.setActiveTab(0);
 //    },
+
+    fetchPerformance:function(constructID)
+    {
+        this.performancePanelTextRef.setVisible(true);
+
+        Ext.Ajax.request({
+                   url: WEB_SERVICE_BASE_URL + 'construct/performance',
+                   method: "GET",
+                   success: this.fetchPerformanceResultHandler,
+                   failure: this.fetchPerformanceErrorHandler,
+                   params: {
+                                id: constructID,
+                                format: 'json'
+                            },
+                   scope: this
+        });
+    },
 
     fetchDesignResultHandler: function(response, opts)
     {
@@ -121,7 +121,8 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
             this.construct = Ext.util.JSON.decode(response.responseText);
             this.displayTimeSeriesPlot(this.construct);
             this.generateFluorescenceHistogram(this.construct);
-            //this.performancePanelRef.setActiveTab(0);
+            //this.performancePanel.setActiveTab(0);
+            //this.performancePanel.setActiveTab(1);
             //this.generateFluorescenceVsForwardScatterPlot(this.construct, false);
         }
         else
@@ -135,7 +136,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         this.performancePanelTextRef.setVisible(false);
         this.performancePanelRef.removeAll();
 
-        this.performancePanelRef.add(
+        this.performancePanel.add(
             {
                 xtype:'panel',
                 title: 'Under Development',
@@ -375,7 +376,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         var fluorescenceValues = [];
         var histogramData;
 
-        this.performancePanelRef.setActiveTab(1);
+        this.performancePanel.setActiveTab(1);
 
         Ext4.define('FluorescenceFrequency', {
             extend: 'Ext4.data.Model',
@@ -408,7 +409,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
                 data : histogramData
             });
 
-            var element = this.geneExpressionPerCellPanelRef.getEl();
+            var element = this.geneExpressionPerCellPanel.getEl();
 
             var histogram = Ext4.create('Ext.chart.Chart',
                 {
@@ -465,9 +466,9 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
                 }
             );
 
-            this.geneExpressionPerCellPanelRef.removeAll(true);
-            this.geneExpressionPerCellPanelRef.add(histogram);
-            this.geneExpressionPerCellPanelRef.doLayout();
+            this.geneExpressionPerCellPanel.removeAll(true);
+            this.geneExpressionPerCellPanel.add(histogram);
+            this.geneExpressionPerCellPanel.doLayout();
             this.geneExpPerCellPlotDisplayed = 0;
         }
         else
@@ -512,7 +513,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
         var scatterplotPanel;
         var cytoMeasurements;
 
-        this.performancePanelRef.setActiveTab(1);
+        this.performancePanel.setActiveTab(1);
 
         Ext4.define('CytometerMeasurement', {
             extend: 'Ext4.data.Model',
@@ -588,7 +589,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
                 }
             );
 
-            var element = this.geneExpressionPerCellPanelRef.getEl();
+            var element = this.geneExpressionPerCellPanel.getEl();
 
 
             scatterplot = Ext4.create('Ext.chart.Chart',
@@ -635,9 +636,9 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
                 }
             );
 
-            this.geneExpressionPerCellPanelRef.removeAll(true);
-            this.geneExpressionPerCellPanelRef.add(scatterplot);
-            this.geneExpressionPerCellPanelRef.doLayout();
+            this.geneExpressionPerCellPanel.removeAll(true);
+            this.geneExpressionPerCellPanel.add(scatterplot);
+            this.geneExpressionPerCellPanel.doLayout();
             this.showAllEventsButtonRef.enable();
             this.geneExpPerCellPlotDisplayed = 1;
         }

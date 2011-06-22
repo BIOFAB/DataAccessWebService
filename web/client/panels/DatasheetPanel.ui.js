@@ -135,7 +135,7 @@ DatasheetPanelUi = Ext.extend(Ext.Panel, {
                                         xtype:'panel',
                                         title: '',
                                         layout: 'auto',
-                                        ref:'../../../geneExpressionPerCellPanelRef',
+                                        ref:'../../../geneExpressionPerCellPanel',
                                         region: 'center',
                                         split: true,
                                         bbar: {
