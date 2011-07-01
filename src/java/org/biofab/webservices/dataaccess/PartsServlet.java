@@ -144,10 +144,17 @@ public class PartsServlet extends DataAccessServlet
             }
             else
             {
-               responseString = generateJSON(dnaComponents.toArray());
-               this.textSuccess(response, responseString);
+                if(format.equalsIgnoreCase("csv"))
+                {
+                   responseString = generateCSV(dnaComponents);
+                   this.textSuccess(response, responseString);
+                }
+                else
+                {
+                   responseString = generateJSON(dnaComponents.toArray());
+                   this.textSuccess(response, responseString);
+                }
             }
-
         }
         catch (SQLException ex)
         {
@@ -244,27 +251,135 @@ public class PartsServlet extends DataAccessServlet
 
     // Utility Functions
 
-//    protected String generateCSV(ResultSet resultSet) throws SQLException
-//    {
-//        StringBuilder responseText = new StringBuilder("id,type,description,dna_sequence\n");
+    protected String generateCSV(ArrayList<DnaComponent> dnaComponents)
+    {
+        ArrayList<String>       headers = new ArrayList<String>();
+        ArrayList<String>       rows = new ArrayList<String>();
+        ArrayList<String>       row;
+        StringBuilder           responseText = new StringBuilder();
+        String                  id;
+        String                  type;
+        String                  description;
+        String                  sequence;
+        int                     position;
+        ArrayList<Measurement>  measurements;
+        String                  label;
+        boolean                 hasLabel;
+        String                  csvLine;
+
+        headers.add("id");
+        headers.add("type");
+        headers.add("description");
+        headers.add("dna_sequence");
+
+        for(DnaComponent dnaComponent:dnaComponents)
+        {
+            row = new ArrayList<String>();
+            id = dnaComponent.getDisplayID();
+            type = dnaComponent.getType();
+            description = dnaComponent.getDescription();
+            sequence = dnaComponent.getDnaSequence().getNucleotides();
+            
+            row.add(id);
+            row.add(type);
+            row.add(description);
+            row.add(sequence);
+
+            measurements = dnaComponent.getPerformance().getMeasurements();
+
+            for(Measurement measurement:measurements)
+            {
+//                for(headers.contains(measurement.getLabel()))
+//                {
 //
-//        while (resultSet.next())
-//        {
-//            String id = resultSet.getString("biofab_id");
-//            String type = resultSet.getString("biofab_type");
-//            String description = resultSet.getString("description");
-//            String sequence = resultSet.getString("dna_sequence");
+//                    if(header.equalsIgnoreCase(label));
+//                }
+            }
+            
+            csvLine = this.generateCsvLine(row);
+            rows.add(csvLine);
+        }
+
+        csvLine = generateCsvLine(headers);
+        responseText.append(csvLine);
+
+        for(String rowString:rows)
+        {
+           responseText.append(rowString);
+        }
+
+        return responseText.toString();
+    }
+
+    protected String generateCsvLine(ArrayList<String>strings)
+    {
+        StringBuilder csvLine = new StringBuilder();
+
+        for(String string:strings)
+        {
+           csvLine.append(string);
+           csvLine.append(",");
+        }
+
+        csvLine.deleteCharAt(csvLine.length() - 1);
+        csvLine.append("\n");
+
+        return csvLine.toString();
+    }
+
+    protected Measurement retrieveMeasurement()
+    {
+        return null;
+//            var measurement;
+//            var performance = part.performance;
+//            var measurements;
+//            var measurementsCount;
+//            var bgeMeasurements = [];
+//            var maxMeasurement;
 //
-//            responseText.append(id);
-//            responseText.append(",");
-//            responseText.append(type);
-//            responseText.append(",");
-//            responseText.append(description);
-//            responseText.append(",");
-//            responseText.append(sequence);
-//            responseText.append("\n");
-//        }
+//            if(performance != undefined)
+//            {
+//                measurements = performance.measurements;
+//                measurementsCount = measurements.length;
 //
-//        return responseText.toString();
-//    }
+//                for(var i = 0; i < measurementsCount; i += 1)
+//                {
+//                    if(measurements[i].type === 'GEC')
+//                    {
+//                        //measurement = measurements[i];
+//                        bgeMeasurements.push(measurements[i]);
+//                    }
+//                }
+//
+//                if(bgeMeasurements.length > 1)
+//                {
+//                    bgeMeasurements.sort(
+//                        function(a,b)
+//                        {
+//                            return a.value - b.value;
+//                        }
+//                    );
+//
+//                    maxMeasurement = bgeMeasurements.pop();
+//                    measurement = {label: 'Maximum ' + maxMeasurement.label, unit: maxMeasurement.unit, value: maxMeasurement.value};
+//                }
+//                else
+//                {
+//                    if(bgeMeasurements.length === 1)
+//                    {
+//                        measurement = bgeMeasurements[0];
+//                    }
+//                    else
+//                    {
+//                        measurement = {label: 'Unavailable', unit: 'None', value: 0};
+//                    }
+//                }
+//            }
+//            else
+//            {
+//                measurement = {label: 'Unavailable', unit: 'None', value: 0};
+//            }
+//
+//            return measurement;
+    }
 }
