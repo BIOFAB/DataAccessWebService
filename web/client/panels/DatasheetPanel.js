@@ -13,31 +13,29 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
     initComponent: function()
     {
         DatasheetPanel.superclass.initComponent.call(this);
-
         this.designPanelExportButtonRef.setHandler(this.designPanelExportButtonClickHandler, this);
-        this.performancePanelExportButtonRef.setHandler(this.performancePanelExportButtonClickHandler, this);
-        this.showAllEventsButtonRef.setHandler(this.displayAllEventsButtonClickHandler, this);
-        this.geneExpressionPerCellComboBox.on('select', this.geneExpressionPerCellComboBoxSelectHandler, this);
-
-        //this.geneExpressionPerCellComboBox.select(0,true);
-
-        //this.performancePanelRef.setActiveTab(1);
-        //this.performancePanelRef.setActiveTab(0);
+        
+//        Needed for displaying performance
+//        this.performancePanelExportButtonRef.setHandler(this.performancePanelExportButtonClickHandler, this);
+//        this.showAllEventsButtonRef.setHandler(this.displayAllEventsButtonClickHandler, this);
+//        this.geneExpressionPerCellComboBox.on('select', this.geneExpressionPerCellComboBoxSelectHandler, this);
     },
 
-    setConstructID: function(constructID)
-    {
-        this.constructID = constructID;
-        this.setTitle(constructID);
-        this.fetchDesign(constructID);
-        this.fetchPerformance(constructID);
-    },
+//    Deprecated
+//    
+//    setConstructID: function(constructID)
+//    {
+//        this.constructID = constructID;
+//        this.setTitle(constructID);
+//        this.fetchDesign(constructID);
+//        this.fetchPerformance(constructID);
+//    },
 
     fetchData: function(constructID)
     {
         this.constructID = constructID;
         this.fetchDesign(constructID);
-        this.fetchPerformance(constructID);
+        //this.fetchPerformance(constructID);
     },
 
     fetchDesign:function(constructID)
@@ -102,6 +100,7 @@ DatasheetPanel = Ext.extend(DatasheetPanelUi,{
 
         this.designPanel.add(flash);
         this.designPanel.doLayout();
+        this.datasheetTabPanel.setActiveTab(0);
     },
 
     fetchDesignErrorHandler: function(response, opts)

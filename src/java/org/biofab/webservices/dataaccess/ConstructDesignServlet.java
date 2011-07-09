@@ -71,7 +71,8 @@ public class ConstructDesignServlet extends DataAccessServlet
                     
                     try
                     {
-                        features = featuresStatement.executeQuery("SELECT feature.description, feature.genbank_type, design_feature.start, design_feature.stop FROM design_feature, feature WHERE design_feature.design_id = '" + designID + "' AND feature.id = design_feature.feature_id AND feature.display_in_view = TRUE ORDER BY design_feature.start ASC");
+                        features = featuresStatement.executeQuery("SELECT * FROM construct_annotations_view WHERE construct_id = '" + designID + "'");
+                        //features = featuresStatement.executeQuery("SELECT feature.description, feature.genbank_type, design_feature.start, design_feature.stop FROM design_feature, feature WHERE design_feature.design_id = '" + designID + "' AND feature.id = design_feature.feature_id AND feature.display_in_view = TRUE ORDER BY design_feature.start ASC");
                         richSequence = RichSequence.Tools.createRichSequence(constructID, DNATools.createDNA(dnaSequence));
                         addFeatures(richSequence, features);
                         //addComment(richSequence, "The genetic constructs used here are taken or composed from available, well known genetic elements.  At this time BIOFAB staff have not yet taken care to define the precise functional boundaries of these genetic elements.  Thus, for example, a part labeled as a \"promoter\" may include sequences encoding all or part of a 5' UTR downstream of a transcription start site. And so on. Part of the mission of the BIOFAB is to define compatible sets of genetic objects with precise and composable boundaries. Such well engineered parts will be noted once available.");
@@ -204,6 +205,17 @@ public class ConstructDesignServlet extends DataAccessServlet
             noteValue = features.getString("description");
             start = features.getInt("start");
             stop = features.getInt("stop");
+
+//            Deprecated
+//
+//            if(featureType.equalsIgnoreCase("promoter"))
+//            {
+//                noteValue = features.getString("part_biofab_id");
+//            }
+//            else
+//            {
+//                noteValue = features.getString("description");
+//            }
 
             if(featureType.equalsIgnoreCase("CDS"))
             {

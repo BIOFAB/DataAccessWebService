@@ -193,7 +193,7 @@ DataAccessClientViewportUi = Ext.extend(Ext.Viewport, {
                                 {
                                     xtype: 'button',
                                     text: 'Export',
-                                    tooltip: 'Export all the parts in JSON format',
+                                    tooltip: 'Export all the parts in CSV format',
                                     ref: '../../../partsGridExportButton',
                                     id: 'partsGridExportButton'
                                 }

@@ -266,11 +266,16 @@ public class PartsServlet extends DataAccessServlet
         String                  label;
         boolean                 hasLabel;
         String                  csvLine;
+        int                     gecCount;
+        String                  measurementValue;
+        String                  measurementSD;
 
         headers.add("id");
         headers.add("type");
         headers.add("description");
         headers.add("dna_sequence");
+        headers.add("gene_expression_per_cell_(AU)");
+        headers.add("gene_expression_per_cell_standard_deviation");
 
         for(DnaComponent dnaComponent:dnaComponents)
         {
@@ -286,14 +291,29 @@ public class PartsServlet extends DataAccessServlet
             row.add(sequence);
 
             measurements = dnaComponent.getPerformance().getMeasurements();
+            gecCount = 0;
+            measurementValue = null;
+            measurementSD = null;
 
             for(Measurement measurement:measurements)
             {
-//                for(headers.contains(measurement.getLabel()))
-//                {
-//
-//                    if(header.equalsIgnoreCase(label));
-//                }
+                if(measurement.getType().equalsIgnoreCase("GEC"))
+                {
+                    measurementValue = String.valueOf(measurement.getValue());
+                    measurementSD = String.valueOf(measurement.getStandardDeviation());
+                    gecCount++;
+                }
+
+//              for(headers.contains(measurement.getLabel()))
+//              {
+//                 if(header.equalsIgnoreCase(label));
+//              }
+            }
+
+            if(gecCount == 1)
+            {
+                row.add(measurementValue);
+                row.add(measurementSD);
             }
             
             csvLine = this.generateCsvLine(row);

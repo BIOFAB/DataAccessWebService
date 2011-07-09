@@ -187,7 +187,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 
         partsGridExportButtonClickHandler: function(button, event)
         {
-            var exportWindow = window.open(WEB_SERVICE_BASE_URL + 'parts?format=json',"Parts","width=640,height=480");
+            var exportWindow = window.open(WEB_SERVICE_BASE_URL + 'parts?format=csv',"Parts","width=640,height=480");
             exportWindow.scrollbars.visible = true;
             exportWindow.alert("Use File/Save As in the menu bar to save this document.");
         },
