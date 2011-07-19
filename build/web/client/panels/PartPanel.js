@@ -6,7 +6,7 @@
 
 PartPanel = Ext.extend(Ext.Panel, {
     title: 'Part',
-    layout: 'border',
+    layout: 'fit',
     tpl: '',
     closable: true,
     autoScroll: false,
@@ -24,45 +24,72 @@ PartPanel = Ext.extend(Ext.Panel, {
     initComponent: function() {
         this.items = [
             {
-                xtype: 'panel',
-                itemId: 'designPanel',
-                title: 'Design',
-                height: 100,
-                layout: 'fit',
-                region: 'north',
-                split: true,
-                items: [
-                    {
-                        xtype: 'textarea',
-                        itemId: 'sequenceTextArea',
-                        readOnly: true
-                    }
-                ]
-            },
-            {
-                xtype: 'panel',
-                itemId: 'performancePanel',
-                title: 'Performance',
-                layout: 'auto',
-                region: 'center',
-                split: true
-            },
-            {
-                xtype:'panel',
-                itemId: 'notesPanel',
-                title: 'Notes',
-                layout: 'fit',
-                height: 125,
-                region: 'south',
-                split: true,
+                xtype: 'tabpanel',
+                itemId: 'partTabPanel',
+                activeTab: 0,
                 items:[
                     {
-                        xtype: 'textarea',
-                        itemId: 'notesPanelTextArea',
-                        hidden: false
-                    }
-                ]
+                        xtype: 'panel',
+                        itemId: 'designPanel',
+                        title: 'Design',
+                        layout: 'border',
+                        items: [
+                            {
+                                xtype: 'panel',
+                                itemId: 'partDesignPanel',
+                                title: 'Part',
+                                region: 'north',
+                                height: 100,
+                                layout: 'fit',
+                                split: true,
+                                items:[
+                                    {
+                                        xtype: 'textarea',
+                                        itemId: 'sequenceTextArea',
+                                        readOnly: true
+                                    }
+                                ]
+                            },
+                            {
+                                xtype: 'panel',
+                                itemId: 'constructDesignPanel',
+                                title: 'Construct',
+                                region: 'center',
+                                layout: 'fit',
+                                split: true,
+                                items:[]
+                            }
+                        ]
+                    },
+                    {
+                        xtype: 'panel',
+                        itemId: 'performancePanel',
+                        title: 'Performance',
+                        layout: 'auto',
+                        region: 'center',
+                        split: true,
+                        items:[
+                            {
+                                xtype:'panel',
+                                itemId: 'notesPanel',
+                                title: 'Notes',
+                                layout: 'fit',
+                                height: 125,
+                                region: 'south',
+                                split: true,
+                                items:[
+                                    {
+                                        xtype: 'textarea',
+                                        itemId: 'notesPanelTextArea',
+                                        hidden: false
+                                    }
+                                ]
 
+                            }
+                        ]
+                    },
+                ]
+             
             }
         ];
         
