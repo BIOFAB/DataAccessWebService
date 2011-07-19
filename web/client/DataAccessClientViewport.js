@@ -12,6 +12,9 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
     performanceStore: null,
     constructLoadCount: 0,
     parts: null,
+    partsGridPanel: null,
+    collectionsGridPanel: null,
+    infoTabPanel: null,
 	
     initComponent: function()
     {
@@ -19,30 +22,42 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 
         this.fetchParts();
 
+        this.collectionsGridPanel = Ext.ComponentManager.get('collectionsGridPanel');
         var collectionsGridSelectionModel = this.collectionsGridPanel.getSelectionModel();
 	collectionsGridSelectionModel.on('rowselect', this.collectionsGridRowSelectHandler, this);
         this.collectionsGridPanel.getStore().on('load', this.collectionStoreLoadHandler, this);
 
-        var constructsGridSelectionModel = this.constructsGridPanel.getSelectionModel();
-	constructsGridSelectionModel.on('rowselect', this.constructsGridRowSelectHandler, this);
+//        this.collectionsGridPanel.getStore().on('load', this.collectionStoreLoadHandler, this);
+
+//        var constructsGridSelectionModel = this.constructsGridPanel.getSelectionModel();
+//	constructsGridSelectionModel.on('rowselect', this.constructsGridRowSelectHandler, this);
 		
-	var partsGridSelectionModel = this.partsGridPanel.getSelectionModel();
+	this.partsGridPanel = Ext.ComponentManager.get('partsGridPanel');
+        var partsGridSelectionModel = this.partsGridPanel.getSelectionModel();
 	partsGridSelectionModel.on('rowselect', this.partsGridRowSelectHandler, this);
+//	
+//	var partsGridSelectionModel = this.partsGridPanel.getSelectionModel();
+//	partsGridSelectionModel.on('rowselect', this.partsGridRowSelectHandler, this);
         
         //this.partsGridPanel.getStore().on('load', this.partStoreLoadHandler, this);
 
-        this.promotersButtonRef.setHandler(this.promotersButtonClickHandler, this);
-        this.fiveUTRButtonRef.setHandler(this.fiveUTRButtonClickHandler, this);
-        this.cdsButtonRef.setHandler(this.cdsButtonClickHandler, this);
+//        this.promotersButtonRef.setHandler(this.promotersButtonClickHandler, this);
+//        this.fiveUTRButtonRef.setHandler(this.fiveUTRButtonClickHandler, this);
+//        this.cdsButtonRef.setHandler(this.cdsButtonClickHandler, this);
 
-	this.constructsGridPanel.getStore().on('load', this.constructStoreForDisplayLoadHandler, this);
-        this.constructPartStore = new ConstructPartStore();
+//	this.constructsGridPanel.getStore().on('load', this.constructStoreForDisplayLoadHandler, this);
+//        this.constructPartStore = new ConstructPartStore();
 
-        this.collectionsGridExportButtonRef.setHandler(this.collectionsGridExportButtonClickHandler, this);
-        this.partsGridExportButton.setHandler(this.partsGridExportButtonClickHandler, this);
-        this.constructsGridExportButton.setHandler(this.constructsGridExportButtonClickHandler, this);
-        this.showAllPartsButtonRef.setHandler(this.showAllPartsButtonClickHandler, this);
-        this.showAllConstructsButtonRef.setHandler(this.showAllConstructsButtonClickHandler, this);
+        var collectionsGridExportButton = Ext.ComponentManager.get('collectionsGridExportButton'); 
+        collectionsGridExportButton.setHandler(this.collectionsGridExportButtonClickHandler, this);
+        
+//        this.collectionsGridExportButtonRef.setHandler(this.collectionsGridExportButtonClickHandler, this);
+//        this.partsGridExportButton.setHandler(this.partsGridExportButtonClickHandler, this);
+//        this.constructsGridExportButton.setHandler(this.constructsGridExportButtonClickHandler, this);
+//        this.showAllPartsButtonRef.setHandler(this.showAllPartsButtonClickHandler, this);
+//        this.showAllConstructsButtonRef.setHandler(this.showAllConstructsButtonClickHandler, this);
+        
+        this.infoTabPanel = Ext.ComponentManager.get('infoTabPanel');
     },
 
     collectionsGridRowSelectHandler: function(selectModel, rowIndex, record)
@@ -93,90 +108,90 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
         var constructRecords = null;
         var constructRecordsForDisplay = [];
         var relationPartID = null;
-        var relationsCount = this.constructPartStore.getCount();
+//        var relationsCount = this.constructPartStore.getCount();
 
-        for(var i = 0; i < relationsCount; i += 1)
-        {
-            relationRecord = this.constructPartStore.getAt(i);
-            relationPartID = relationRecord.get("partID");
-
-            if(relationPartID.toUpperCase() === partID.toUpperCase())
-            {
-                    constructID = relationRecord.get("constructID");
-                    constructRecords = this.constructStore.query('biofab_id', new RegExp(constructID), false, false, true);
-                    constructRecord = constructRecords.itemAt(0);
-
-                    if(constructRecord !== null && constructRecord !== undefined)
-                    {
-                        constructRecordsForDisplay.push(constructRecord);
-                    }
-            }
-        }
-
-        if(constructRecordsForDisplay.length > 0)
-        {
-            this.constructsGridPanel.getStore().removeAll();
-            this.constructsGridPanel.getStore().add(constructRecordsForDisplay);
-            this.constructsLabel.setText('Constructs with ' + partID);
-        }
-        else
-        {
-            Ext.Msg.alert('Data Access Client', 'No construct has ' + description);
-        }
+//        for(var i = 0; i < relationsCount; i += 1)
+//        {
+//            relationRecord = this.constructPartStore.getAt(i);
+//            relationPartID = relationRecord.get("partID");
+//
+//            if(relationPartID.toUpperCase() === partID.toUpperCase())
+//            {
+//                    constructID = relationRecord.get("constructID");
+//                    constructRecords = this.constructStore.query('biofab_id', new RegExp(constructID), false, false, true);
+//                    constructRecord = constructRecords.itemAt(0);
+//
+//                    if(constructRecord !== null && constructRecord !== undefined)
+//                    {
+//                        constructRecordsForDisplay.push(constructRecord);
+//                    }
+//            }
+//        }
+//
+//        if(constructRecordsForDisplay.length > 0)
+//        {
+//            this.constructsGridPanel.getStore().removeAll();
+//            this.constructsGridPanel.getStore().add(constructRecordsForDisplay);
+//            this.constructsLabel.setText('Constructs with ' + partID);
+//        }
+//        else
+//        {
+//            Ext.Msg.alert('Data Access Client', 'No construct has ' + description);
+//        }
 
         this.showPartPanel(record);
 
         
     },
 	
-        constructsGridRowSelectHandler: function(selectModel, rowIndex, record)
-	{
-	    var biofabID = record.get("biofab_id");
-            var id = record.get('id');
-
-//            if(id === 2)
-//            {
-//                Ext.Msg.alert('Modular Promoter Library', 'At this time, only the promoter sequences are available for the constructs in the Modular Promoter Library.\n'+
-//                'The complete sequence with annotations will be available in an upcoming release of the Data Access Client.');
-//            }
+//        constructsGridRowSelectHandler: function(selectModel, rowIndex, record)
+//	{
+//	    var biofabID = record.get("biofab_id");
+//            var id = record.get('id');
 //
-//            if(id === 3)
-//            {
-//                Ext.Msg.alert('Random Promoter Library', 'At this time, only the promoter sequences are available for the constructs in the Random Promoter Library.\n'+
-//                'The complete sequence with annotations will be available in an upcoming release of the Data Access Client.');
-//            }
+////            if(id === 2)
+////            {
+////                Ext.Msg.alert('Modular Promoter Library', 'At this time, only the promoter sequences are available for the constructs in the Modular Promoter Library.\n'+
+////                'The complete sequence with annotations will be available in an upcoming release of the Data Access Client.');
+////            }
+////
+////            if(id === 3)
+////            {
+////                Ext.Msg.alert('Random Promoter Library', 'At this time, only the promoter sequences are available for the constructs in the Random Promoter Library.\n'+
+////                'The complete sequence with annotations will be available in an upcoming release of the Data Access Client.');
+////            }
+////
+////            if(id === 4)
+////            {
+////                Ext.Msg.alert('Terminator Library', 'At this time, only the terminator sequences are available for the constructs in the Terminator Library.\n'+
+////                'The complete sequence with annotations will be available in an upcoming release of the Data Access Client.');
+////            }
 //
-//            if(id === 4)
+//	    this.showDatasheet(biofabID);
+//	},
+
+//        constructStoreForDisplayLoadHandler: function(store, records, options)
+//        {
+//            if(this.constructStore === null)
 //            {
-//                Ext.Msg.alert('Terminator Library', 'At this time, only the terminator sequences are available for the constructs in the Terminator Library.\n'+
-//                'The complete sequence with annotations will be available in an upcoming release of the Data Access Client.');
+//               this.constructStore = new ConstructStore();
+//               this.constructStore.on('load', this.constructStoreLoadHandler, this);
 //            }
-
-	    this.showDatasheet(biofabID);
-	},
-
-        constructStoreForDisplayLoadHandler: function(store, records, options)
-        {
-            if(this.constructStore === null)
-            {
-               this.constructStore = new ConstructStore();
-               this.constructStore.on('load', this.constructStoreLoadHandler, this);
-            }
-            
-            this.constructStore.load({callback: this.constructStoreLoadHandler, scope:this, add:false});
-        },
+//            
+//            this.constructStore.load({callback: this.constructStoreLoadHandler, scope:this, add:false});
+//        },
 	
-	constructStoreLoadHandler: function(store, records, options)
-	{
-            var countA = this.constructStore.getCount();
-            var countB = this.constructsGridPanel.getStore().getCount();
-            this.constructLoadCount += 1;
-
-            if(countA !== countB && this.constructLoadCount < 10 && countA === 0)
-            {
-               this.constructStore.load({callback: this.constructStoreLoadHandler, scope:this, add:false});
-            }
-	},
+//	constructStoreLoadHandler: function(store, records, options)
+//	{
+//            var countA = this.constructStore.getCount();
+//            var countB = this.constructsGridPanel.getStore().getCount();
+//            this.constructLoadCount += 1;
+//
+//            if(countA !== countB && this.constructLoadCount < 10 && countA === 0)
+//            {
+//               this.constructStore.load({callback: this.constructStoreLoadHandler, scope:this, add:false});
+//            }
+//	},
 
         collectionsGridExportButtonClickHandler: function(button, event)
         {
@@ -192,42 +207,42 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
             exportWindow.alert("Use File/Save As in the menu bar to save this document.");
         },
 
-        constructsGridExportButtonClickHandler: function(button, event)
-        {
-            var exportWindow = window.open(WEB_SERVICE_BASE_URL + 'constructs?format=csv',"Constructs","width=640,height=480");
-            exportWindow.scrollbars.visible = true;
-            exportWindow.alert("Use File/Save As in the menu bar to save this document.");
-        },
+//        constructsGridExportButtonClickHandler: function(button, event)
+//        {
+//            var exportWindow = window.open(WEB_SERVICE_BASE_URL + 'constructs?format=csv',"Constructs","width=640,height=480");
+//            exportWindow.scrollbars.visible = true;
+//            exportWindow.alert("Use File/Save As in the menu bar to save this document.");
+//        },
 
         showAllPartsButtonClickHandler:function(button, event)
         {
-            this.partsLabel.setText('Parts', false);
+//            this.partsLabel.setText('Parts', false);
             this.partsGridPanel.getStore().clearFilter(false);
         },
 
-        showAllConstructsButtonClickHandler: function(button, event)
-        {
-            this.constructsGridPanel.getStore().clearFilter();
-            this.repopulateConstructStore();
-        },
+//        showAllConstructsButtonClickHandler: function(button, event)
+//        {
+//            this.constructsGridPanel.getStore().clearFilter();
+//            this.repopulateConstructStore();
+//        },
 
         //Refactor!!!
-        repopulateConstructStore:function()
-        {
-            var record = null;
-            var constructRecordsForDisplay = [];
-            var count = this.constructStore.getCount();
-
-            for(var i = 0; i < count; i += 1)
-            {
-                record = this.constructStore.getAt(i);
-                constructRecordsForDisplay.push(record);
-            }
-
-            this.constructsGridPanel.getStore().removeAll();
-            this.constructsGridPanel.getStore().add(constructRecordsForDisplay);
-            this.constructsLabel.setText('Constructs');
-        },
+//        repopulateConstructStore:function()
+//        {
+//            var record = null;
+//            var constructRecordsForDisplay = [];
+//            var count = this.constructStore.getCount();
+//
+//            for(var i = 0; i < count; i += 1)
+//            {
+//                record = this.constructStore.getAt(i);
+//                constructRecordsForDisplay.push(record);
+//            }
+//
+//            this.constructsGridPanel.getStore().removeAll();
+//            this.constructsGridPanel.getStore().add(constructRecordsForDisplay);
+//            this.constructsLabel.setText('Constructs');
+//        },
 
         collectionStoreLoadHandler: function(store, records, options)
         {
@@ -240,19 +255,19 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
         promotersButtonClickHandler: function(button, event)
         {
             this.partsGridPanel.getStore().filter([{property: 'type', value: "promoter", anyMatch: true, caseSensitive: false}]);
-            this.partsLabel.setText('Parts: Promoters');
+//            this.partsLabel.setText('Parts: Promoters');
         },
 
         fiveUTRButtonClickHandler: function(button, event)
         {
             this.partsGridPanel.getStore().filter([{property: 'type', value: "5' UTR", anyMatch: true, caseSensitive: false}]);
-            this.partsLabel.setText('Parts: 5\' UTR');
+//            this.partsLabel.setText('Parts: 5\' UTR');
         },
 
         cdsButtonClickHandler: function(button, event)
         {
             this.partsGridPanel.getStore().filter([{property: 'type', value: "CDS", anyMatch: true, caseSensitive: false}]);
-            this.partsLabel.setText('Parts: CDS');
+//            this.partsLabel.setText('Parts: CDS');
         },
 
         fetchPartsResultHandler: function(response, opts)
@@ -265,7 +280,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
  
             if(response.responseText.length > 0)
             {
-                this.parts = Ext.util.JSON.decode(response.responseText);
+                this.parts = Ext.JSON.decode(response.responseText, true);
                 partsCount = this.parts.length;
 
                 for(var i = 0; i < partsCount; i += 1)
@@ -287,7 +302,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 
                 this.partsGridPanel.getStore().loadData(partsForStore, false);
                 this.partsGridPanel.getStore().filter([{property: 'type', value: "promoter", anyMatch: true, caseSensitive: false}]);
-                this.partsLabel.setText('Parts: Promoters');
+//                this.partsLabel.setText('Parts: Promoters');
                 this.collectionsGridPanel.getStore().load();
             }
             else
@@ -334,16 +349,16 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
             });
         },
 	
-	showDatasheet: function(constructID)
-	{		
-            var datasheetPanel = new DatasheetPanel();
-            datasheetPanel.setTitle(constructID);
-            var tab = this.infoTabPanel.add(datasheetPanel);
-            this.infoTabPanel.doLayout();
-            this.infoTabPanel.setActiveTab(tab);
-            tab.fetchData(constructID);
-            //datasheetPanel.setConstructID(constructID);
-	},
+//	showDatasheet: function(constructID)
+//	{		
+//            var datasheetPanel = new DatasheetPanel();
+//            datasheetPanel.setTitle(constructID);
+//            var tab = this.infoTabPanel.add(datasheetPanel);
+//            this.infoTabPanel.doLayout();
+//            this.infoTabPanel.setActiveTab(tab);
+//            tab.fetchData(constructID);
+//            //datasheetPanel.setConstructID(constructID);
+//	},
 
         showCollectionPanel: function(collectionRecord)
         {

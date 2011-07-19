@@ -8,10 +8,17 @@ ModularPromoterPanel = Ext.extend(ModularPromoterPanelUi,
 {
     collectionRecord: null,
     parts: null,
+    designPanel: null,
+    collectionTextArea: null,
+    performancePanel: null,
 
     initComponent: function()
     {
         ModularPromoterPanel.superclass.initComponent.call(this);
+        
+        this.designPanel = this.getComponent('centerPanel').getComponent('designPanel');
+        this.collectionTextArea = this.designPanel.getComponent("collectionTextArea");
+        this.performancePanel = this.getComponent('centerPanel').getComponent('performancePanel');
     },
 
     //
@@ -33,7 +40,7 @@ ModularPromoterPanel = Ext.extend(ModularPromoterPanelUi,
             this.collectionRecord = collectionRecord;
             this.parts = parts;
             description = collectionRecord.get('description');
-            this.collectionTextAreaRef.setValue(description);
+            this.collectionTextArea.setValue(description);
             this.generateBarChart();
     },
 
@@ -42,8 +49,8 @@ ModularPromoterPanel = Ext.extend(ModularPromoterPanelUi,
         var newStore;
         var partPerformances;
 
-        Ext4.define('PartPerformance', {
-            extend: 'Ext4.data.Model',
+        Ext.define('PartPerformance', {
+            extend: 'Ext.data.Model',
             fields: [
                 {name: 'biofabId', type: 'string'},
                 {name: 'value', type: 'float'}
@@ -54,14 +61,14 @@ ModularPromoterPanel = Ext.extend(ModularPromoterPanelUi,
         {
             partPerformances = this.generatePartPerformances(this.collectionRecord, this.parts);
 
-            newStore = new Ext4.data.Store({
+            newStore = new Ext.data.Store({
                 model: 'PartPerformance',
                 data : partPerformances
             });
 
             var element = this.performancePanel.getEl();
 
-            var barChart = Ext4.create('Ext.chart.Chart',
+            var barChart = Ext.create('Ext.chart.Chart',
                 {
                     theme: 'Category1',
                     width: 600,

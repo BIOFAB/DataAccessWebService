@@ -21,7 +21,7 @@ ModularPromoterPanelUi = Ext.extend(Ext.Panel, {
                 itemId: 'centerPanel',
                 x: 25,
                 y: 25,
-                ref: 'centerPanelRef',
+//                ref: 'centerPanelRef',
                 floating: false,
                 shadowOffset: 6,
                 autoShow: true,
@@ -30,6 +30,7 @@ ModularPromoterPanelUi = Ext.extend(Ext.Panel, {
                 items: [
                     {
                         xtype: 'panel',
+                        itemId: 'designPanel',
                         title: 'Design',
                         layout: 'fit',
                         region: 'north',
@@ -38,8 +39,7 @@ ModularPromoterPanelUi = Ext.extend(Ext.Panel, {
                         items: [
                             {
                                 xtype: 'textarea',
-                                itemId: 'collectionTextArea',
-                                ref: '../../collectionTextAreaRef'
+                                itemId: 'collectionTextArea'
                             },
                             
                         ]
@@ -47,18 +47,18 @@ ModularPromoterPanelUi = Ext.extend(Ext.Panel, {
                     {
                         xtype: 'panel',
                         title: 'Performance',
+                        itemId: 'performancePanel',
                         layout: 'auto',
                         height: 450,
-                        ref: '../performancePanel',
                         region:'center',
                         split: true
                     },
                     {
                         xtype:'panel',
                         title: 'Notes',
+                        itemId: 'notesPanel',
                         layout: 'fit',
                         height: 100,
-                        ref: '../notesPanel',
                         region: 'south',
                         split: true,
                         items:[
@@ -66,8 +66,7 @@ ModularPromoterPanelUi = Ext.extend(Ext.Panel, {
                                 xtype: 'textarea',
                                 value: 'Each bar indicates the performance of a part in the library.\n' +
                                        'Hover the mouse over a bar to see the identifier of a part.\n',
-                                hidden: false,
-                                ref: '../../notesPanelTextArea'
+                                hidden: false
                             }
                         ]
 

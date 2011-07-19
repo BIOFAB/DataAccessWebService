@@ -12,6 +12,10 @@ PartPanel = Ext.extend(Ext.Panel, {
     autoScroll: false,
     //itemId: 'partPanel',
 
+    //Subcomponents
+    designPanel: null,
+    performancePanel: null,
+    
     //Data Members
     partRecord: null,
     parts: null,
@@ -21,47 +25,47 @@ PartPanel = Ext.extend(Ext.Panel, {
         this.items = [
             {
                 xtype: 'panel',
-                title: 'DNA Sequence',
+                itemId: 'designPanel',
+                title: 'Design',
                 height: 100,
                 layout: 'fit',
-                ref: 'sequencePanel',
                 region: 'north',
                 split: true,
                 items: [
                     {
                         xtype: 'textarea',
-                        ref: '../sequenceTextArea',
+                        itemId: 'sequenceTextArea',
                         readOnly: true
                     }
                 ]
             },
             {
                 xtype: 'panel',
+                itemId: 'performancePanel',
                 title: 'Performance',
                 layout: 'auto',
                 region: 'center',
-                split: true,
-                ref: 'performancePanel'
+                split: true
             },
             {
                 xtype:'panel',
+                itemId: 'notesPanel',
                 title: 'Notes',
                 layout: 'fit',
                 height: 125,
-                ref: 'notesPanel',
                 region: 'south',
                 split: true,
                 items:[
                     {
                         xtype: 'textarea',
-                        hidden: false,
-                        ref: '../notesPanelTextArea'
+                        itemId: 'notesPanelTextArea',
+                        hidden: false
                     }
                 ]
 
             }
         ];
-
+        
         PartPanel.superclass.initComponent.call(this);
     },
     
@@ -74,10 +78,10 @@ PartPanel = Ext.extend(Ext.Panel, {
             this.parts = parts;
             biofabID = partRecord.get('displayId');
             this.setTitle(biofabID);
-            this.sequencePanel.setTitle('DNA Sequence of ' + biofabID);
-            this.performancePanel.setTitle('Performance of ' + biofabID);
+            this.designPanel = this.getComponent('designPanel');
+            this.performancePanel = this.getComponent('performancePanel');
             dnaSequence = partRecord.get('dnaSequence');
-            this.sequenceTextArea.setValue(dnaSequence);
+            this.designPanel.getComponent('sequenceTextArea').setValue(dnaSequence);
             var collectionId = this.partRecord.get('collectionId');
 
             //Temporary patch till I fix the problem with the Pilot Project
@@ -102,8 +106,8 @@ PartPanel = Ext.extend(Ext.Panel, {
         var newStore;
         var partPerformances;
 
-        Ext4.define('PartPerformance', {
-            extend: 'Ext4.data.Model',
+        Ext.define('PartPerformance', {
+            extend: 'Ext.data.Model',
             fields: [
                 {name: 'biofabId', type: 'string'},
                 {name: 'value', type: 'float'}
@@ -114,14 +118,14 @@ PartPanel = Ext.extend(Ext.Panel, {
         {
             partPerformances = this.generatePartPerformances(this.partRecord, this.parts);
 
-            newStore = new Ext4.data.Store({
+            newStore = new Ext.data.Store({
                 model: 'PartPerformance',
                 data : partPerformances
             });
 
             var element = this.performancePanel.getEl();
 
-            var barChart = Ext4.create('Ext.chart.Chart',
+            var barChart = Ext.create('Ext.chart.Chart',
                 {
                     theme: 'Category1',
                     width: 600,
