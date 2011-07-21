@@ -8,8 +8,8 @@ CollectionStore = Ext.extend(Ext.data.JsonStore, {
     constructor: function(cfg) {
         cfg = cfg || {};
         CollectionStore.superclass.constructor.call(this, Ext.apply({
-            storeId: 'aCollectionsStore',
-            url: '../collections?format=json',
+            storeId: 'collectionStore',
+            //url: '../collections?format=json',
             autoLoad: false,
             fields: [
                 {

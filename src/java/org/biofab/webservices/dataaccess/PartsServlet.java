@@ -65,8 +65,9 @@ public class PartsServlet extends DataAccessServlet
         float                   bulkGeneExpressionSD;
         float                   geneExpressionPerCell;
         float                   geneExpressionPerCellSD;
+        String                  constructId;
 
-        //TODO Do stronger validation of collectionid
+        //TODO stronger validation of collectionid
 
         if(collectionID != null && collectionID.length() > 0)
         {
@@ -122,14 +123,15 @@ public class PartsServlet extends DataAccessServlet
                 {
                     if(biofabID.equalsIgnoreCase(component.getDisplayID()))
                     {
+                        constructId = performanceResultSet.getString("construct_id");
                         bulkGeneExpression = performanceResultSet.getFloat("bulk_gene_expression");
                         bulkGeneExpressionSD = performanceResultSet.getFloat("bulk_gene_expression_sd");
                         geneExpressionPerCell = performanceResultSet.getFloat("gene_expression_per_cell");
                         geneExpressionPerCellSD = performanceResultSet.getFloat("gene_expression_per_cell_sd");
                         
-                        measurement = new Measurement("BGE", "Bulk Gene Expression", "AU/OD", "Pending", bulkGeneExpression, bulkGeneExpressionSD);
+                        measurement = new Measurement("BGE", "Bulk Gene Expression", "AU/OD", "Pending", bulkGeneExpression, bulkGeneExpressionSD, constructId);
                         component.getPerformance().getMeasurements().add(measurement);
-                        measurement = new Measurement("GEC", "Gene Expression per Cell", "AU", "Pending", geneExpressionPerCell, geneExpressionPerCellSD);
+                        measurement = new Measurement("GEC", "Gene Expression per Cell", "AU", "Pending", geneExpressionPerCell, geneExpressionPerCellSD, constructId);
                         component.getPerformance().getMeasurements().add(measurement);
 
                         break;

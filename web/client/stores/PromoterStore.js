@@ -1,49 +1,28 @@
 /*
- *
- *
- *
+ * File: PromoterStore.js
+ * 
  */
 
-CollectionStore = Ext.extend(Ext.data.JsonStore, {
+PromoterStore = Ext.extend(Ext.data.JsonStore, {
     constructor: function(cfg) {
         cfg = cfg || {};
-        CollectionStore.superclass.constructor.call(this, Ext.apply({
-            storeId: 'collectionStore',
-            //url: '../collections?format=json',
+        PromoterStore.superclass.constructor.call(this, Ext.apply({
+            storeId: 'promoterStore',
             autoLoad: false,
+            //groupField: 'displayId',
             fields: [
                 {
-                    name: 'id',
+                    name: 'collectionId',
                     allowBlank: false,
                     type: 'int'
                 },
                 {
-                    name: 'biofabID',
+                    name: 'displayId',
                     allowBlank: false,
                     type: 'string'
                 },
                 {
-                    name: 'chassis',
-                    allowBlank: false,
-                    type: 'string'
-                },
-                {
-                    name: 'name',
-                    allowBlank: false,
-                    type: 'string'
-                },
-                {
-                    name: 'version',
-                    allowBlank: false,
-                    type: 'string'
-                },
-                {
-                    name: 'releaseStatus',
-                    allowBlank: false,
-                    type: 'string'
-                },
-                {
-                    name: 'releaseDate',
+                    name: 'type',
                     allowBlank: false,
                     type: 'string'
                 },
@@ -51,9 +30,25 @@ CollectionStore = Ext.extend(Ext.data.JsonStore, {
                     name: 'description',
                     allowBlank: false,
                     type: 'string'
+                },
+                {
+                    name: 'dnaSequence',
+                    type: 'string'
+                },
+                {
+                    name: 'geneExpressionPerCell',
+                    type: 'float'
+                },
+                {
+                    name: 'geneExpressionPerCellSD',
+                    type: 'float'
+                },
+                {
+                    name: 'constructId',
+                    type: 'string'
                 }
             ]
         }, cfg));
     }
 });
-new CollectionStore();
+new PromoterStore();

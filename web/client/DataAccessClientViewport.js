@@ -1,95 +1,509 @@
-/*
+    /*
  * 
  * File: DataAccessClientViewport.js
  * 
  * 
  */
 
-DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi, 
-{
+Ext.define('DataAccessClientViewport', { 
+    extend: 'Ext.container.Viewport',
+    layout: 'border',
     constructStore: null,
     constructHasPartStore: null,
     performanceStore: null,
     constructLoadCount: 0,
     parts: null,
-    partsGridPanel: null,
+    promoterGridPanel: null,
     collectionsGridPanel: null,
     infoTabPanel: null,
+    partsTbText: null,
 	
-    initComponent: function()
+    constructor: function()
     {
-        DataAccessClientViewport.superclass.initComponent.call(this);
+        this.items = [
+            {
+                xtype: 'panel',
+                region: 'west',
+                width: 500,
+                layout: 'border',
+                split: true,
+                collapsible: true,
+                id: 'inventoryContainer',
+                items: [
+                    {
+                        xtype: 'grid',
+                        store: 'collectionStore',
+                        region: 'north',
+                        split: true,
+                        height: 175,
+                        //autoExpandColumn: 5,
+                        minColumnWidth: 60,
+                        id: 'collectionsGridPanel',
+                        columns: [
+                            {
+                                xtype: 'gridcolumn',
+                                dataIndex: 'biofabID',
+                                header: 'Identifier',
+                                sortable: true,
+                                width: 60,
+                                editable: false
+                            },
+                            {
+                                xtype: 'gridcolumn',
+                                dataIndex: 'chassis',
+                                header: 'Chassis',
+                                sortable: true,
+                                width: 60,
+                                editable: false
+                            },
+                            {
+                                xtype: 'gridcolumn',
+                                dataIndex: 'name',
+                                header: 'Name',
+                                sortable: true,
+                                width: 150,
+                                editable: false
+                            },
+                            {
+                                xtype: 'gridcolumn',
+                                header: 'Version',
+                                sortable: true,
+                                editable: false,
+                                width: 60,
+                                dataIndex: 'version'
+                            },
+                            {
+                                xtype: 'gridcolumn',
+                                header: 'Release Status',
+                                sortable: true,
+                                editable: false,
+                                width: 100,
+                                dataIndex: 'releaseStatus'
+                            },
+                            {
+                                xtype: 'gridcolumn',
+                                header: 'Release Date',
+                                sortable: true,
+                                editable: false,
+                                width: 100,
+                                dataIndex: 'releaseDate'
+                            }
 
-        this.fetchParts();
+                        ],
+                        tbar: {
+                            xtype: 'toolbar',
+                            id: 'collectionsToolbar',
+                            items: [
+                                {
+                                    xtype: 'tbtext',
+                                    html: '<b>Collections</b>'
+                                },
+                                {
+                                    xtype: 'tbfill'
+                                },
+                                {
+                                    xtype: 'button',
+                                    text: 'Export',
+                                    tooltip: 'Export collection information in JSON format.',
+                                    id: 'collectionsGridExportButton'
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        xtype: 'tabpanel',
+                        activeTab: 0,
+                        region: 'center',
+                        split: true,
+                        height: 400,
+                        id: 'partsTabPanel',
+                        tbar:{
+                            xtype: 'toolbar',
+                            id: 'partsToolbar',
+                            items: [
+                                {
+                                    xtype: 'tbtext',
+                                    id: "partsTbText",
+                                    style: {fontWeight:'bold'},
+                                    text: 'Parts'
+                                },
+                                {
+                                    xtype: 'tbfill'
+                                },
+                                {
+                                    xtype: 'button',
+                                    text: 'Show All',
+                                    tooltip: 'Show all the parts',
+                                    id: 'showAllPartsButton',
+                                    handler: this.showAllPartsButtonHandler
+                                },
+                                {
+                                    xtype: 'tbseparator'
+                                },
+                                {
+                                    xtype: 'button',
+                                    text: 'Export',
+                                    tooltip: 'Export all the parts in CSV format',
+                                    id: 'partsExportButton',
+                                    handler: this.partsExportButtonHandler
+                                }
+                            ]
+                        },
+                        items:[
+                            {
+                                xtype: 'gridpanel',
+                                id: 'promoterGridPanel',
+                                title: 'Promoter',
+                                store: Ext.data.StoreManager.lookup('promoterStore'), 
+                                columnLines: true,
+                                //stripeRows: true,
+                                //features: [{ftype:'grouping'}],
+                                columns: [
+                                    {
+                                        xtype: 'gridcolumn',
+                                        dataIndex: 'displayId',
+                                        header: 'Identifier',
+                                        sortable: true,
+                                        width: 80,
+                                        editable: false
+                                    },
+                                    {
+                                        xtype: 'gridcolumn',
+                                        dataIndex: 'type',
+                                        header: 'Part Type',
+                                        sortable: true,
+                                        width: 100,
+                                        editable: false
+
+                                    },
+                                    {
+                                        xtype: 'gridcolumn',
+                                        dataIndex: 'description',
+                                        header: 'Description',
+                                        sortable: true,
+                                        width: 175,
+                                        editable: false
+                                    },
+                                    {
+                                        xtype: 'numbercolumn',
+                                        dataIndex: 'geneExpressionPerCell',
+                                        header: 'Gene Expression per Cell',
+                                        sortable: true,
+                                        width: 150,
+                                        align: 'left',
+                                        editable: false,
+                                        format: '0,000'
+                                    },
+                                    {
+                                        xtype: 'numbercolumn',
+                                        dataIndex: 'geneExpressionPerCellSD',
+                                        header: 'Standard Deviation',
+                                        sortable: true,
+                                        width: 125,
+                                        align: 'left',
+                                        editable: false,
+                                        format: '0,000'
+                                    },
+                                    {
+                                        xtype: 'gridcolumn',
+                                        dataIndex: 'constructId',
+                                        header: 'Construct',
+                                        sortable: true,
+                                        width: 100,
+                                        editable: false
+                                    }
+                                ]
+                            },
+                            {
+                                xtype: 'panel',
+                                title: '5\' UTR',
+                                html: '<b>5\' UTRs will be available in an upcoming release of the Data Access Client</b>'
+                            },
+                            {
+                                xtype: 'panel',
+                                title: 'Terminator',
+                                html: '<b>Terminators will be available in an upcoming release of the Data Access Client</b>'
+                            }
+                        ]
+                    },
+                ]
+            },
+            {
+                xtype: 'tabpanel',
+                activeTab: 0,
+                region: 'center',
+                split: true,
+                id: 'infoTabPanel'
+            }
+        ];
+        
+        this.callParent();
 
         this.collectionsGridPanel = Ext.ComponentManager.get('collectionsGridPanel');
         var collectionsGridSelectionModel = this.collectionsGridPanel.getSelectionModel();
 	collectionsGridSelectionModel.on('rowselect', this.collectionsGridRowSelectHandler, this);
-        this.collectionsGridPanel.getStore().on('load', this.collectionStoreLoadHandler, this);
-
-//        this.collectionsGridPanel.getStore().on('load', this.collectionStoreLoadHandler, this);
-
-//        var constructsGridSelectionModel = this.constructsGridPanel.getSelectionModel();
-//	constructsGridSelectionModel.on('rowselect', this.constructsGridRowSelectHandler, this);
-		
-	this.partsGridPanel = Ext.ComponentManager.get('partsGridPanel');
-        var partsGridSelectionModel = this.partsGridPanel.getSelectionModel();
-	partsGridSelectionModel.on('rowselect', this.partsGridRowSelectHandler, this);
-//	
-//	var partsGridSelectionModel = this.partsGridPanel.getSelectionModel();
-//	partsGridSelectionModel.on('rowselect', this.partsGridRowSelectHandler, this);
+        //this.collectionsGridPanel.getStore().on('load', this.collectionStoreLoadHandler, this);
+	
+	this.promoterGridPanel = Ext.ComponentManager.get('promoterGridPanel');
+        var promoterGridSelectionModel = this.promoterGridPanel.getSelectionModel();
+	promoterGridSelectionModel.on('rowselect', this.promoterGridRowSelectHandler, this);
         
-        //this.partsGridPanel.getStore().on('load', this.partStoreLoadHandler, this);
-
-//        this.promotersButtonRef.setHandler(this.promotersButtonClickHandler, this);
-//        this.fiveUTRButtonRef.setHandler(this.fiveUTRButtonClickHandler, this);
-//        this.cdsButtonRef.setHandler(this.cdsButtonClickHandler, this);
-
-//	this.constructsGridPanel.getStore().on('load', this.constructStoreForDisplayLoadHandler, this);
-//        this.constructPartStore = new ConstructPartStore();
+        this.partsTbText = Ext.ComponentManager.get('partsTbText');
 
         var collectionsGridExportButton = Ext.ComponentManager.get('collectionsGridExportButton'); 
         collectionsGridExportButton.setHandler(this.collectionsGridExportButtonClickHandler, this);
         
-//        this.collectionsGridExportButtonRef.setHandler(this.collectionsGridExportButtonClickHandler, this);
-//        this.partsGridExportButton.setHandler(this.partsGridExportButtonClickHandler, this);
-//        this.constructsGridExportButton.setHandler(this.constructsGridExportButtonClickHandler, this);
-//        this.showAllPartsButtonRef.setHandler(this.showAllPartsButtonClickHandler, this);
-//        this.showAllConstructsButtonRef.setHandler(this.showAllConstructsButtonClickHandler, this);
-        
         this.infoTabPanel = Ext.ComponentManager.get('infoTabPanel');
+        
+        this.fetchParts();
     },
+    
+ /**********************
+ * 
+ *  Protected Methods
+ * 
+ **********************/
+        fetchParts:function()
+        {
+            Ext.Ajax.request({
+                       url: WEB_SERVICE_BASE_URL + 'parts?format=json',
+                       method: "GET",
+                       success: this.fetchPartsResultHandler,
+                       failure: this.fetchPartsErrorHandler,
+//                       params: {
+//                                    id: constructID,
+//                                    format: 'json'
+//                                },
+                       scope: this
+            });
+        },
+        
+        fetchCollections:function()
+        {
+            Ext.Ajax.request({
+                       url: WEB_SERVICE_BASE_URL + 'collections?format=json',
+                       method: "GET",
+                       success: this.fetchCollectionsResultHandler,
+                       failure: this.fetchCollectionsErrorHandler,
+                       scope: this
+            });
+        },
+	
+//	showDatasheet: function(constructID)
+//	{		
+//            var datasheetPanel = new DatasheetPanel();
+//            datasheetPanel.setTitle(constructID);
+//            var tab = this.infoTabPanel.add(datasheetPanel);
+//            this.infoTabPanel.doLayout();
+//            this.infoTabPanel.setActiveTab(tab);
+//            tab.fetchData(constructID);
+//            //datasheetPanel.setConstructID(constructID);
+//	},
+
+        showCollectionPanel: function(collectionRecord)
+        {
+            var id = collectionRecord.get('id');
+            var collectionPanel;
+            var tab;
+
+            if(id === 1)
+            {
+                collectionPanel = Ext.ComponentManager.get('pilotProjectPanel');
+                
+                if(collectionPanel == undefined)
+                {
+                    collectionPanel = new PilotProjectPanel();
+                    collectionPanel.setCollectionRecord(collectionRecord);
+                    tab = this.infoTabPanel.add(collectionPanel);
+                    this.infoTabPanel.doLayout();
+                    this.infoTabPanel.setActiveTab(tab);
+                }
+                else
+                {
+                    this.infoTabPanel.setActiveTab(collectionPanel);
+                }
+
+            }
+
+            if(id === 2)
+            {
+                collectionPanel = Ext.ComponentManager.get('modularPromoterPanel');
+                
+                if(collectionPanel == undefined)
+                {
+                    collectionPanel = new ModularPromoterPanel();
+                    tab = this.infoTabPanel.add(collectionPanel);
+                    this.infoTabPanel.doLayout();
+                    this.infoTabPanel.setActiveTab(tab);
+                    collectionPanel.displayInfo(collectionRecord, this.parts);
+                }
+                else
+                {
+                    this.infoTabPanel.setActiveTab(collectionPanel);
+                }
+                
+                
+            }
+
+            if(id === 3)
+            {
+                collectionPanel = Ext.ComponentManager.get('randomPromoterPanel');
+                
+                if(collectionPanel == undefined)
+                {
+                    collectionPanel = new RandomPromoterPanel();
+                    collectionPanel.showInfo(collectionRecord);
+                    tab = this.infoTabPanel.add(collectionPanel);
+                    this.infoTabPanel.doLayout();
+                    this.infoTabPanel.setActiveTab(tab);
+                }
+                else
+                {
+                    this.infoTabPanel.setActiveTab(collectionPanel);
+                }
+            }
+
+            if(id === 4)
+            {
+                collectionPanel = Ext.ComponentManager.get('terminatorPanel');
+                
+                if(collectionPanel == undefined)
+                {
+                    collectionPanel = new TerminatorPanel();
+                    collectionPanel.setCollectionRecord(collectionRecord);
+                    tab = this.infoTabPanel.add(collectionPanel);
+                    this.infoTabPanel.doLayout();
+                    this.infoTabPanel.setActiveTab(tab);
+                }
+                else
+                {
+                    this.infoTabPanel.setActiveTab(collectionPanel);
+                }
+            }
+        },
+
+        showPartPanel: function(partRecord)
+        {
+            var partPanel;
+            var tab;
+
+            partPanel = new PartPanel();
+
+            if(partPanel !== null)
+            {
+                tab = this.infoTabPanel.add(partPanel);
+                this.infoTabPanel.doLayout();
+                this.infoTabPanel.setActiveTab(tab);
+                partPanel.displayInfo(partRecord, this.parts);
+            }
+        },
+        
+//        retrieveGecMeasurement: function(part)
+//        {
+//            var measurement = null;
+//            var performance = part.performance;
+//            var measurements;
+//            var measurementsCount;
+//
+//            if(performance != undefined)
+//            {
+//                measurements = performance.measurements;
+//                measurementsCount = measurements.length;
+//                
+//                for(var i = 0; i < measurementsCount; i += 1)
+//                {
+//                    if(measurements[i].type === 'GEC')
+//                    {
+//                        measurement = measurements[i];
+//                    }
+//                }
+//
+//            }
+//            
+//            return measurement;
+//        },
+        
+        // REFACTOR: Place this function in a utility class
+//        retrieveMeasurement: function(part)
+//        {
+//            var measurement;
+//            var performance = part.performance;
+//            var measurements;
+//            var measurementsCount;
+//            var bgeMeasurements = [];
+//            var maxMeasurement;
+//
+//            if(performance != undefined)
+//            {
+//                measurements = performance.measurements;
+//                measurementsCount = measurements.length;
+//                
+//                for(var i = 0; i < measurementsCount; i += 1)
+//                {
+//                    if(measurements[i].type === 'GEC')
+//                    {
+//                        //measurement = measurements[i];
+//                        bgeMeasurements.push(measurements[i]);
+//                    }
+//                }
+//
+//                if(bgeMeasurements.length > 1)
+//                {
+//                    bgeMeasurements.sort(
+//                        function(a,b)
+//                        {
+//                            return a.value - b.value;
+//                        }
+//                    );
+//
+//                    maxMeasurement = bgeMeasurements.pop();
+//                    measurement = {label: 'Maximum ' + maxMeasurement.label, unit: maxMeasurement.unit, value: maxMeasurement.value};
+//                }
+//                else
+//                {
+//                    if(bgeMeasurements.length === 1)
+//                    {
+//                        measurement = bgeMeasurements[0];
+//                    }
+//                    else
+//                    {
+//                        measurement = {label: 'Unavailable', unit: 'None', value: 0};
+//                    }
+//                }
+//            }
+//            else
+//            {
+//                measurement = {label: 'Unavailable', unit: 'None', value: 0};
+//            }
+//            
+//            return measurement;
+//        },
+    
+    //******************
+    //
+    //  Event Handlers
+    //
+    //******************
 
     collectionsGridRowSelectHandler: function(selectModel, rowIndex, record)
     {
         var id = record.get('id');
         
         if(id !== 4)
-        {
-            this.constructsGridPanel.getStore().clearFilter();
-            this.repopulateConstructStore();
-            var partStore = this.partsGridPanel.getStore();
-            var constructStore = this.constructsGridPanel.getStore();
+        { 
+            var promoterStore = Ext.data.StoreManager.lookup('promoterStore');
+            promoterStore.clearFilter(false);
 
-            partStore.filter([
+            promoterStore.filter([
             {
                 property     : 'collectionId',
                 value        : id,
-                anyMatch     : true,
-                exactMatch   : true
-            }]);
-
-            constructStore.filter([
-            {
-                property     : 'collection_id',
-                value        : id,
-                anyMatch     : true,
+                anyMatch     : false,
                 exactMatch   : true
             }]);
 
             var collectionName = record.get('name');
-            this.partsLabel.setText(collectionName + ' Parts');
-            this.constructsLabel.setText(collectionName + ' Constructs');
+            this.partsTbText.setText(collectionName + ' Parts');
             this.showCollectionPanel(record);
         }
         else
@@ -98,7 +512,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
         }
     },
     
-    partsGridRowSelectHandler: function(selectModel, rowIndex, record)
+    promoterGridRowSelectHandler: function(selectModel, rowIndex, record)
     {
         var partID = record.get("displayId");
         var description = record.get('description');
@@ -200,7 +614,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
             exportWindow.alert("Use File/Save As in the menu bar to save this document.");
         },
 
-        partsGridExportButtonClickHandler: function(button, event)
+        partsExportButtonHandler: function()
         {
             var exportWindow = window.open(WEB_SERVICE_BASE_URL + 'parts?format=csv',"Parts","width=640,height=480");
             exportWindow.scrollbars.visible = true;
@@ -214,10 +628,10 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 //            exportWindow.alert("Use File/Save As in the menu bar to save this document.");
 //        },
 
-        showAllPartsButtonClickHandler:function(button, event)
+        showAllPartsButtonHandler:function()
         {
-//            this.partsLabel.setText('Parts', false);
-            this.partsGridPanel.getStore().clearFilter(false);
+            Ext.data.StoreManager.lookup('promoterStore').clearFilter(false);
+            Ext.getCmp('partsTbText').setText('Parts');
         },
 
 //        showAllConstructsButtonClickHandler: function(button, event)
@@ -244,12 +658,23 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 //            this.constructsLabel.setText('Constructs');
 //        },
 
-        collectionStoreLoadHandler: function(store, records, options)
+        fetchCollectionsResultHandler: function(response, opts)
         {
-		var collectionRecord = store.getAt(0);
-		this.showCollectionPanel(collectionRecord);
+            var collections = Ext.JSON.decode(response.responseText, true);
+            var store = Ext.data.StoreManager.lookup('collectionStore');
+            store.loadData(collections, false);
 
-		//TODO Deal with case where the constructs could not be loaded
+            // Temporary
+            var index = store.find('id', '1', 0, false, false, true);
+            store.removeAt(index);
+
+            var collectionRecord = store.getAt(0);
+            this.showCollectionPanel(collectionRecord);
+        },
+        
+        fetchCollectionsErrorHandler: function(response, opts)
+        {
+            Ext.Msg.alert('Fetch Collections', 'There was an error while attempting to fetch the collections. Please reload the Data Access Client.\n' + 'Error: ' + response.responseText);
         },
 
         promotersButtonClickHandler: function(button, event)
@@ -270,6 +695,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 //            this.partsLabel.setText('Parts: CDS');
         },
 
+        //TODO Refactor!!!
         fetchPartsResultHandler: function(response, opts)
         {
             var partsForStore = [];
@@ -277,6 +703,9 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
             var partForStore;
             var partsCount;
             var measurement;
+            var performance;
+            var measurements;
+            var measurementsCount;
  
             if(response.responseText.length > 0)
             {
@@ -286,24 +715,41 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
                 for(var i = 0; i < partsCount; i += 1)
                 {
                     part = this.parts[i];
-                    measurement = this.retrieveMeasurement(part);
-                    partForStore = {
-                        collectionId: part.collectionID,
-                        displayId: part.displayID,
-                        type: part.type,
-                        description: part.description,
-                        dnaSequence: part.dnaSequence.nucleotides,
-                        measurementLabel: measurement.label,
-                        measurementValue: measurement.value,
-                        measurementUnit: measurement.unit
-                    }
-                    partsForStore.push(partForStore);
-                }
+                    
+                    // Temporary Filter
+                    if(part.type === 'promoter' && part.collectionID !== 1)
+                    {
+                        performance = part.performance;
+                        
+                        if(performance != undefined)
+                        {
+                            measurements = performance.measurements;
+                            measurementsCount = measurements.length;
 
-                this.partsGridPanel.getStore().loadData(partsForStore, false);
-                this.partsGridPanel.getStore().filter([{property: 'type', value: "promoter", anyMatch: true, caseSensitive: false}]);
-//                this.partsLabel.setText('Parts: Promoters');
-                this.collectionsGridPanel.getStore().load();
+                            for(var j = 0; j < measurementsCount; j += 1)
+                            {
+                                if(measurements[j].type === 'GEC')
+                                {
+                                    measurement = measurements[j];
+                                    partForStore = {
+                                        collectionId: part.collectionID,
+                                        displayId: part.displayID,
+                                        type: part.type,
+                                        description: part.description,
+                                        dnaSequence: part.dnaSequence.nucleotides,
+                                        geneExpressionPerCell: measurement.value,
+                                        geneExpressionPerCellSD: measurement.standardDeviation,
+                                        constructId: measurement.constructId
+                                    }
+                                    partsForStore.push(partForStore);
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                this.promoterGridPanel.getStore().loadData(partsForStore, false);
+                this.fetchCollections();
             }
             else
             {
@@ -314,7 +760,7 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
         fetchPartsErrorHandler: function(response, opts)
         {
             Ext.Msg.alert('Fetch Parts', 'There was an error while attempting to fetch the parts. Please reload the Data Access Client.\n' + 'Error: ' + response.responseText);
-        },
+        }
 
 //        partStoreLoadHandler: function(store, records, options)
 //        {
@@ -328,151 +774,4 @@ DataAccessClientViewport = Ext.extend(DataAccessClientViewportUi,
 //            helpWindow.scrollbars.visible = true;
 //        },
 
-	
-/*
- * 
- * 	Protected Methods
- * 
- */
-        fetchParts:function()
-        {
-            Ext.Ajax.request({
-                       url: WEB_SERVICE_BASE_URL + 'parts?format=json',
-                       method: "GET",
-                       success: this.fetchPartsResultHandler,
-                       failure: this.fetchPartsErrorHandler,
-//                       params: {
-//                                    id: constructID,
-//                                    format: 'json'
-//                                },
-                       scope: this
-            });
-        },
-	
-//	showDatasheet: function(constructID)
-//	{		
-//            var datasheetPanel = new DatasheetPanel();
-//            datasheetPanel.setTitle(constructID);
-//            var tab = this.infoTabPanel.add(datasheetPanel);
-//            this.infoTabPanel.doLayout();
-//            this.infoTabPanel.setActiveTab(tab);
-//            tab.fetchData(constructID);
-//            //datasheetPanel.setConstructID(constructID);
-//	},
-
-        showCollectionPanel: function(collectionRecord)
-        {
-            var id = collectionRecord.get('id');
-            var collectionPanel;
-            var tab;
-
-            if(id === 1)
-            {
-                collectionPanel = new PilotProjectPanel();
-                collectionPanel.setCollectionRecord(collectionRecord);
-                tab = this.infoTabPanel.add(collectionPanel);
-                this.infoTabPanel.doLayout();
-                this.infoTabPanel.setActiveTab(tab);
-
-            }
-
-            if(id === 2)
-            {
-                collectionPanel = new ModularPromoterPanel();
-                tab = this.infoTabPanel.add(collectionPanel);
-                this.infoTabPanel.doLayout();
-                this.infoTabPanel.setActiveTab(tab);
-                collectionPanel.displayInfo(collectionRecord, this.parts);
-            }
-
-            if(id === 3)
-            {
-                collectionPanel = new RandomPromoterPanel();
-                collectionPanel.setCollectionRecord(collectionRecord);
-                tab = this.infoTabPanel.add(collectionPanel);
-                this.infoTabPanel.doLayout();
-                this.infoTabPanel.setActiveTab(tab);
-            }
-
-            if(id === 4)
-            {
-                collectionPanel = new TerminatorPanel();
-                collectionPanel.setCollectionRecord(collectionRecord);
-                tab = this.infoTabPanel.add(collectionPanel);
-                this.infoTabPanel.doLayout();
-                this.infoTabPanel.setActiveTab(tab);
-            }
-        },
-
-        showPartPanel: function(partRecord)
-        {
-            var partPanel;
-            var tab;
-
-            partPanel = new PartPanel();
-
-            if(partPanel !== null)
-            {
-                tab = this.infoTabPanel.add(partPanel);
-                this.infoTabPanel.doLayout();
-                this.infoTabPanel.setActiveTab(tab);
-                partPanel.displayInfo(partRecord, this.parts);
-            }
-        },
-        
-        // REFACTOR: Place this function in a utility class
-        retrieveMeasurement: function(part)
-        {
-            var measurement;
-            var performance = part.performance;
-            var measurements;
-            var measurementsCount;
-            var bgeMeasurements = [];
-            var maxMeasurement;
-
-            if(performance != undefined)
-            {
-                measurements = performance.measurements;
-                measurementsCount = measurements.length;
-                
-                for(var i = 0; i < measurementsCount; i += 1)
-                {
-                    if(measurements[i].type === 'GEC')
-                    {
-                        //measurement = measurements[i];
-                        bgeMeasurements.push(measurements[i]);
-                    }
-                }
-
-                if(bgeMeasurements.length > 1)
-                {
-                    bgeMeasurements.sort(
-                        function(a,b)
-                        {
-                            return a.value - b.value;
-                        }
-                    );
-
-                    maxMeasurement = bgeMeasurements.pop();
-                    measurement = {label: 'Maximum ' + maxMeasurement.label, unit: maxMeasurement.unit, value: maxMeasurement.value};
-                }
-                else
-                {
-                    if(bgeMeasurements.length === 1)
-                    {
-                        measurement = bgeMeasurements[0];
-                    }
-                    else
-                    {
-                        measurement = {label: 'Unavailable', unit: 'None', value: 0};
-                    }
-                }
-            }
-            else
-            {
-                measurement = {label: 'Unavailable', unit: 'None', value: 0};
-            }
-            
-            return measurement;
-        }
 });

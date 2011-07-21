@@ -1,20 +1,17 @@
 /*
  *
- * File: PilotProjectPanel.js
- * 
+ *
+ *
  */
 
-Ext.define('TerminatorPanel',{
-    extend: 'Ext.panel.Panel',
+TerminatorPanelUi = Ext.extend(Ext.Panel, {
     title: 'Terminator Library',
     layout: 'absolute',
     tpl: '',
     closable: true,
     autoScroll: true,
     id: 'terminatorPanel',
-    collectionRecord: null,
-    
-    constructor: function() {
+    initComponent: function() {
         var store = new Ext.data.JsonStore({
             autoDestroy: true,
             autoLoad: true,
@@ -66,12 +63,12 @@ Ext.define('TerminatorPanel',{
                 itemId: 'centerPanel',
                 x: 25,
                 y: 25,
+                ref: 'centerPanelRef',
                 floating: false,
-                //shadowOffset: 6,
+                shadowOffset: 6,
                 items: [
                     {
                         xtype: 'panel',
-                        itemId: 'textPanel',
                         layout: 'fit',
                         region: 'center',
                         split: true,
@@ -79,7 +76,8 @@ Ext.define('TerminatorPanel',{
                         items: [
                             {
                                 xtype: 'textarea',
-                                itemId: 'textArea'
+                                itemId: 'collectionTextArea',
+                                ref: '../../collectionTextAreaRef'
                             }
                         ]
                     },
@@ -94,10 +92,10 @@ Ext.define('TerminatorPanel',{
                             {
                                 xtype: 'grid',
                                 store: store,
-                                //height: 300,
+                                height: 300,
                                 stripeRows: true,
                                 columnLines: true,
-                                itemId: 'terminatorsGridPanel',
+                                ref: '../terminatorsGridPanelRef',
                                 columns: [
                                     {
                                         xtype: 'gridcolumn',
@@ -147,11 +145,13 @@ Ext.define('TerminatorPanel',{
                                 ],
                                 tbar: {
                                     xtype: 'toolbar',
-                                    itemId: 'terminatorsGridToolbar',
+                                    ref: '../../../terminatorsGridToolbarRef',
+                                    id: 'terminatorsGridToolbar',
                                     items: [
                                         {
                                             xtype: 'label',
-                                            itemId: "terminatorTableLabel",
+                                            id: "terminatorTableLabel",
+                                            ref: "../../../terminatorTableLabel",
                                             style: {fontWeight:'bold'},
                                             text: 'Sequences and Performance'
                                         },
@@ -162,8 +162,8 @@ Ext.define('TerminatorPanel',{
                                             xtype: 'button',
                                             text: 'Export',
                                             tooltip: 'Export all the terminator information in JSON format',
-                                            itemId: 'terminatorsGridExportButton',
-                                            handler: this.terminatorsExportButtonHandler
+                                            ref: '../../../../terminatorsGridExportButtonRef',
+                                            id: 'terminatorsGridExportButton'
                                         }
                                     ]
                                 }
@@ -173,27 +173,6 @@ Ext.define('TerminatorPanel',{
                 ]
             }
         ];
-        
-        this.callParent();
-    },
-
-    //
-    //  Public Methods
-    //
-    
-    setCollectionRecord: function(collectionRecord)
-    {
-            var description = null;
-
-            this.collectionRecord = collectionRecord;
-            description = collectionRecord.get('description');
-            this.getComponent('centerPanel').getComponent('textPanel').getComponent('textArea').setValue(description);
-    },
-
-    terminatorsExportButtonHandler: function(button, event)
-    {
-        var exportWindow = window.open(WEB_SERVICE_BASE_URL + 'terminators?format=json');
-        exportWindow.alert("Use File/Save As in the menu bar to save this document.");
-        exportWindow.scrollbars.visible = true;
+        TerminatorPanelUi.superclass.initComponent.call(this);
     }
 });
