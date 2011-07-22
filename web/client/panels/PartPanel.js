@@ -224,13 +224,13 @@ Ext.define('PartPanel', {
         var newStore;
         var partPerformances;
 
-        Ext.define('PartPerformance', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'biofabId', type: 'string'},
-                {name: 'value', type: 'float'}
-            ]
-        });
+//        Ext.define('PartPerformance', {
+//            extend: 'Ext.data.Model',
+//            fields: [
+//                {name: 'biofabId', type: 'string'},
+//                {name: 'value', type: 'float'}
+//            ]
+//        });
 
         if(this.partRecord !== null && this.parts !== null)
         {

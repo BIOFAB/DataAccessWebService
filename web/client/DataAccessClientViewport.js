@@ -8,10 +8,7 @@
 Ext.define('DataAccessClientViewport', { 
     extend: 'Ext.container.Viewport',
     layout: 'border',
-    constructStore: null,
-    constructHasPartStore: null,
     performanceStore: null,
-    constructLoadCount: 0,
     parts: null,
     promoterGridPanel: null,
     collectionsGridPanel: null,
@@ -20,6 +17,16 @@ Ext.define('DataAccessClientViewport', {
 	
     constructor: function()
     {
+        //  Models
+        
+        Ext.define('PartPerformance', {
+            extend: 'Ext.data.Model',
+            fields: [
+                {name: 'biofabId', type: 'string'},
+                {name: 'value', type: 'float'}
+            ]
+        });
+        
         this.items = [
             {
                 xtype: 'panel',
@@ -242,8 +249,7 @@ Ext.define('DataAccessClientViewport', {
         this.collectionsGridPanel = Ext.ComponentManager.get('collectionsGridPanel');
         var collectionsGridSelectionModel = this.collectionsGridPanel.getSelectionModel();
 	collectionsGridSelectionModel.on('rowselect', this.collectionsGridRowSelectHandler, this);
-        //this.collectionsGridPanel.getStore().on('load', this.collectionStoreLoadHandler, this);
-	
+       
 	this.promoterGridPanel = Ext.ComponentManager.get('promoterGridPanel');
         var promoterGridSelectionModel = this.promoterGridPanel.getSelectionModel();
 	promoterGridSelectionModel.on('rowselect', this.promoterGridRowSelectHandler, this);
@@ -304,13 +310,14 @@ Ext.define('DataAccessClientViewport', {
         {
             var id = collectionRecord.get('id');
             var collectionPanel;
+            var panel;
             var tab;
 
             if(id === 1)
             {
                 collectionPanel = Ext.ComponentManager.get('pilotProjectPanel');
                 
-                if(collectionPanel == undefined)
+                if(collectionPanel === undefined)
                 {
                     collectionPanel = new PilotProjectPanel();
                     collectionPanel.setCollectionRecord(collectionRecord);
@@ -327,29 +334,27 @@ Ext.define('DataAccessClientViewport', {
 
             if(id === 2)
             {
-                collectionPanel = Ext.ComponentManager.get('modularPromoterPanel');
+                panel = Ext.ComponentManager.get('modularPromoterPanel');
                 
-                if(collectionPanel == undefined)
+                if(panel === undefined)
                 {
-                    collectionPanel = new ModularPromoterPanel();
-                    tab = this.infoTabPanel.add(collectionPanel);
+                    panel = new ModularPromoterPanel();
+                    tab = this.infoTabPanel.add(panel);
                     this.infoTabPanel.doLayout();
                     this.infoTabPanel.setActiveTab(tab);
-                    collectionPanel.displayInfo(collectionRecord, this.parts);
+                    panel.displayInfo(collectionRecord, this.parts);
                 }
                 else
                 {
-                    this.infoTabPanel.setActiveTab(collectionPanel);
-                }
-                
-                
+                    this.infoTabPanel.setActiveTab(panel);
+                } 
             }
 
             if(id === 3)
             {
                 collectionPanel = Ext.ComponentManager.get('randomPromoterPanel');
                 
-                if(collectionPanel == undefined)
+                if(collectionPanel === undefined)
                 {
                     collectionPanel = new RandomPromoterPanel();
                     collectionPanel.showInfo(collectionRecord);
@@ -367,7 +372,7 @@ Ext.define('DataAccessClientViewport', {
             {
                 collectionPanel = Ext.ComponentManager.get('terminatorPanel');
                 
-                if(collectionPanel == undefined)
+                if(collectionPanel === undefined)
                 {
                     collectionPanel = new TerminatorPanel();
                     collectionPanel.setCollectionRecord(collectionRecord);
