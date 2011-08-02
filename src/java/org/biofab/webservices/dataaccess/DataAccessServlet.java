@@ -10,6 +10,11 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,6 +53,69 @@ public class DataAccessServlet extends HttpServlet
     // Utility Methods
     //
     
+    protected ResultSet fetchResultSet(String query, String format, HttpServletResponse response)
+    {
+        Statement           statement = null;
+        ResultSet           resultSet = null;
+  
+        try
+        {
+            _connection = DriverManager.getConnection(_jdbcDriver, _user, _password);
+            statement = _connection.createStatement();
+            resultSet = statement.executeQuery(query);
+        }
+        catch (SQLException ex)
+        {
+            if(format != null && format.length() > 0)
+            {
+                if(format.equalsIgnoreCase("json"))
+                {
+                    jsonError(response, "Error while fetching data: " + ex.getMessage());
+
+                }
+                else
+                {
+                    textError(response, "Error while fetching data: " + ex.getMessage());
+                }
+            }
+            else
+            {
+                textError(response, "Error while fetching data: " + ex.getMessage());
+            }
+            
+        }
+        finally
+        {
+            try
+            {
+                if(_connection != null)
+                {
+                    _connection.close();
+                }
+            }
+            catch (SQLException ex)
+            {
+                if(format != null && format.length() > 0)
+                {
+                    if(format.equalsIgnoreCase("json"))
+                    {
+                        jsonError(response, "Error while fetching data: " + ex.getMessage());
+                    }
+                    else
+                    {
+                        textError(response, "Error while fetching data: " + ex.getMessage());
+                    }
+                }
+                else
+                {
+                    textError(response, "Error while fetching data: " + ex.getMessage());
+                }
+            }
+        }
+        
+        return resultSet;
+    }
+
     protected void textError(HttpServletResponse response, String msg)
     {
         response.setContentType("text/plain;charset=UTF-8");

@@ -22,7 +22,12 @@ import org.sbolstandard.experiment.Measurement;
 
 @WebServlet(name="PartsServlet", urlPatterns={"/parts/*"})
 public class PartsServlet extends DataAccessServlet
-{
+{   
+    String                  _collectionId;
+    String                  _format;
+    HttpServletRequest      _request;
+    HttpServletResponse     _response;
+    
     @Override
     public void init()
     {
@@ -36,170 +41,91 @@ public class PartsServlet extends DataAccessServlet
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        Statement               designStatement = null;
-        Statement               performanceStatement = null;
-        String                  collectionID = request.getParameter("collectionid");
-        String                  format = request.getParameter("format");
         String                  responseString = null;
         String                  designQuery = null;
         String                  performanceQuery = null;
-
-        //TODO Turn dnaComponents into a hash table
-        ArrayList<DnaComponent> dnaComponents = null;
-        DnaComponent            dnaComponent = null;
-        DnaComponent            selectedDnaComponent = null;
-        String                  biofabID;
-        int                     collectionIDFromDB;
-        int                     id;
-        String                  type = null;
-        String                  description = null;
-        String                  sequence = null;
-        DnaSequence             dnaSequence = null;
+        String                  terminatorQuery = null;
         ResultSet               designResultSet = null;
         ResultSet               performanceResultSet = null;
-        Measurement             measurement = null;
-        float                   bulkGeneExpression;
-        float                   bulkGeneExpressionSD;
-        float                   geneExpressionPerCell;
-        float                   geneExpressionPerCellSD;
-        String                  constructId;
+        ResultSet               terminatorResultSet = null;
+        ArrayList<DnaComponent> dnaComponents = null;
+        
+        _collectionId = request.getParameter("collectionid");
+        _format = request.getParameter("format");
+        _request = request;
+        _response = response;
 
+        if(_format == null || _format.length() == 0)
+        {
+            _format = "csv";
+        }
+        
         //TODO stronger validation of collectionid
 
-        if(collectionID != null && collectionID.length() > 0)
+        if(_collectionId != null)
         {
-            designQuery = "SELECT *"
-                    + "FROM part_design_view "
-                    + "WHERE collection_id = " + collectionID
-                    + "ORDER BY collection_id ASC, part_id ASC;";
-            performanceQuery = "SELECT *"
-                    + "FROM part_performance_view "
-                    + "WHERE collection_id = " + collectionID
-                    + "ORDER BY collection_id ASC, part_id ASC;";
-        }
-        else
-        {
-            designQuery = "SELECT *"
-                    + "FROM part_design_view "
-                    + "ORDER BY collection_id ASC, part_id ASC;";
-            performanceQuery = "SELECT *"
-                    + "FROM part_performance_view "
-                    + "ORDER BY collection_id ASC, part_id ASC;";
-        }
-
-        try
-        {
-            _connection = DriverManager.getConnection(_jdbcDriver, _user, _password);
-            designStatement = _connection.createStatement();
-            designResultSet = designStatement.executeQuery(designQuery);
-            dnaComponents = new ArrayList<DnaComponent>();
-
-            while (designResultSet.next())
+            if(_collectionId.equalsIgnoreCase("1") || _collectionId.equalsIgnoreCase("2") || _collectionId.equalsIgnoreCase("3"))
             {
-                biofabID = designResultSet.getString("part_biofab_id");
-                collectionIDFromDB = designResultSet.getInt("collection_id");
-                type = designResultSet.getString("type");
-                description = designResultSet.getString("description");
-                sequence = designResultSet.getString("dna_sequence");
-                dnaSequence = new DnaSequence(sequence);
-                dnaComponent = new DnaComponent(collectionIDFromDB, biofabID, "", description, type, "part", false, dnaSequence);
-                dnaComponents.add(dnaComponent);
-                selectedDnaComponent = dnaComponent;
-            }
-
-            performanceStatement = _connection.createStatement();
-            performanceResultSet = performanceStatement.executeQuery(performanceQuery);
-            
-            // TODO Refactor! Convert dnaComponents to a hash table.
-
-            while (performanceResultSet.next())
-            {
-                biofabID = performanceResultSet.getString("part_biofab_id");
-
-                for(DnaComponent component:dnaComponents)
-                {
-                    if(biofabID.equalsIgnoreCase(component.getDisplayID()))
-                    {
-                        constructId = performanceResultSet.getString("construct_id");
-                        bulkGeneExpression = performanceResultSet.getFloat("bulk_gene_expression");
-                        bulkGeneExpressionSD = performanceResultSet.getFloat("bulk_gene_expression_sd");
-                        geneExpressionPerCell = performanceResultSet.getFloat("gene_expression_per_cell");
-                        geneExpressionPerCellSD = performanceResultSet.getFloat("gene_expression_per_cell_sd");
-                        
-                        measurement = new Measurement("BGE", "Bulk Gene Expression", "AU/OD", "Pending", bulkGeneExpression, bulkGeneExpressionSD, constructId);
-                        component.getPerformance().getMeasurements().add(measurement);
-                        measurement = new Measurement("GEC", "Gene Expression per Cell", "AU", "Pending", geneExpressionPerCell, geneExpressionPerCellSD, constructId);
-                        component.getPerformance().getMeasurements().add(measurement);
-
-                        break;
-                    }
-                }
-            }
-
-            if(format.equalsIgnoreCase("json"))
-            {
-               responseString = generateJSON(dnaComponents.toArray());
-               this.textSuccess(response, responseString);
+                designQuery = "SELECT *"
+                        + "FROM public.promoter_design_view "
+                        + "WHERE collection_id = " + _collectionId;
+                performanceQuery = "SELECT *"
+                        + "FROM public.promoter_performance_view "
+                        + "WHERE collection_id = " + _collectionId;
+                
+                designResultSet = fetchResultSet(designQuery, _format, _response);
+                performanceResultSet = fetchResultSet(performanceQuery, _format, _response);
+                dnaComponents = new ArrayList<DnaComponent>();
+                dnaComponents = RetrievePromoters(designResultSet, performanceResultSet, dnaComponents);
             }
             else
             {
-                if(format.equalsIgnoreCase("csv"))
+            
+                if(_collectionId.equalsIgnoreCase("4"))
                 {
-                   responseString = generateCSV(dnaComponents);
-                   this.textSuccess(response, responseString);
+                    terminatorQuery = "SELECT * FROM public.terminator_performance";
+                    terminatorResultSet = fetchResultSet(terminatorQuery, _format, _response);
+                    dnaComponents = new ArrayList<DnaComponent>();
+                    dnaComponents = RetrieveTerminators(terminatorResultSet, dnaComponents);
                 }
                 else
                 {
-                   responseString = generateJSON(dnaComponents.toArray());
-                   this.textSuccess(response, responseString);
+                    designQuery = "SELECT * FROM public.promoter_design_view";
+                    performanceQuery = "SELECT * FROM public.promoter_performance_view";
+                    terminatorQuery = "SELECT * FROM public.terminator_performance";
+                    designResultSet = fetchResultSet(designQuery, _format, _response);
+                    performanceResultSet = fetchResultSet(performanceQuery, _format, _response);
+                    terminatorResultSet = fetchResultSet(terminatorQuery, _format, _response);
+                    dnaComponents = new ArrayList<DnaComponent>();
+                    dnaComponents = RetrievePromoters(designResultSet, performanceResultSet, dnaComponents);
+                    dnaComponents = RetrieveTerminators(terminatorResultSet, dnaComponents);
                 }
             }
         }
-        catch (SQLException ex)
+        else
         {
-            if(format != null && format.length() > 0)
-            {
-                if(format.equalsIgnoreCase("json"))
-                {
-                    jsonError(response, "Error while fetching data: " + ex.getMessage());
-
-                }
-                else
-                {
-                    textError(response, "Error while fetching data: " + ex.getMessage());
-                }
-            }
+            designQuery = "SELECT * FROM public.promoter_design_view";
+            performanceQuery = "SELECT * FROM public.promoter_performance_view";
+            terminatorQuery = "SELECT * FROM public.terminator_performance";
+            designResultSet = fetchResultSet(designQuery, _format, _response);
+            performanceResultSet = fetchResultSet(performanceQuery, _format, _response);
+            terminatorResultSet = fetchResultSet(terminatorQuery, _format, _response);
+            dnaComponents = new ArrayList<DnaComponent>();
+            dnaComponents = RetrievePromoters(designResultSet, performanceResultSet, dnaComponents);
+            dnaComponents = RetrieveTerminators(terminatorResultSet, dnaComponents);
         }
-        finally
+    
+        if(_format.equalsIgnoreCase("json"))
         {
-            try
-            {
-                if(_connection != null)
-                {
-                    _connection.close();
-                }
-            }
-            catch (SQLException ex)
-            {
-                if(format != null && format.length() > 0)
-                {
-                    if(format.equalsIgnoreCase("json"))
-                    {
-                        jsonError(response, "Error while fetching data: " + ex.getMessage());
-                    }
-                    else
-                    {
-                        textError(response, "Error while fetching data: " + ex.getMessage());
-                    }
-                }
-                else
-                {
-                    textError(response, "Error while fetching data: " + ex.getMessage());
-                }
-            }
+           responseString = generateJSON(dnaComponents.toArray());
+           this.textSuccess(response, responseString);
+        }
+        else
+        {
+            responseString = generateCSV(dnaComponents);
+            this.textSuccess(response, responseString);
         }
     }
 
@@ -245,6 +171,177 @@ public class PartsServlet extends DataAccessServlet
 //
 //        return dnaComponent;
 //    }
+    
+    protected ArrayList<DnaComponent> RetrievePromoters(ResultSet designResultSet, ResultSet performanceResultSet, ArrayList<DnaComponent> dnaComponents)
+    {
+        DnaComponent            dnaComponent = null;
+        DnaComponent            selectedDnaComponent = null;
+        String                  biofabId;
+        int                     collectionIdFromDb;
+        int                     id;
+        String                  type = null;
+        String                  description = null;
+        String                  sequence = null;
+        DnaSequence             dnaSequence = null;
+        Measurement             measurement = null;
+        float                   bulkGeneExpression;
+        float                   bulkGeneExpressionSD;
+        float                   geneExpressionPerCell;
+        float                   geneExpressionPerCellSD;
+        String                  constructId;
+        
+        try
+        {
+            while (designResultSet.next())
+            {
+                biofabId = designResultSet.getString("part_biofab_id");
+                collectionIdFromDb = designResultSet.getInt("collection_id");
+                type = designResultSet.getString("type");
+                description = designResultSet.getString("description");
+                sequence = designResultSet.getString("dna_sequence");
+                dnaSequence = new DnaSequence(sequence);
+                dnaComponent = new DnaComponent(collectionIdFromDb, biofabId, "", description, type, false, dnaSequence);
+                dnaComponents.add(dnaComponent);
+                selectedDnaComponent = dnaComponent;
+            }
+            
+            // TODO Refactor! Convert dnaComponents to a hash table.
+
+            while (performanceResultSet.next())
+            {
+                biofabId = performanceResultSet.getString("part_biofab_id");
+
+                for(DnaComponent component:dnaComponents)
+                {
+                    if(biofabId.equalsIgnoreCase(component.getDisplayID()))
+                    {
+                        constructId = performanceResultSet.getString("construct_id");
+                        bulkGeneExpression = performanceResultSet.getFloat("bulk_gene_expression");
+                        bulkGeneExpressionSD = performanceResultSet.getFloat("bulk_gene_expression_sd");
+                        geneExpressionPerCell = performanceResultSet.getFloat("gene_expression_per_cell");
+                        geneExpressionPerCellSD = performanceResultSet.getFloat("gene_expression_per_cell_sd");
+                        
+                        measurement = new Measurement("BGE", "Bulk Gene Expression", "AU/OD", "Pending", bulkGeneExpression, bulkGeneExpressionSD, constructId);
+                        component.getPerformance().getMeasurements().add(measurement);
+                        measurement = new Measurement("GEC", "Gene Expression per Cell", "AU", "Pending", geneExpressionPerCell, geneExpressionPerCellSD, constructId);
+                        component.getPerformance().getMeasurements().add(measurement);
+
+                        break;
+                    }
+                }
+            }
+        }
+        catch (SQLException ex)
+        {
+            if(_format.equalsIgnoreCase("json"))
+            {
+                jsonError(_response, "Error while fetching data: " + ex.getMessage());
+
+            }
+            else
+            {
+                textError(_response, "Error while fetching data: " + ex.getMessage());
+            }
+        }
+        finally
+        {
+            try
+            {
+                if(_connection != null)
+                {
+                    _connection.close();
+                }
+            }
+            catch (SQLException ex)
+            {
+                if(_format.equalsIgnoreCase("json"))
+                {
+                    jsonError(_response, "Error while fetching data: " + ex.getMessage());
+                }
+                else
+                {
+                    textError(_response, "Error while fetching data: " + ex.getMessage());
+                }
+            }
+        }
+        
+        return dnaComponents;
+    }
+    
+    protected ArrayList<DnaComponent> RetrieveTerminators(ResultSet terminatorResultSet, ArrayList<DnaComponent> dnaComponents)
+    {
+        DnaComponent            dnaComponent = null;
+        DnaComponent            selectedDnaComponent = null;
+        String                  biofabId;
+        int                     collectionIdFromDb;
+        int                     id;
+        String                  type = null;
+        String                  description = null;
+        String                  sequence = null;
+        DnaSequence             dnaSequence = null;
+        Measurement             measurement = null;
+        float                   terminationEfficiency;
+        float                   terminationEfficiencySd;
+        String                  constructBiofabId;
+             
+        try
+        {
+            while (terminatorResultSet.next())
+            {
+                biofabId = terminatorResultSet.getString("part_biofab_id");
+                collectionIdFromDb = terminatorResultSet.getInt("collection_id");
+                type = terminatorResultSet.getString("part_type");
+                description = terminatorResultSet.getString("description");
+                sequence = terminatorResultSet.getString("part_dna_sequence");
+                dnaSequence = new DnaSequence(sequence);
+                
+                dnaComponent = new DnaComponent(collectionIdFromDb, biofabId, "", description, type, false, dnaSequence);
+                
+                constructBiofabId = terminatorResultSet.getString("construct_biofab_id");
+                terminationEfficiency = terminatorResultSet.getFloat("termination_efficiency");
+                terminationEfficiencySd = terminatorResultSet.getFloat("termination_efficiency_sd");
+                measurement = new Measurement("TE", "Termination Efficiency", "%", "Pending", terminationEfficiency, terminationEfficiencySd, constructBiofabId);
+                dnaComponent.getPerformance().getMeasurements().add(measurement);
+                
+                dnaComponents.add(dnaComponent);
+            }
+        }
+        catch (SQLException ex)
+        {
+            if(_format.equalsIgnoreCase("json"))
+            {
+                jsonError(_response, "Error while fetching data: " + ex.getMessage());
+
+            }
+            else
+            {
+                textError(_response, "Error while fetching data: " + ex.getMessage());
+            }
+        }
+        finally
+        {
+            try
+            {
+                if(_connection != null)
+                {
+                    _connection.close();
+                }
+            }
+            catch (SQLException ex)
+            {
+                if(_format.equalsIgnoreCase("json"))
+                {
+                    jsonError(_response, "Error while fetching data: " + ex.getMessage());
+                }
+                else
+                {
+                    textError(_response, "Error while fetching data: " + ex.getMessage());
+                }
+            }
+        }
+        
+        return dnaComponents;
+    }
     
     protected DnaComponent retrievePerformance(DnaComponent dnaComponent)
     {
@@ -404,4 +501,5 @@ public class PartsServlet extends DataAccessServlet
 //
 //            return measurement;
     }
+
 }
