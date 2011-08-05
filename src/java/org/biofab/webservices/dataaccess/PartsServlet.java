@@ -85,7 +85,7 @@ public class PartsServlet extends DataAccessServlet
             
                 if(_collectionId.equalsIgnoreCase("4"))
                 {
-                    terminatorQuery = "SELECT * FROM public.terminator_performance";
+                    terminatorQuery = "SELECT * FROM public.terminator_performance_view";
                     terminatorResultSet = fetchResultSet(terminatorQuery, _format, _response);
                     dnaComponents = new ArrayList<DnaComponent>();
                     dnaComponents = RetrieveTerminators(terminatorResultSet, dnaComponents);
@@ -94,7 +94,7 @@ public class PartsServlet extends DataAccessServlet
                 {
                     designQuery = "SELECT * FROM public.promoter_design_view";
                     performanceQuery = "SELECT * FROM public.promoter_performance_view";
-                    terminatorQuery = "SELECT * FROM public.terminator_performance";
+                    terminatorQuery = "SELECT * FROM public.terminator_performance_view";
                     designResultSet = fetchResultSet(designQuery, _format, _response);
                     performanceResultSet = fetchResultSet(performanceQuery, _format, _response);
                     terminatorResultSet = fetchResultSet(terminatorQuery, _format, _response);
@@ -108,7 +108,7 @@ public class PartsServlet extends DataAccessServlet
         {
             designQuery = "SELECT * FROM public.promoter_design_view";
             performanceQuery = "SELECT * FROM public.promoter_performance_view";
-            terminatorQuery = "SELECT * FROM public.terminator_performance";
+            terminatorQuery = "SELECT * FROM public.terminator_performance_view";
             designResultSet = fetchResultSet(designQuery, _format, _response);
             performanceResultSet = fetchResultSet(performanceQuery, _format, _response);
             terminatorResultSet = fetchResultSet(terminatorQuery, _format, _response);

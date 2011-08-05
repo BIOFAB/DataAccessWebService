@@ -10,21 +10,34 @@ Ext.define('DataAccessClientViewport', {
     layout: 'border',
     performanceStore: null,
     parts: null,
-    promoterGridPanel: null,
     collectionsGridPanel: null,
+    promoterGridPanel: null,
+    terminatorGridPanel: null,
     infoTabPanel: null,
-    partsTbText: null,
+    partsToolbarText: null,
 	
     constructor: function()
     {
-        //  Models
+        //  Stores
         
-        Ext.define('PartPerformance', {
-            extend: 'Ext.data.Model',
-            fields: [
-                {name: 'biofabId', type: 'string'},
-                {name: 'value', type: 'float'}
-            ]
+        var promoterStore = new Ext.data.Store({
+            model: 'Promoter',
+            proxy: {
+                type: 'ajax',
+                url : '',
+                reader: {type: 'json'}
+            },
+            autoLoad: false
+        });
+        
+        var terminatorStore = new Ext.data.Store({
+            model: 'Terminator',
+            proxy: {
+                type: 'ajax',
+                url : '',
+                reader: {type: 'json'}
+            },
+            autoLoad: false
         });
         
         this.items = [
@@ -130,7 +143,7 @@ Ext.define('DataAccessClientViewport', {
                             items: [
                                 {
                                     xtype: 'tbtext',
-                                    id: "partsTbText",
+                                    id: "partsToolbarText",
                                     style: {fontWeight:'bold'},
                                     text: 'Parts'
                                 },
@@ -160,11 +173,9 @@ Ext.define('DataAccessClientViewport', {
                             {
                                 xtype: 'gridpanel',
                                 id: 'promoterGridPanel',
-                                title: 'Promoter',
-                                store: Ext.data.StoreManager.lookup('promoterStore'), 
+                                title: 'Promoters',
+                                store: promoterStore, 
                                 columnLines: true,
-                                //stripeRows: true,
-                                //features: [{ftype:'grouping'}],
                                 columns: [
                                     {
                                         xtype: 'gridcolumn',
@@ -223,13 +234,72 @@ Ext.define('DataAccessClientViewport', {
                             },
                             {
                                 xtype: 'panel',
-                                title: '5\' UTR',
+                                title: '5\' UTRs',
                                 html: '<b>5\' UTRs will be available in an upcoming release of the Data Access Client</b>'
                             },
                             {
-                                xtype: 'panel',
-                                title: 'Terminator',
-                                html: '<b>Terminators will be available in an upcoming release of the Data Access Client</b>'
+                                xtype: 'gridpanel',
+                                id: 'terminatorGridPanel',
+                                title: 'Terminators',
+                                store: terminatorStore, 
+                                columnLines: true,
+                                //stripeRows: true,
+                                //features: [{ftype:'grouping'}],
+                                columns: [
+                                    {
+                                        xtype: 'gridcolumn',
+                                        dataIndex: 'displayId',
+                                        header: 'Identifier',
+                                        sortable: true,
+                                        width: 80,
+                                        editable: false
+                                    },
+                                    {
+                                        xtype: 'gridcolumn',
+                                        dataIndex: 'type',
+                                        header: 'Part Type',
+                                        sortable: true,
+                                        width: 100,
+                                        editable: false
+
+                                    },
+                                    {
+                                        xtype: 'gridcolumn',
+                                        dataIndex: 'description',
+                                        header: 'Description',
+                                        sortable: true,
+                                        width: 175,
+                                        editable: false
+                                    },
+                                    {
+                                        xtype: 'numbercolumn',
+                                        dataIndex: 'terminationEfficiency',
+                                        header: 'Termination Efficiency',
+                                        sortable: true,
+                                        width: 150,
+                                        align: 'left',
+                                        editable: false,
+                                        format: '0,000'
+                                    },
+                                    {
+                                        xtype: 'numbercolumn',
+                                        dataIndex: 'standardDeviation',
+                                        header: 'Standard Deviation',
+                                        sortable: true,
+                                        width: 125,
+                                        align: 'left',
+                                        editable: false,
+                                        format: '0,000'
+                                    },
+                                    {
+                                        xtype: 'gridcolumn',
+                                        dataIndex: 'constructId',
+                                        header: 'Construct',
+                                        sortable: true,
+                                        width: 100,
+                                        editable: false
+                                    }
+                                ]
                             }
                         ]
                     },
@@ -254,7 +324,11 @@ Ext.define('DataAccessClientViewport', {
         var promoterGridSelectionModel = this.promoterGridPanel.getSelectionModel();
 	promoterGridSelectionModel.on('rowselect', this.promoterGridRowSelectHandler, this);
         
-        this.partsTbText = Ext.ComponentManager.get('partsTbText');
+        this.terminatorGridPanel = Ext.ComponentManager.get('terminatorGridPanel');
+        var terminatorGridSelectionModel = this.terminatorGridPanel.getSelectionModel();
+	terminatorGridSelectionModel.on('rowselect', this.terminatorGridRowSelectHandler, this);
+        
+        this.partsToolbarText = Ext.ComponentManager.get('partsToolbarText');
 
         var collectionsGridExportButton = Ext.ComponentManager.get('collectionsGridExportButton'); 
         collectionsGridExportButton.setHandler(this.collectionsGridExportButtonClickHandler, this);
@@ -493,40 +567,42 @@ Ext.define('DataAccessClientViewport', {
     collectionsGridRowSelectHandler: function(selectModel, rowIndex, record)
     {
         var id = record.get('id');
-        
-        if(id !== 4)
-        { 
-            var promoterStore = Ext.data.StoreManager.lookup('promoterStore');
-            promoterStore.clearFilter(false);
+        var promoterStore = this.promoterGridPanel.getStore();
+        var terminatorStore = this.terminatorGridPanel.getStore();
+        promoterStore.clearFilter(false);
+        terminatorStore.clearFilter(false);
 
-            promoterStore.filter([
-            {
-                property     : 'collectionId',
-                value        : id,
-                anyMatch     : false,
-                exactMatch   : true
-            }]);
-
-            var collectionName = record.get('name');
-            this.partsTbText.setText(collectionName + ' Parts');
-            this.showCollectionPanel(record);
-        }
-        else
+        promoterStore.filter([
         {
-             this.showCollectionPanel(record);
-        }
+            property     : 'collectionId',
+            value        : id,
+            anyMatch     : false,
+            exactMatch   : true
+        }]);
+    
+        terminatorStore.filter([
+        {
+            property     : 'collectionId',
+            value        : id,
+            anyMatch     : false,
+            exactMatch   : true
+        }]);
+
+        var collectionName = record.get('name');
+        this.partsToolbarText.setText(collectionName + ' Parts');
+        this.showCollectionPanel(record);
     },
     
     promoterGridRowSelectHandler: function(selectModel, rowIndex, record)
     {
-        var partID = record.get("displayId");
-        var description = record.get('description');
-        var relationRecord = null;
-        var constructID = null;
-        var constructRecord = null;
-        var constructRecords = null;
-        var constructRecordsForDisplay = [];
-        var relationPartID = null;
+//        var partID = record.get("displayId");
+//        var description = record.get('description');
+//        var relationRecord = null;
+//        var constructID = null;
+//        var constructRecord = null;
+//        var constructRecords = null;
+//        var constructRecordsForDisplay = [];
+//        var relationPartID = null;
 //        var relationsCount = this.constructPartStore.getCount();
 
 //        for(var i = 0; i < relationsCount; i += 1)
@@ -558,9 +634,12 @@ Ext.define('DataAccessClientViewport', {
 //            Ext.Msg.alert('Data Access Client', 'No construct has ' + description);
 //        }
 
-        this.showPartPanel(record);
-
-        
+        this.showPartPanel(record); 
+    },
+    
+    terminatorGridRowSelectHandler: function(selectModel, rowIndex, record)
+    {
+        //this.showPartPanel(record);
     },
 	
 //        constructsGridRowSelectHandler: function(selectModel, rowIndex, record)
@@ -635,8 +714,9 @@ Ext.define('DataAccessClientViewport', {
 
         showAllPartsButtonHandler:function()
         {
-            Ext.data.StoreManager.lookup('promoterStore').clearFilter(false);
-            Ext.getCmp('partsTbText').setText('Parts');
+            Ext.getCmp('promoterGridPanel').getStore().clearFilter(false);
+            Ext.getCmp('terminatorGridPanel').getStore().clearFilter(false);
+            Ext.getCmp('partsToolbarText').setText('Parts');
         },
 
 //        showAllConstructsButtonClickHandler: function(button, event)
@@ -682,28 +762,12 @@ Ext.define('DataAccessClientViewport', {
             Ext.Msg.alert('Fetch Collections', 'There was an error while attempting to fetch the collections. Please reload the Data Access Client.\n' + 'Error: ' + response.responseText);
         },
 
-        promotersButtonClickHandler: function(button, event)
-        {
-            this.partsGridPanel.getStore().filter([{property: 'type', value: "promoter", anyMatch: true, caseSensitive: false}]);
-//            this.partsLabel.setText('Parts: Promoters');
-        },
-
-        fiveUTRButtonClickHandler: function(button, event)
-        {
-            this.partsGridPanel.getStore().filter([{property: 'type', value: "5' UTR", anyMatch: true, caseSensitive: false}]);
-//            this.partsLabel.setText('Parts: 5\' UTR');
-        },
-
-        cdsButtonClickHandler: function(button, event)
-        {
-            this.partsGridPanel.getStore().filter([{property: 'type', value: "CDS", anyMatch: true, caseSensitive: false}]);
-//            this.partsLabel.setText('Parts: CDS');
-        },
-
         //TODO Refactor!!!
         fetchPartsResultHandler: function(response, opts)
         {
             var partsForStore = [];
+            var terminators = [];
+            var terminator;
             var part;
             var partForStore;
             var partsCount;
@@ -751,9 +815,40 @@ Ext.define('DataAccessClientViewport', {
                             }
                         }
                     }
+                    
+                    if(part.type === 'terminator')
+                    {
+                        performance = part.performance;
+                        
+                        if(performance != undefined)
+                        {
+                            measurements = performance.measurements;
+                            measurementsCount = measurements.length;
+
+                            for(var k = 0; k < measurementsCount; k += 1)
+                            {
+                                if(measurements[k].type === 'TE')
+                                {
+                                    measurement = measurements[k];
+                                    terminator = {
+                                        collectionId: part.collectionID,
+                                        displayId: part.displayID,
+                                        type: part.type,
+                                        description: part.description,
+                                        dnaSequence: part.dnaSequence.nucleotides,
+                                        terminationEfficiency: measurement.value,
+                                        standardDeviation: measurement.standardDeviation,
+                                        constructId: measurement.constructId
+                                    }
+                                    terminators.push(terminator);
+                                }
+                            }
+                        }
+                    }
                 }
                 
                 this.promoterGridPanel.getStore().loadData(partsForStore, false);
+                this.terminatorGridPanel.getStore().loadData(terminators, false);
                 this.fetchCollections();
             }
             else
@@ -766,17 +861,4 @@ Ext.define('DataAccessClientViewport', {
         {
             Ext.Msg.alert('Fetch Parts', 'There was an error while attempting to fetch the parts. Please reload the Data Access Client.\n' + 'Error: ' + response.responseText);
         }
-
-//        partStoreLoadHandler: function(store, records, options)
-//        {
-//            this.partsGridPanel.getStore().filter([{property: 'type', value: "promoter", anyMatch: true, caseSensitive: false}]);
-//            this.partsLabel.setText('Parts: Promoters');
-//        },
-        
-//        helpButtonClickHandler: function(button, event)
-//        {
-//            var helpWindow = window.open(HELP_PAGE);
-//            helpWindow.scrollbars.visible = true;
-//        },
-
 });
