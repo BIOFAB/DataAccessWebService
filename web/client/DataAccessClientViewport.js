@@ -180,20 +180,28 @@ Ext.define('DataAccessClientViewport', {
                                     {
                                         xtype: 'gridcolumn',
                                         dataIndex: 'displayId',
-                                        header: 'Identifier',
+                                        header: 'Part',
                                         sortable: true,
                                         width: 80,
                                         editable: false
                                     },
                                     {
                                         xtype: 'gridcolumn',
-                                        dataIndex: 'type',
-                                        header: 'Part Type',
+                                        dataIndex: 'constructId',
+                                        header: 'Construct',
                                         sortable: true,
                                         width: 100,
                                         editable: false
-
                                     },
+//                                    {
+//                                        xtype: 'gridcolumn',
+//                                        dataIndex: 'type',
+//                                        header: 'Part Type',
+//                                        sortable: true,
+//                                        width: 100,
+//                                        editable: false
+//
+//                                    },
                                     {
                                         xtype: 'gridcolumn',
                                         dataIndex: 'description',
@@ -220,15 +228,7 @@ Ext.define('DataAccessClientViewport', {
                                         width: 125,
                                         align: 'left',
                                         editable: false,
-                                        format: '0,000'
-                                    },
-                                    {
-                                        xtype: 'gridcolumn',
-                                        dataIndex: 'constructId',
-                                        header: 'Construct',
-                                        sortable: true,
-                                        width: 100,
-                                        editable: false
+                                        format: '0,000.00'
                                     }
                                 ]
                             },
@@ -249,20 +249,28 @@ Ext.define('DataAccessClientViewport', {
                                     {
                                         xtype: 'gridcolumn',
                                         dataIndex: 'displayId',
-                                        header: 'Identifier',
+                                        header: 'Part',
                                         sortable: true,
                                         width: 80,
                                         editable: false
                                     },
                                     {
                                         xtype: 'gridcolumn',
-                                        dataIndex: 'type',
-                                        header: 'Part Type',
+                                        dataIndex: 'constructId',
+                                        header: 'Construct',
                                         sortable: true,
                                         width: 100,
                                         editable: false
-
                                     },
+//                                    {
+//                                        xtype: 'gridcolumn',
+//                                        dataIndex: 'type',
+//                                        header: 'Part Type',
+//                                        sortable: true,
+//                                        width: 100,
+//                                        editable: false
+//
+//                                    },
                                     {
                                         xtype: 'gridcolumn',
                                         dataIndex: 'description',
@@ -289,15 +297,7 @@ Ext.define('DataAccessClientViewport', {
                                         width: 125,
                                         align: 'left',
                                         editable: false,
-                                        format: '0,000'
-                                    },
-                                    {
-                                        xtype: 'gridcolumn',
-                                        dataIndex: 'constructId',
-                                        header: 'Construct',
-                                        sortable: true,
-                                        width: 100,
-                                        editable: false
+                                        format: '0,000.00'
                                     }
                                 ]
                             }
@@ -369,112 +369,65 @@ Ext.define('DataAccessClientViewport', {
             });
         },
 	
-//	showDatasheet: function(constructID)
-//	{		
-//            var datasheetPanel = new DatasheetPanel();
-//            datasheetPanel.setTitle(constructID);
-//            var tab = this.infoTabPanel.add(datasheetPanel);
-//            this.infoTabPanel.doLayout();
-//            this.infoTabPanel.setActiveTab(tab);
-//            tab.fetchData(constructID);
-//            //datasheetPanel.setConstructID(constructID);
-//	},
-
         showCollectionPanel: function(collectionRecord)
         {
             var id = collectionRecord.get('id');
-            var collectionPanel;
             var panel;
-            var tab;
 
             if(id === 1)
             {
-                collectionPanel = Ext.ComponentManager.get('pilotProjectPanel');
+                panel = Ext.ComponentManager.get('pilotProjectPanel');
                 
-                if(collectionPanel === undefined)
+                if(panel === undefined)
                 {
-                    collectionPanel = new PilotProjectPanel();
-                    collectionPanel.setCollectionRecord(collectionRecord);
-                    tab = this.infoTabPanel.add(collectionPanel);
-                    this.infoTabPanel.doLayout();
-                    this.infoTabPanel.setActiveTab(tab);
+                    panel = new PilotProjectPanel();
+                    this.infoTabPanel.add(panel);
                 }
-                else
-                {
-                    this.infoTabPanel.setActiveTab(collectionPanel);
-                }
-
             }
 
             if(id === 2)
             {
-                panel = Ext.ComponentManager.get('modularPromoterPanel');
+                panel = Ext.ComponentManager.get('modularPromoterLibraryPanel');
                 
                 if(panel === undefined)
                 {
-                    panel = new ModularPromoterPanel();
-                    tab = this.infoTabPanel.add(panel);
-                    this.infoTabPanel.doLayout();
-                    this.infoTabPanel.setActiveTab(tab);
-                    panel.displayInfo(collectionRecord, this.parts);
+                    panel = new ModularPromoterLibraryPanel();
+                    this.infoTabPanel.add(panel);
                 }
-                else
-                {
-                    this.infoTabPanel.setActiveTab(panel);
-                } 
             }
 
             if(id === 3)
             {
-                collectionPanel = Ext.ComponentManager.get('randomPromoterPanel');
+                panel = Ext.ComponentManager.get('randomPromoterLibraryPanel');
                 
-                if(collectionPanel === undefined)
+                if(panel === undefined)
                 {
-                    collectionPanel = new RandomPromoterPanel();
-                    collectionPanel.showInfo(collectionRecord);
-                    tab = this.infoTabPanel.add(collectionPanel);
-                    this.infoTabPanel.doLayout();
-                    this.infoTabPanel.setActiveTab(tab);
-                }
-                else
-                {
-                    this.infoTabPanel.setActiveTab(collectionPanel);
+                    panel = new RandomPromoterLibraryPanel();
+                    this.infoTabPanel.add(panel);
                 }
             }
 
             if(id === 4)
             {
-                collectionPanel = Ext.ComponentManager.get('terminatorPanel');
+                panel = Ext.ComponentManager.get('terminatorLibraryPanel');
                 
-                if(collectionPanel === undefined)
+                if(panel === undefined)
                 {
-                    collectionPanel = new TerminatorPanel();
-                    collectionPanel.setCollectionRecord(collectionRecord);
-                    tab = this.infoTabPanel.add(collectionPanel);
-                    this.infoTabPanel.doLayout();
-                    this.infoTabPanel.setActiveTab(tab);
-                }
-                else
-                {
-                    this.infoTabPanel.setActiveTab(collectionPanel);
+                    panel = new TerminatorLibraryPanel();
+                    this.infoTabPanel.add(panel);
                 }
             }
+            
+            this.infoTabPanel.setActiveTab(panel);
+            panel.showInfo(collectionRecord, this.parts);
         },
 
         showPartPanel: function(partRecord)
         {
-            var partPanel;
-            var tab;
-
-            partPanel = new PartPanel();
-
-            if(partPanel !== null)
-            {
-                tab = this.infoTabPanel.add(partPanel);
-                this.infoTabPanel.doLayout();
-                this.infoTabPanel.setActiveTab(tab);
-                partPanel.displayInfo(partRecord, this.parts);
-            }
+            var panel = new PartPanel();
+            this.infoTabPanel.add(panel);
+            this.infoTabPanel.setActiveTab(panel);
+            panel.showInfo(partRecord, this.parts);
         },
         
 //        retrieveGecMeasurement: function(part)
@@ -639,7 +592,7 @@ Ext.define('DataAccessClientViewport', {
     
     terminatorGridRowSelectHandler: function(selectModel, rowIndex, record)
     {
-        //this.showPartPanel(record);
+        this.showPartPanel(record);
     },
 	
 //        constructsGridRowSelectHandler: function(selectModel, rowIndex, record)

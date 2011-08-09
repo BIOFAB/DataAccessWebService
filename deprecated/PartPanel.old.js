@@ -1,20 +1,24 @@
 /*
  *
- * Developed by:
- * 
- *  Cesar A. Rodriguez
- * 
+ *
+ *
  */
 
-Ext.define('PartPanel',
+Ext.define('PartPanel', 
 {
     extend: 'Ext.panel.Panel',
+    itemId: 'partPanel',
     title: 'Part',
     layout: 'absolute',
+//    layout: {
+//                type:'vbox',
+//                padding:'25',
+//                align:'center'
+//            },
     closable: true,
     autoScroll: true,
-    closeAction: 'destroy',
-    
+    //flex: 1.0,
+
     //Subcomponents
     datasheetPanel: null,
     designPanel: null,
@@ -30,162 +34,155 @@ Ext.define('PartPanel',
     constructId: null,
     parts: null,
 
+    //Function Members
     constructor: function() {
         this.items = [
             {
                 xtype: 'panel',
                 itemId: 'datasheetPanel',
-                title: '',
-                height: 1300,
-                width: 600,
+                title: 'Datasheet',
                 layout: 'border',
+                width: 600,
+                height: 800,
+//                flex: 1.0,
                 x: 25,
-                y: 25,
-                floating: false,
-                shadow: false,
-                shadowOffset: 6,
-                autoShow: true,
-                draggable: false,
-                items: [
-                    {
-                        xtype: 'panel',
-                        itemId: 'designPanel',
-                        title: '',
-                        layout: 'border',
-                        region: 'center',
-                        height: 700,
-                        items: [
-                            {
-                                xtype: 'panel',
-                                itemId: 'partDesignPanel',
-                                height: 75,
-                                layout: 'fit',
-                                split: true,
-                                region: 'center',
-                                tbar: {
-                                    xtype: 'toolbar',
-                                    itemId: 'partDesignToolbar',
-                                    height: 25,
-                                    items: [
-                                        {
-                                            xtype: 'tbtext',
-                                            itemId: 'partDesignLabel',
-                                            html: '<b>Part DNA Sequence</b>'
-                                        },
-                                        {
-                                            xtype: 'tbfill'
-                                        }
-                                    ]
-                                },
-                                items:[
-                                    {
-                                        xtype: 'textarea',
-                                        itemId: 'sequenceTextArea',
-                                        readOnly: true
-                                    }
-                                ]
-                            },
-                            {
-                                xtype: 'panel',
-                                itemId: 'constructDesignPanel',
-                                layout: 'fit',
-                                split: true,
-                                region: 'south',
-                                height: 600,
-                                tbar: {
-                                    xtype: 'toolbar',
-                                    itemId: 'constructDesignPanelToolbar',
-                                    items: [
-                                        {
-                                            xtype: 'tbtext',
-                                            html: '<b>Part Characterization Construct</b>',
-                                            tooltip: 'Construct used for characterizing the part.'
-                                        },
-                                        {
-                                            xtype: 'tbfill'
-                                        },
-                                        {
-                                            xtype: 'tbtext',
-                                            itemId: 'constructDesignPanelText',
-                                            text: 'Fetching Design...',
-                                            hidden: true
-                                        },
-                                        {
-                                            xtype: 'tbfill'
-                                        },
-                                        {
-                                            xtype: 'button',
-                                            itemId: 'constructDesignExportButton',
-                                            text: 'Export',
-                                            tooltip: 'Export the construct design in Genbank format.'
-                                        }
-                                    ]
-                                },
-                                items:[]
-                            }
-                        ]
-                    },
-                    {
-                        xtype: 'panel',
-                        itemId: 'performancePanel',
-                        title: 'Performance',
-                        layout: 'border',
-                        split: true,
-                        region: 'south',
-                        height: 600,
-                        items:[
-                            {
-                                xtype:'panel',
-                                itemId: 'performancePlotPanel',
-                                layout: 'absolute',
-                                height: 500,
-                                region: 'center',
-                                split: true,
-                                items:[]
-
-                            },
-                            {
-                                xtype:'panel',
-                                itemId: 'performanceNotesPanel',
-                                title: 'Notes',
-                                layout: 'fit',
-                                height: 100,
-                                region: 'south',
-                                split: true,
-                                items:[
-                                    {
-                                        xtype: 'textarea',
-                                        itemId: 'performanceNotesTextArea',
-                                        hidden: false
-                                    }
-                                ]
-
-                            }
-                        ]
-                    }
-                ]
+                y: 25
+//                floating: false,
+//                shadowOffset: 6,
+//                autoShow: true,
+//                draggable: false,
+//               items:[
+//                    {
+//                        xtype: 'panel',
+//                        itemId: 'designPanel',
+//                        title: 'Design',
+//                        layout: 'border',
+//                        region: 'center',
+//                        items: [
+//                            {
+//                                xtype: 'panel',
+//                                itemId: 'partDesignPanel',
+//                                height: 75,
+//                                layout: 'fit',
+//                                split: true,
+//                                tbar: {
+//                                    xtype: 'toolbar',
+//                                    itemId: 'partDesignToolbar',
+//                                    height: 25,
+//                                    items: [
+//                                        {
+//                                            xtype: 'tbtext',
+//                                            itemId: 'partDesignLabel',
+//                                            html: '<b>Part DNA Sequence</b>'
+//                                        },
+//                                        {
+//                                            xtype: 'tbfill'
+//                                        }
+//                                    ]
+//                                },
+//                                items:[
+//                                    {
+//                                        xtype: 'textarea',
+//                                        itemId: 'sequenceTextArea',
+//                                        readOnly: true
+//                                    }
+//                                ]
+//                            },
+//                            {
+//                                xtype: 'panel',
+//                                itemId: 'constructDesignPanel',
+//                                layout: 'fit',
+//                                split: true,
+//                                tbar: {
+//                                    xtype: 'toolbar',
+//                                    itemId: 'constructDesignPanelToolbar',
+//                                    items: [
+//                                        {
+//                                            xtype: 'tbtext',
+//                                            html: '<b>Part Characterization Construct</b>',
+//                                            tooltip: 'Construct used for characterizing the part.'
+//                                        },
+//                                        {
+//                                            xtype: 'tbfill'
+//                                        },
+//                                        {
+//                                            xtype: 'tbtext',
+//                                            itemId: 'constructDesignPanelText',
+//                                            text: 'Fetching Design...',
+//                                            hidden: true
+//                                        },
+//                                        {
+//                                            xtype: 'tbfill'
+//                                        },
+//                                        {
+//                                            xtype: 'button',
+//                                            itemId: 'constructDesignExportButton',
+//                                            text: 'Export',
+//                                            tooltip: 'Export the construct design in Genbank format.'
+//                                        }
+//                                    ]
+//                                },
+//                                items:[]
+//                            }
+//                        ]
+//                    }
+//                    {
+//                        xtype: 'panel',
+//                        itemId: 'performancePanel',
+//                        title: 'Performance',
+//                        layout: 'border',
+//                        split: true,
+//                        region: 'south',
+//                        items:[
+//                            {
+//                                xtype:'panel',
+//                                itemId: 'performancePlotPanel',
+//                                layout: 'absolute',
+//                                height: 500,
+//                                region: 'center',
+//                                split: true,
+//                                items:[]
+//
+//                            },
+//                            {
+//                                xtype:'panel',
+//                                itemId: 'performanceNotesPanel',
+//                                title: 'Notes',
+//                                layout: 'fit',
+//                                height: 200,
+//                                region: 'south',
+//                                split: true,
+//                                items:[
+//                                    {
+//                                        xtype: 'textarea',
+//                                        itemId: 'performanceNotesTextArea',
+//                                        hidden: false
+//                                    }
+//                                ]
+//
+//                            }
+//                        ]
+//                    }
+//                ]
+             
             }
         ];
         
         this.callParent();
         
-        this.datasheetPanel = this.getComponent('datasheetPanel');
-        this.designPanel = this.datasheetPanel.getComponent('designPanel');
-        this.partDesignPanel = this.designPanel.getComponent('partDesignPanel')
-        this.constructDesignPanel = this.designPanel.getComponent('constructDesignPanel');
-        this.constructDesignExportButton = this.constructDesignPanel.getComponent('constructDesignPanelToolbar').getComponent('constructDesignExportButton');
-        this.constructDesignPanelText = this.constructDesignPanel.getComponent('constructDesignPanelToolbar').getComponent('constructDesignPanelText');
-        this.constructDesignExportButton.setHandler(this.constructDesignExportButtonHandler, this);
+//        this.datasheetPanel = this.getComponent('datasheetPanel');
+//        this.designPanel = this.datasheetPanel.getComponent('designPanel');
+//        this.partDesignPanel = this.designPanel.getComponent('partDesignPanel')
+//        this.constructDesignPanel = this.designPanel.getComponent('constructDesignPanel');
+//        this.constructDesignExportButton = this.constructDesignPanel.getComponent('constructDesignPanelToolbar').getComponent('constructDesignExportButton');
+//        this.constructDesignPanelText = this.constructDesignPanel.getComponent('constructDesignPanelToolbar').getComponent('constructDesignPanelText');
+//        this.constructDesignExportButton.setHandler(this.constructDesignExportButtonHandler, this);
         
-        this.performancePanel = this.datasheetPanel.getComponent('performancePanel');
-        this.performancePlotPanel = this.performancePanel.getComponent('performancePlotPanel');
+//        this.performancePanel = this.datasheetPanel.getComponent('performancePanel');
+//        this.performancePlotPanel = this.performancePanel.getComponent('performancePlotPanel');
     },
-   
-    //
-    //  Public Methods
-    //
     
-    showInfo: function(partRecord, parts)
+    displayInfo: function(partRecord, parts)
     {
             var dnaSequence = null;
             var biofabID = null;
@@ -195,30 +192,30 @@ Ext.define('PartPanel',
             biofabID = partRecord.get('displayId');
             this.setTitle(biofabID);
             dnaSequence = partRecord.get('dnaSequence');
-            this.partDesignPanel.getComponent('partDesignToolbar').getComponent('partDesignLabel').setText('<b>DNA Sequence for ' + biofabID + '</b>');
-            this.partDesignPanel.getComponent('sequenceTextArea').setValue(dnaSequence);
-            var collectionId = this.partRecord.get('collectionId');
-            this.constructId = this.partRecord.get('constructId');
+//            this.partDesignPanel.getComponent('partDesignToolbar').getComponent('partDesignLabel').setText('<b>DNA Sequence for ' + biofabID + '</b>');
+//            this.partDesignPanel.getComponent('sequenceTextArea').setValue(dnaSequence);
+//            var collectionId = this.partRecord.get('collectionId');
+//            this.constructId = this.partRecord.get('constructId');
             
             
             //TODO Deal with null constructId
-            this.fetchConstructDesign(this.constructId);
+//            this.fetchConstructDesign(this.constructId);
 
             //Temporary patch till I fix the problem with the Pilot Project
-            if(collectionId !== 1)
-            {
-                this.generateBarChart(this.partRecord, this.parts);
-            }
-            else
-            {
-                this.performancePanel.add(
-                    {
-                        xtype: 'label',
-                        text: 'Performance data for Pilot Project parts will be available in an upcoming release of the Data Access Client.'
-                    }
-                );
-                //this.performancePanel.doLayout();
-            }
+//            if(collectionId !== 1)
+//            {
+//                this.generateBarChart();
+//            }
+//            else
+//            {
+//                this.performancePanel.add(
+//                    {
+//                        xtype: 'label',
+//                        text: 'Performance data for Pilot Project parts will be available in an upcoming release of the Data Access Client.'
+//                    }
+//                );
+//                this.performancePanel.doLayout();
+//            }
     },
     
     fetchConstructDesign:function(constructID)
@@ -236,34 +233,30 @@ Ext.define('PartPanel',
                    scope: this
         });
     },
-    
-    // Refactor!!!
-    generateBarChart: function(partRecord, parts)
+
+    generateBarChart: function()
     {
         var newStore;
         var partPerformances;
-        var collectionId;
-        var axisTitle;
-        
-        if(partRecord !== null && this.parts !== null)
+
+//        Ext.define('PartPerformance', {
+//            extend: 'Ext.data.Model',
+//            fields: [
+//                {name: 'biofabId', type: 'string'},
+//                {name: 'value', type: 'float'}
+//            ]
+//        });
+
+        if(this.partRecord !== null && this.parts !== null)
         {
-            collectionId = partRecord.get('collectionId');
-            
-            if(collectionId === 4)
-            {
-                axisTitle = 'Termination Efficiency (%)';
-            }
-            else
-            {
-                axisTitle = 'Gene Expression per Cell (AU)';
-            }
-            
-            partPerformances = this.generatePartPerformances(partRecord, parts);
+            partPerformances = this.generatePartPerformances(this.partRecord, this.parts);
 
             newStore = new Ext.data.Store({
                 model: 'PartPerformance',
                 data : partPerformances
             });
+
+            //var element = this.performancePanel.getEl();
 
             var barChart = Ext.create('Ext.chart.Chart',
                 {
@@ -282,10 +275,10 @@ Ext.define('PartPanel',
                               renderer: Ext.util.Format.numberRenderer('0,0'),
                               font: '11px Arial'
                           },
-                          title: axisTitle,
+                          title: 'Gene Expression per Cell (AU)',
                           grid: true,
                           minimum: 0,
-                          labelTitle: {font: '14px Arial'}
+                          labelTitle: {font: '12px Arial'}
                         },
 //                        {
 //                          type: 'Category',
@@ -368,7 +361,6 @@ Ext.define('PartPanel',
         }
     },
 
-    // Refactor!!!
     generatePartPerformances: function(partRecord, parts)
     {
         var part;
@@ -385,20 +377,10 @@ Ext.define('PartPanel',
         var selectedMeasurement;
         var selectedPartBiofabId;
         var isSelected;
-        var measurementType;
 
         selectedPartBiofabId = partRecord.get('displayId')
         partCount = this.parts.length;
         collectionId = partRecord.get('collectionId');
-        
-        if(collectionId === 4)
-        {
-            measurementType = 'TE';
-        }
-        else
-        {
-            measurementType = 'GEC';
-        }
 
         for(var j = 0; j < partCount; j += 1)
         {
@@ -418,7 +400,7 @@ Ext.define('PartPanel',
                         {
                             measurement = measurements[i];
         
-                            if(measurement.type === measurementType)
+                            if(measurement.type === 'GEC')
                             {
                                 if(part.displayID === selectedPartBiofabId)
                                 {
@@ -495,21 +477,14 @@ Ext.define('PartPanel',
                 flashVars:{design:response.responseText}
             };
         this.constructDesignPanel.add(flash);
-        //this.constructDesignPanel.doLayout();
+        this.constructDesignPanel.doLayout();
+        this.partTabPanel.setActiveTab(0);
     },
 
     fetchConstructDesignErrorHandler: function(response, opts)
     {
        this.constructDesignPanelText.setVisible(false);
-       this.constructDesignExportButton.setDisabled(true);
-       this.constructDesignPanel.setHeight(100);
-       this.datasheetPanel.setHeight(800);
-       this.constructDesignPanel.add(
-            {
-                xtype: 'panel',
-                html: 'The design of the part characterization construct will be available in an upcoming release.'
-            }
-       )
+       Ext.Msg.alert('Fetch Design', 'There was an error while attempting to fetch the design.\n' + 'Error: ' + response.responseText);
     },
     
     constructDesignExportButtonHandler: function()

@@ -16,7 +16,7 @@ PilotProjectPanel = Ext.extend(PilotProjectPanelUi,{
     //  Public Methods
     //
     
-    setCollectionRecord: function(collectionRecord)
+    showInfo: function(collectionRecord, parts)
     {
             var description = null;
 

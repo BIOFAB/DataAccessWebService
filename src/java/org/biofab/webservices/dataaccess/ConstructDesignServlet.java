@@ -54,6 +54,7 @@ public class ConstructDesignServlet extends DataAccessServlet
         Statement       featuresStatement;
         ResultSet       features;
         String          designID;
+        boolean         hasSequence = false;
 
         if(constructID != null && constructID.length() > 0)
         {
@@ -158,6 +159,13 @@ public class ConstructDesignServlet extends DataAccessServlet
                     {
                         textError(response, "Error while fetching data: " + ex.getMessage());
                     }
+                    
+                    hasSequence = true;
+                }
+                
+                if(hasSequence == false)
+                {
+                    textError(response, "No sequence is available for " + constructID);
                 }
             }
             catch (SQLException ex)

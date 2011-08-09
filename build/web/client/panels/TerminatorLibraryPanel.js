@@ -1,14 +1,16 @@
 /*
  *
- * ModularPromoterPanel.js
+ * Developed by:
+ * 
+ *  Cesar A. Rodriguez
  * 
  */
 
-Ext.define('ModularPromoterPanel',
+Ext.define('TerminatorLibraryPanel',
 {
     extend: 'Ext.panel.Panel',
-    id: 'modularPromoterPanel',
-    title: 'Modular Promoter Library',
+    id: 'terminatorLibraryPanel',
+    title: 'Terminator Library',
     layout: 'absolute',
     tpl: '',
     closable: true,
@@ -18,7 +20,7 @@ Ext.define('ModularPromoterPanel',
     collectionRecord: null,
     parts: null,
     designPanel: null,
-    collectionTextArea: null,
+    descriptionTextArea: null,
     performancePanel: null,
 
     constructor: function() {
@@ -36,12 +38,12 @@ Ext.define('ModularPromoterPanel',
                 shadowOffset: 6,
                 autoShow: true,
                 draggable: false,
-                region:'center',
+                //region:'center',
                 items: [
                     {
                         xtype: 'panel',
                         itemId: 'designPanel',
-                        title: 'Design',
+                        title: 'Terminator Library Design',
                         layout: 'fit',
                         region: 'north',
                         split: true,
@@ -49,14 +51,14 @@ Ext.define('ModularPromoterPanel',
                         items: [
                             {
                                 xtype: 'textarea',
-                                itemId: 'collectionTextArea'
+                                itemId: 'descriptionTextArea'
                             },
                             
                         ]
                     },
                     {
                         xtype: 'panel',
-                        title: 'Performance',
+                        title: 'Terminator Library Performance',
                         itemId: 'performancePanel',
                         layout: 'auto',
                         height: 450,
@@ -88,7 +90,7 @@ Ext.define('ModularPromoterPanel',
         this.callParent();
         
         this.designPanel = this.getComponent('centerPanel').getComponent('designPanel');
-        this.collectionTextArea = this.designPanel.getComponent("collectionTextArea");
+        this.descriptionTextArea = this.designPanel.getComponent("descriptionTextArea");
         this.performancePanel = this.getComponent('centerPanel').getComponent('performancePanel');
     },
    
@@ -96,22 +98,13 @@ Ext.define('ModularPromoterPanel',
     //  Public Methods
     //
     
-//    setCollectionRecord: function(collectionRecord)
-//    {
-//            var description = null;
-//
-//            this.collectionRecord = collectionRecord;
-//            description = collectionRecord.get('description');
-//            this.collectionTextAreaRef.setValue(description);
-//    },
-
-    displayInfo: function(collectionRecord, parts)
+    showInfo: function(collectionRecord, parts)
     {
             var description = null;
             this.collectionRecord = collectionRecord;
             this.parts = parts;
             description = collectionRecord.get('description');
-            this.collectionTextArea.setValue(description);
+            this.descriptionTextArea.setValue(description);
             this.generateBarChart();
     },
 
@@ -119,14 +112,6 @@ Ext.define('ModularPromoterPanel',
     {
         var newStore;
         var partPerformances;
-
-//        Ext.define('PartPerformance', {
-//            extend: 'Ext.data.Model',
-//            fields: [
-//                {name: 'biofabId', type: 'string'},
-//                {name: 'value', type: 'float'}
-//            ]
-//        });
 
         if(this.collectionRecord !== null && this.parts !== null)
         {
@@ -160,7 +145,7 @@ Ext.define('ModularPromoterPanel',
                               renderer: Ext.util.Format.numberRenderer('0,0'),
                               font: '11px Arial'
                           },
-                          title: 'Gene Expression per Cell (AU)',
+                          title: 'Termination Efficiency (%)',
                           grid: true,
                           minimum: 0,
                           labelTitle: {font: '12px Arial'}
@@ -243,7 +228,7 @@ Ext.define('ModularPromoterPanel',
                         {
                             measurement = measurements[i];
 
-                            if(measurement.type === 'GEC')
+                            if(measurement.type === 'TE')
                             {
                                 selectedMeasurements.push(
                                     {

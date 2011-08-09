@@ -1,19 +1,22 @@
 /*
  *
- *
- *
+ * Developed by:
+ * 
+ *  Cesar A. Rodriguez
+ * 
  */
 
-Ext.define('PartPanel', {
+Ext.define('PartPanel',
+{
     extend: 'Ext.panel.Panel',
     title: 'Part',
-    layout: 'fit',
-    tpl: '',
+    layout: 'absolute',
     closable: true,
-    autoScroll: false,
-
+    autoScroll: true,
+    closeAction: 'destroy',
+    
     //Subcomponents
-    partTabPanel: null,
+    datasheetPanel: null,
     designPanel: null,
     partDesignPanel: null,
     constructDesignPanel: null,
@@ -27,28 +30,38 @@ Ext.define('PartPanel', {
     constructId: null,
     parts: null,
 
-    //Function Members
     constructor: function() {
         this.items = [
             {
-                xtype: 'tabpanel',
-                itemId: 'partTabPanel',
-                activeTab: 0,
-                items:[
+                xtype: 'panel',
+                itemId: 'datasheetPanel',
+                title: '',
+                height: 1300,
+                width: 600,
+                layout: 'border',
+                x: 25,
+                y: 25,
+                floating: false,
+                shadow: false,
+                shadowOffset: 6,
+                autoShow: true,
+                draggable: false,
+                items: [
                     {
                         xtype: 'panel',
                         itemId: 'designPanel',
-                        title: 'Design',
+                        title: '',
                         layout: 'border',
+                        region: 'center',
+                        height: 700,
                         items: [
                             {
                                 xtype: 'panel',
                                 itemId: 'partDesignPanel',
-                                //title: 'Part',
-                                region: 'north',
                                 height: 75,
                                 layout: 'fit',
                                 split: true,
+                                region: 'center',
                                 tbar: {
                                     xtype: 'toolbar',
                                     itemId: 'partDesignToolbar',
@@ -75,10 +88,10 @@ Ext.define('PartPanel', {
                             {
                                 xtype: 'panel',
                                 itemId: 'constructDesignPanel',
-                                //title: 'Construct',
-                                region: 'center',
                                 layout: 'fit',
                                 split: true,
+                                region: 'south',
+                                height: 600,
                                 tbar: {
                                     xtype: 'toolbar',
                                     itemId: 'constructDesignPanelToolbar',
@@ -118,6 +131,8 @@ Ext.define('PartPanel', {
                         title: 'Performance',
                         layout: 'border',
                         split: true,
+                        region: 'south',
+                        height: 600,
                         items:[
                             {
                                 xtype:'panel',
@@ -134,7 +149,7 @@ Ext.define('PartPanel', {
                                 itemId: 'performanceNotesPanel',
                                 title: 'Notes',
                                 layout: 'fit',
-                                height: 200,
+                                height: 100,
                                 region: 'south',
                                 split: true,
                                 items:[
@@ -147,27 +162,30 @@ Ext.define('PartPanel', {
 
                             }
                         ]
-                    },
+                    }
                 ]
-             
             }
         ];
         
         this.callParent();
         
-        this.partTabPanel = this.getComponent('partTabPanel');
-        this.designPanel = this.partTabPanel.getComponent('designPanel');
+        this.datasheetPanel = this.getComponent('datasheetPanel');
+        this.designPanel = this.datasheetPanel.getComponent('designPanel');
         this.partDesignPanel = this.designPanel.getComponent('partDesignPanel')
         this.constructDesignPanel = this.designPanel.getComponent('constructDesignPanel');
         this.constructDesignExportButton = this.constructDesignPanel.getComponent('constructDesignPanelToolbar').getComponent('constructDesignExportButton');
         this.constructDesignPanelText = this.constructDesignPanel.getComponent('constructDesignPanelToolbar').getComponent('constructDesignPanelText');
-        this.performancePanel = this.partTabPanel.getComponent('performancePanel');
-        this.performancePlotPanel = this.performancePanel.getComponent('performancePlotPanel');
         this.constructDesignExportButton.setHandler(this.constructDesignExportButtonHandler, this);
- 
+        
+        this.performancePanel = this.datasheetPanel.getComponent('performancePanel');
+        this.performancePlotPanel = this.performancePanel.getComponent('performancePlotPanel');
     },
+   
+    //
+    //  Public Methods
+    //
     
-    displayInfo: function(partRecord, parts)
+    showInfo: function(partRecord, parts)
     {
             var dnaSequence = null;
             var biofabID = null;
@@ -189,7 +207,7 @@ Ext.define('PartPanel', {
             //Temporary patch till I fix the problem with the Pilot Project
             if(collectionId !== 1)
             {
-                this.generateBarChart();
+                this.generateBarChart(this.partRecord, this.parts);
             }
             else
             {
@@ -199,7 +217,7 @@ Ext.define('PartPanel', {
                         text: 'Performance data for Pilot Project parts will be available in an upcoming release of the Data Access Client.'
                     }
                 );
-                this.performancePanel.doLayout();
+                //this.performancePanel.doLayout();
             }
     },
     
@@ -218,30 +236,34 @@ Ext.define('PartPanel', {
                    scope: this
         });
     },
-
-    generateBarChart: function()
+    
+    // Refactor!!!
+    generateBarChart: function(partRecord, parts)
     {
         var newStore;
         var partPerformances;
-
-//        Ext.define('PartPerformance', {
-//            extend: 'Ext.data.Model',
-//            fields: [
-//                {name: 'biofabId', type: 'string'},
-//                {name: 'value', type: 'float'}
-//            ]
-//        });
-
-        if(this.partRecord !== null && this.parts !== null)
+        var collectionId;
+        var axisTitle;
+        
+        if(partRecord !== null && this.parts !== null)
         {
-            partPerformances = this.generatePartPerformances(this.partRecord, this.parts);
+            collectionId = partRecord.get('collectionId');
+            
+            if(collectionId === 4)
+            {
+                axisTitle = 'Termination Efficiency (%)';
+            }
+            else
+            {
+                axisTitle = 'Gene Expression per Cell (AU)';
+            }
+            
+            partPerformances = this.generatePartPerformances(partRecord, parts);
 
             newStore = new Ext.data.Store({
                 model: 'PartPerformance',
                 data : partPerformances
             });
-
-            //var element = this.performancePanel.getEl();
 
             var barChart = Ext.create('Ext.chart.Chart',
                 {
@@ -260,10 +282,10 @@ Ext.define('PartPanel', {
                               renderer: Ext.util.Format.numberRenderer('0,0'),
                               font: '11px Arial'
                           },
-                          title: 'Gene Expression per Cell (AU)',
+                          title: axisTitle,
                           grid: true,
                           minimum: 0,
-                          labelTitle: {font: '12px Arial'}
+                          labelTitle: {font: '14px Arial'}
                         },
 //                        {
 //                          type: 'Category',
@@ -346,6 +368,7 @@ Ext.define('PartPanel', {
         }
     },
 
+    // Refactor!!!
     generatePartPerformances: function(partRecord, parts)
     {
         var part;
@@ -362,10 +385,20 @@ Ext.define('PartPanel', {
         var selectedMeasurement;
         var selectedPartBiofabId;
         var isSelected;
+        var measurementType;
 
         selectedPartBiofabId = partRecord.get('displayId')
         partCount = this.parts.length;
         collectionId = partRecord.get('collectionId');
+        
+        if(collectionId === 4)
+        {
+            measurementType = 'TE';
+        }
+        else
+        {
+            measurementType = 'GEC';
+        }
 
         for(var j = 0; j < partCount; j += 1)
         {
@@ -385,7 +418,7 @@ Ext.define('PartPanel', {
                         {
                             measurement = measurements[i];
         
-                            if(measurement.type === 'GEC')
+                            if(measurement.type === measurementType)
                             {
                                 if(part.displayID === selectedPartBiofabId)
                                 {
@@ -462,14 +495,21 @@ Ext.define('PartPanel', {
                 flashVars:{design:response.responseText}
             };
         this.constructDesignPanel.add(flash);
-        this.constructDesignPanel.doLayout();
-        this.partTabPanel.setActiveTab(0);
+        //this.constructDesignPanel.doLayout();
     },
 
     fetchConstructDesignErrorHandler: function(response, opts)
     {
        this.constructDesignPanelText.setVisible(false);
-       Ext.Msg.alert('Fetch Design', 'There was an error while attempting to fetch the design.\n' + 'Error: ' + response.responseText);
+       this.constructDesignExportButton.setDisabled(true);
+       this.constructDesignPanel.setHeight(100);
+       this.datasheetPanel.setHeight(800);
+       this.constructDesignPanel.add(
+            {
+                xtype: 'panel',
+                html: 'The design of the part characterization construct will be available in an upcoming release.'
+            }
+       )
     },
     
     constructDesignExportButtonHandler: function()

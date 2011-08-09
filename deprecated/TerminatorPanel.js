@@ -15,6 +15,7 @@ Ext.define('TerminatorPanel',{
     collectionRecord: null,
     
     constructor: function() {
+        
         var store = new Ext.data.JsonStore({
             autoDestroy: true,
             autoLoad: true,
