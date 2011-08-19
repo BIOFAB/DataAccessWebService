@@ -27,6 +27,12 @@ Ext.define('DataAccessClientViewport', {
                 url : '',
                 reader: {type: 'json'}
             },
+            sorters: [
+                {
+                    property : 'geneExpressionPerCell',
+                    direction: 'DESC'
+                }
+            ],
             autoLoad: false
         });
         
@@ -37,6 +43,12 @@ Ext.define('DataAccessClientViewport', {
                 url : '',
                 reader: {type: 'json'}
             },
+            sorters:[
+                {
+                    property : 'terminationEfficiency',
+                    direction: 'DESC'
+                }
+            ],
             autoLoad: false
         });
         

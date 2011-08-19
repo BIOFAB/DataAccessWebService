@@ -225,7 +225,7 @@ Ext.define('PartPanel',
     {
         this.constructDesignPanelText.setVisible(true);
         Ext.Ajax.request({
-                   url: WEB_SERVICE_BASE_URL + 'construct/design',
+                   url: WEB_SERVICE_BASE_URL + 'constructs',
                    method: "GET",
                    success: this.fetchConstructDesignResultHandler,
                    failure: this.fetchConstructDesignErrorHandler,
