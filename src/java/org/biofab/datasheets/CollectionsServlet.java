@@ -1,4 +1,4 @@
-package org.biofab.webservices.dataaccess;
+package org.biofab.datasheets;
 
 /*
  * To change this template, choose Tools | Templates
@@ -18,7 +18,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.biofab.model.Collection;
+import org.biofab.datasheets.model.Collection;
 
 
 @WebServlet(name="CollectionsServlet", urlPatterns={"/collections/*"})

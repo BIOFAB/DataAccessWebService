@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.biofab.model;
+package org.biofab.datasheets.model;
 
 /**
  *

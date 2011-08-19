@@ -3,7 +3,7 @@
  * 
  */
 
-package org.biofab.model;
+package org.biofab.datasheets.model;
 
 import java.sql.Time;
 

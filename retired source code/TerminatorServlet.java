@@ -1,4 +1,4 @@
-package org.biofab.webservices.dataaccess;
+package org.biofab.datasheets;
 
 /*
  * To change this template, choose Tools | Templates
@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.util.ArrayList;
 
-import org.biofab.model.Terminator;
+import org.biofab.datasheets.model.Terminator;
 
 
 @WebServlet(name="TerminatorServlet", urlPatterns={"/terminators/*"})

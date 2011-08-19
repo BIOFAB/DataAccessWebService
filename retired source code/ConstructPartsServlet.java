@@ -1,4 +1,4 @@
-package org.biofab.webservices.dataaccess;
+package org.biofab.datasheets;
 
 /*
  * To change this template, choose Tools | Templates
@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
-import org.biofab.model.ConstructPartRelationship;
+import org.biofab.datasheets.model.ConstructPartRelationship;
 
 
 @WebServlet(name="ConstructPartsServlet", urlPatterns={"/constructparts/*"})

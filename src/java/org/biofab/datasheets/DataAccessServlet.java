@@ -3,18 +3,17 @@
  * and open the template in the editor.
  */
 
-package org.biofab.webservices.dataaccess;
+package org.biofab.datasheets;
 
 import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Statement;
+import java.sql.DriverManager;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,16 +22,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
  
-import org.biofab.webservices.protocol.JSONResponse;
 
 
 public class DataAccessServlet extends HttpServlet
 {
-    String      _jdbcDriver = "jdbc:postgresql://localhost:5432/biofab";
-    String      _user = "biofab";
-    String      _password = "fiobab";
-    Connection  _connection = null;
-    String      _schema = "public";
+    String                  _jdbcDriver = "jdbc:postgresql://localhost:5432/biofab";
+    String                  _user = "biofab";
+    String                  _password = "fiobab";
+    Connection              _connection = null;
+    String                  _schema = "public";
+    String                  _format;
+    HttpServletRequest      _request;
+    HttpServletResponse     _response;
 
 
     
@@ -52,6 +53,69 @@ public class DataAccessServlet extends HttpServlet
     //
     // Utility Methods
     //
+    
+    protected ResultSet fetchResultSet(String query)
+    {
+        Statement           statement = null;
+        ResultSet           resultSet = null;
+  
+        try
+        {
+            _connection = DriverManager.getConnection(_jdbcDriver, _user, _password);
+            statement = _connection.createStatement();
+            resultSet = statement.executeQuery(query);
+        }
+        catch (SQLException ex)
+        {
+            if(_format != null && _format.length() > 0)
+            {
+                if(_format.equalsIgnoreCase("json"))
+                {
+                    jsonError(_response, "Error while fetching data: " + ex.getMessage());
+
+                }
+                else
+                {
+                    textError(_response, "Error while fetching data: " + ex.getMessage());
+                }
+            }
+            else
+            {
+                textError(_response, "Error while fetching data: " + ex.getMessage());
+            }
+            
+        }
+        finally
+        {
+            try
+            {
+                if(_connection != null)
+                {
+                    _connection.close();
+                }
+            }
+            catch (SQLException ex)
+            {
+                if(_format != null && _format.length() > 0)
+                {
+                    if(_format.equalsIgnoreCase("json"))
+                    {
+                        jsonError(_response, "Error while fetching data: " + ex.getMessage());
+                    }
+                    else
+                    {
+                        textError(_response, "Error while fetching data: " + ex.getMessage());
+                    }
+                }
+                else
+                {
+                    textError(_response, "Error while fetching data: " + ex.getMessage());
+                }
+            }
+        }
+        
+        return resultSet;
+    }
     
     protected ResultSet fetchResultSet(String query, String format, HttpServletResponse response)
     {
@@ -116,6 +180,7 @@ public class DataAccessServlet extends HttpServlet
         return resultSet;
     }
 
+    
     protected void textError(HttpServletResponse response, String msg)
     {
         response.setContentType("text/plain;charset=UTF-8");

@@ -1,4 +1,4 @@
-package org.biofab.webservices.dataaccess;
+package org.biofab.datasheets;
 
 
 import java.sql.SQLException;
@@ -23,10 +23,6 @@ import org.biojavax.SimpleNote;
 import org.biojavax.SimpleRichAnnotation;
 import org.biojavax.bio.seq.RichSequence;
 
-import org.sbolstandard.libSBOLj.SBOLutil;
-import org.sbolstandard.libSBOLj.DnaComponent;
-import org.sbolstandard.libSBOLj.Library;
-import org.sbolstandard.libSBOLj.SBOLservice;
 
 @SuppressWarnings("serial")
 @WebServlet(name="ConstructDesignServlet", urlPatterns={"/construct/design/*"})
@@ -93,65 +89,17 @@ public class ConstructDesignServlet extends DataAccessServlet
                             }
                             else
                             {
-                                if(format.equalsIgnoreCase("sboljson"))
+                                if(format != null && format.equalsIgnoreCase("seq"))
                                 {
-                                    SBOLservice service = new SBOLservice();
-                                    Library library = service.createLibrary("Test", "Test","Test");
-
-                                    DnaComponent dnaComponent = SBOLutil.readRichSequence(richSequence);
-                                    library = service.addDnaComponentToLibrary(dnaComponent, library);
-                                    String sbolString = SBOLutil.toJson(library);
-
-                                    if(sbolString != null && sbolString.length() > 0)
-                                    {
-                                        response.setContentType("text/plain");
-                                        response.getWriter().println(sbolString);
-                                    }
-                                    else
-                                    {
-                                      //TODO  Manage null case
-                                    }
-
-                                    //this.textError(response, "SBOL JSON is under development.");
+                                    response.setContentType("text/plain");
+                                    response.getWriter().println(richSequence.seqString());
                                 }
                                 else
                                 {
-                                    if(format.equalsIgnoreCase("sbolrdf"))
-                                    {
-//                                        SBOLservice service = new SBOLservice();
-//                                        Library library = service.createLibrary("Test", "Test","Test");
-//
-//
-//                                        DnaComponent dnaComponent = SBOLutil.readRichSequence(richSequence);
-//                                        library = service.addDnaComponentToLibrary(dnaComponent, library);
-//                                        String sbolString = SBOLutil.toRDF(library);
-//
-//                                        if(sbolString != null && sbolString.length() > 0)
-//                                        {
-//                                            response.setContentType("text/plain");
-//                                            response.getWriter().println(sbolString);
-//                                        }
-//                                        else
-//                                        {
-//                                          //TODO  Manage null case
-//                                        }
-
-                                        this.textError(response, "SBOL RDF is under development.");
-                                    }
-                                    else
-                                    {
-                                        if(format != null && format.equalsIgnoreCase("seq"))
-                                        {
-                                            response.setContentType("text/plain");
-                                            response.getWriter().println(richSequence.seqString());
-                                        }
-                                        else
-                                        {
-                                            response.setContentType("text/plain");
-                                            RichSequence.IOTools.writeGenbank(response.getOutputStream(), richSequence, ns);
-                                        }
-                                    }
+                                    response.setContentType("text/plain");
+                                    RichSequence.IOTools.writeGenbank(response.getOutputStream(), richSequence, ns);
                                 }
+                                   
                             }
                         }
                     }

@@ -1,5 +1,5 @@
 
-package org.biofab.model;
+package org.biofab.datasheets.model;
 
 /**
  *

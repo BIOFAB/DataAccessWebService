@@ -1,4 +1,4 @@
-package org.biofab.webservices.dataaccess;
+package org.biofab.datasheets;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -14,10 +14,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.biofab.model.Part;
-import org.sbolstandard.experiment.DnaComponent;
-import org.sbolstandard.experiment.DnaSequence;
-import org.sbolstandard.experiment.Measurement;
+import org.biofab.datasheets.model.Part;
+import org.sbol.libsbol.json.performance.DnaComponent;
+import org.sbol.libsbol.json.performance.DnaSequence;
+import org.sbol.libsbol.json.performance.Measurement;
 
 
 @WebServlet(name="PartsServlet", urlPatterns={"/parts/*"})

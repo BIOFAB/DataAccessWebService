@@ -3,7 +3,7 @@
  * 
  */
 
-package org.biofab.webservices.dataaccess;
+package org.biofab.datasheets;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -17,13 +17,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.biofab.model.Construct;
-import org.biofab.model.ConstructPerformance;
-import org.biofab.model.Read;
-import org.biofab.model.CytometerRead;
-import org.biofab.model.Instrument;
-import org.biofab.model.Measurement;
-import org.biofab.model.CytometerMeasurement;
+import org.biofab.datasheets.model.Construct;
+import org.biofab.datasheets.model.ConstructPerformance;
+import org.biofab.datasheets.model.Read;
+import org.biofab.datasheets.model.CytometerRead;
+import org.biofab.datasheets.model.Instrument;
+import org.biofab.datasheets.model.Measurement;
+import org.biofab.datasheets.model.CytometerMeasurement;
 
 
 @WebServlet(name="ConstructPerformanceServlet", urlPatterns={"/construct/performance/*"})
