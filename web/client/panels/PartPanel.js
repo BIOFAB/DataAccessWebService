@@ -514,7 +514,7 @@ Ext.define('PartPanel',
     
     constructDesignExportButtonHandler: function()
     {
-        var genbankWindow = window.open(WEB_SERVICE_BASE_URL + 'construct/design' + "?id=" + this.constructId + "&format=genbank","Genbank File for " + this.constructId,"width=640,height=480");
+        var genbankWindow = window.open(WEB_SERVICE_BASE_URL + 'constructs' + "?id=" + this.constructId + "&format=genbank","Genbank File for " + this.constructId,"width=640,height=480");
         genbankWindow.alert("Use File/Save As in the menu bar to save this document.");
         genbankWindow.scrollbars.visible = true;
     }
