@@ -1,1 +1,1 @@
-The repository for the Data Access Client and Web Service.
+The Data Access Web Service is the application interface (API) of the BIOFAB's electronic datasheets. It is a RESTful web service that provides the design and performance of BIOFAB parts and constructs.  The data and information are in machine-readable formats.
