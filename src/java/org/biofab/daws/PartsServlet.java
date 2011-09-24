@@ -176,10 +176,10 @@ public class PartsServlet extends DataAccessServlet
         String                  sequence = null;
         DnaSequence             dnaSequence = null;
         Measurement             measurement = null;
-        float                   bulkGeneExpression;
-        float                   bulkGeneExpressionSD;
-        float                   geneExpressionPerCell;
-        float                   geneExpressionPerCellSD;
+        //float                   bulkGeneExpression;
+        //float                   bulkGeneExpressionSD;
+        float                   meanFluorescencePerCell;
+        float                   meanFluorescencePerCellSD;
         String                  constructId;
         
         try
@@ -208,14 +208,15 @@ public class PartsServlet extends DataAccessServlet
                     if(biofabId.equalsIgnoreCase(component.getDisplayID()))
                     {
                         constructId = performanceResultSet.getString("construct_id");
-                        bulkGeneExpression = performanceResultSet.getFloat("bulk_gene_expression");
-                        bulkGeneExpressionSD = performanceResultSet.getFloat("bulk_gene_expression_sd");
-                        geneExpressionPerCell = performanceResultSet.getFloat("gene_expression_per_cell");
-                        geneExpressionPerCellSD = performanceResultSet.getFloat("gene_expression_per_cell_sd");
+//                        bulkGeneExpression = performanceResultSet.getFloat("bulk_gene_expression");
+//                        bulkGeneExpressionSD = performanceResultSet.getFloat("bulk_gene_expression_sd");
+                        meanFluorescencePerCell = performanceResultSet.getFloat("gene_expression_per_cell");
+                        meanFluorescencePerCellSD = performanceResultSet.getFloat("gene_expression_per_cell_sd");
                         
-                        measurement = new Measurement("BGE", "Bulk Gene Expression", "AU/OD", "Pending", bulkGeneExpression, bulkGeneExpressionSD, constructId);
-                        component.getPerformance().getMeasurements().add(measurement);
-                        measurement = new Measurement("GEC", "Gene Expression per Cell", "AU", "Pending", geneExpressionPerCell, geneExpressionPerCellSD, constructId);
+//                        measurement = new Measurement("BGE", "Bulk Gene Expression", "AU/OD", "Pending", bulkGeneExpression, bulkGeneExpressionSD, constructId);
+//                        component.getPerformance().getMeasurements().add(measurement);
+                        
+                        measurement = new Measurement("MFC", "Mean Fluorescence per Cell", "AU", "Pending", meanFluorescencePerCell, meanFluorescencePerCellSD, constructId);
                         component.getPerformance().getMeasurements().add(measurement);
 
                         break;
@@ -357,7 +358,7 @@ public class PartsServlet extends DataAccessServlet
         String                  label;
         boolean                 hasLabel;
         String                  csvLine;
-        int                     gecCount;
+        int                     mfcCount;
         String                  measurementValue;
         String                  measurementSD;
 
@@ -365,8 +366,8 @@ public class PartsServlet extends DataAccessServlet
         headers.add("type");
         headers.add("description");
         headers.add("dna_sequence");
-        headers.add("gene_expression_per_cell_(AU)");
-        headers.add("gene_expression_per_cell_standard_deviation");
+        headers.add("mean_fluorescence_per_cell_(AU)");
+        headers.add("mean_fluorescence_per_cell_standard_deviation");
 
         for(DnaComponent dnaComponent:dnaComponents)
         {
@@ -382,17 +383,17 @@ public class PartsServlet extends DataAccessServlet
             row.add(sequence);
 
             measurements = dnaComponent.getPerformance().getMeasurements();
-            gecCount = 0;
+            mfcCount = 0;
             measurementValue = null;
             measurementSD = null;
 
             for(Measurement measurement:measurements)
             {
-                if(measurement.getType().equalsIgnoreCase("GEC"))
+                if(measurement.getType().equalsIgnoreCase("MFC"))
                 {
                     measurementValue = String.valueOf(measurement.getValue());
                     measurementSD = String.valueOf(measurement.getStandardDeviation());
-                    gecCount++;
+                    mfcCount++;
                 }
 
 //              for(headers.contains(measurement.getLabel()))
@@ -401,7 +402,7 @@ public class PartsServlet extends DataAccessServlet
 //              }
             }
 
-            if(gecCount == 1)
+            if(mfcCount == 1)
             {
                 row.add(measurementValue);
                 row.add(measurementSD);
